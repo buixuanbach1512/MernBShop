@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { applyCoupon, createOrder, emptyCart, resetState } from '../features/auth/authSlice';
-import Paypal from '../components/PayPal';
+import Paypal from '../components/Paypal';
 import Confetticp from '../components/Confetticp';
 
 const schema = Yup.object().shape({
