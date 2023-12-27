@@ -24,7 +24,7 @@ connectDB();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors({ credentials: true, origin: ["https://mern-b-shop-frontend.vercel.app"] }));
+app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
 
