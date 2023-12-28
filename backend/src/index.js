@@ -24,7 +24,12 @@ connectDB();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors({ credentials: true, origin: ["https://frontend-fzzkq055r-buixuanbach1512s-projects.vercel.app"] }));
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "https://frontend-fzzkq055r-buixuanbach1512s-projects.vercel.app");
+    res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    next();
+  })
 app.use(cookieParser());
 app.use(morgan('dev'));
 
