@@ -1,5 +1,5 @@
 import axios from 'axios';
-axios.defaults.baseURL = 'https://backend-7mzxh8l23-buixuanbach1512s-projects.vercel.app/api/';
+axios.defaults.baseURL = 'https://backend-5qwebmt2k-buixuanbach1512s-projects.vercel.app/api/';
 
 const register = async (userData) => {
     const response = await axios.post(`user/register`, userData);
