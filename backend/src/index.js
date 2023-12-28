@@ -24,7 +24,7 @@ connectDB();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors({ credentials: true, origin: true }));
+app.use(cors({ credentials: true, origin: ["https://frontend-fzzkq055r-buixuanbach1512s-projects.vercel.app"] }));
 app.use(cookieParser());
 app.use(morgan('dev'));
 
