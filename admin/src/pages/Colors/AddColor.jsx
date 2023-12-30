@@ -6,6 +6,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { createColors, getAColor, resetState, updateColor } from '../../features/color/colorSlice';
 
 const AddColor = () => {
+    const getUserFromSessionStorage = sessionStorage.getItem('user')
+        ? JSON.parse(sessionStorage.getItem('user'))
+        : null;
+    const permissions = getUserFromSessionStorage.permissions;
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
@@ -34,7 +38,7 @@ const AddColor = () => {
         enableReinitialize: true,
         initialValues: {
             name: aColorState?.name || '',
-            code: aColorState?.code || '#333'
+            code: aColorState?.code || '#333',
         },
         onSubmit: (values) => {
             if (colorId !== undefined) {
@@ -57,12 +61,12 @@ const AddColor = () => {
             }
         },
     });
-    return (
+    return permissions.indexOf('add-color') !== -1 ? (
         <div className="content-wrapper bg-white p-5">
             <h3 className="mb-4">{colorId !== undefined ? 'Sửa' : 'Thêm'} màu sắc</h3>
             <div>
                 <form onSubmit={formik.handleSubmit}>
-                    <div className='mt-3'>
+                    <div className="mt-3">
                         <input
                             type="text"
                             id="name1"
@@ -83,13 +87,15 @@ const AddColor = () => {
                             value={formik.values.code}
                         />
                     </div>
-                    
+
                     <button type="submit" className="btn btn-success border-0 rounded-3 my-3">
                         {colorId !== undefined ? 'Cập nhật' : 'Thêm mới'}
                     </button>
                 </form>
             </div>
         </div>
+    ) : (
+        <>Không có quyền hạn</>
     );
 };
 

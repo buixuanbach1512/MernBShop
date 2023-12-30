@@ -33,9 +33,13 @@ const columns = [
 ];
 
 const Brands = () => {
+    const getUserFromSessionStorage = sessionStorage.getItem('user')
+        ? JSON.parse(sessionStorage.getItem('user'))
+        : null;
+    const permissions = getUserFromSessionStorage.permissions;
     const [open, setOpen] = useState(false);
     const [brandId, setBrandId] = useState(null);
-    const [brandName, setBrandName] = useState('')
+    const [brandName, setBrandName] = useState('');
     const dispatch = useDispatch();
     const allBrandState = useSelector((state) => state.brand.brands);
     useEffect(() => {
@@ -84,13 +88,13 @@ const Brands = () => {
     };
 
     const handleChange = (e) => {
-        setBrandName(e.target.value)
-    }
+        setBrandName(e.target.value);
+    };
     const handleSubmit = () => {
-        dispatch(getBrands(brandName))
-        setBrandName('')
-    }
-    return (
+        dispatch(getBrands(brandName));
+        setBrandName('');
+    };
+    return permissions.indexOf('brands') !== -1 ? (
         <div className="content-wrapper bg-white p-4">
             <h3 className="mb-4 border-bottom">Thương hiệu</h3>
             <div className="mb-4 d-flex justify-content-between align-items-center">
@@ -101,7 +105,7 @@ const Brands = () => {
                         placeholder="Tên thương hiệu"
                         aria-label="Recipient's username"
                         aria-describedby="button-addon2"
-                        onChange={(e)=> handleChange(e)}
+                        onChange={(e) => handleChange(e)}
                         value={brandName}
                     />
                     <button className="btn btn-secondary" type="button" id="button-addon2" onClick={handleSubmit}>
@@ -128,6 +132,8 @@ const Brands = () => {
                 </Modal>
             </div>
         </div>
+    ) : (
+        <>Không có quyền hạn</>
     );
 };
 

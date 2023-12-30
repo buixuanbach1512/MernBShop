@@ -33,6 +33,10 @@ const columns = [
 ];
 
 const Categories = () => {
+    const getUserFromSessionStorage = sessionStorage.getItem('user')
+        ? JSON.parse(sessionStorage.getItem('user'))
+        : null;
+    const permissions = getUserFromSessionStorage.permissions;
     const [open, setOpen] = useState(false);
     const [catId, setCatId] = useState(null);
     const [catName, setCatName] = useState('');
@@ -113,7 +117,7 @@ const Categories = () => {
         dispatch(getCategories(catName));
         setCatName('');
     };
-    return (
+    return permissions.indexOf('categories') !== -1 ? (
         <div className="content-wrapper bg-white p-4">
             <h3 className="mb-4 border-bottom">Danh mục</h3>
             <div className="mb-4 d-flex justify-content-between align-items-center">
@@ -151,6 +155,8 @@ const Categories = () => {
                 </Modal>
             </div>
         </div>
+    ) : (
+        <>Không có quyền hạn</>
     );
 };
 

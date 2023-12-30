@@ -29,6 +29,10 @@ const Login = () => {
             navigate('/');
         }
     }, [navigate, userState]);
+
+    // const handleLogin = () => {
+    //     window.open('http://localhost:5000/api/auth/google/callback', '_self');
+    // };
     return (
         <>
             <div className="login-wrapper home-wrapper-2 py-5">
@@ -71,10 +75,15 @@ const Login = () => {
                                         <button type="submit" className="button border-0">
                                             Đăng Nhập
                                         </button>
-                                        <Link to='/signup' className="button">
+                                        <Link to="/signup" className="button">
                                             Đăng Ký
                                         </Link>
                                     </div>
+                                    {/* <div className="mt-3">
+                                        <button type="button" onClick={handleLogin} className="border-0">
+                                            Đăng nhập google
+                                        </button>
+                                    </div> */}
                                 </div>
                             </form>
                         </div>

@@ -14,6 +14,9 @@ import { BiCategory, BiSolidColorFill } from 'react-icons/bi';
 import { SiBrandfolder } from 'react-icons/si';
 import { FaClipboardList } from 'react-icons/fa';
 import { RiCoupon3Fill } from 'react-icons/ri';
+import { FaUsersCog } from 'react-icons/fa';
+import { CgSize } from 'react-icons/cg';
+import { TfiControlEject } from 'react-icons/tfi';
 
 // antd
 import { Layout, Menu, Button, theme } from 'antd';
@@ -43,6 +46,10 @@ const MainLayout = () => {
         token: { colorBgContainer },
     } = theme.useToken();
     const navigate = useNavigate();
+    const handleLogout = () => {
+        sessionStorage.clear();
+        window.location.reload();
+    };
     return (
         <Layout>
             <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -75,6 +82,11 @@ const MainLayout = () => {
                             label: 'Khách Hàng',
                         },
                         {
+                            key: 'staff',
+                            icon: <FaUsersCog className="fs-3" />,
+                            label: 'Nhân Viên',
+                        },
+                        {
                             key: 'categories',
                             icon: <BiCategory className="fs-3" />,
                             label: 'Danh Mục',
@@ -96,8 +108,13 @@ const MainLayout = () => {
                         },
                         {
                             key: 'sizes',
-                            icon: <BiSolidColorFill className="fs-3" />,
+                            icon: <CgSize className="fs-3" />,
                             label: 'Size',
+                        },
+                        {
+                            key: 'roles',
+                            icon: <TfiControlEject className="fs-3" />,
+                            label: 'Chức vụ',
                         },
                         {
                             key: 'coupons',
@@ -121,7 +138,7 @@ const MainLayout = () => {
                     }}
                 >
                     <Button
-                        type="text"
+                        type="button"
                         className="btn-lr"
                         icon={collapsed ? <AiOutlinePicRight /> : <AiOutlinePicLeft />}
                         onClick={() => setCollapsed(!collapsed)}
@@ -131,6 +148,18 @@ const MainLayout = () => {
                             height: 60,
                         }}
                     />
+                    <div className="d-flex align-items-center">
+                        <button
+                            style={{
+                                width: '50px',
+                                height: '20px',
+                                fontSize: '1rem',
+                            }}
+                            onClick={handleLogout}
+                        >
+                            Đăng xuất
+                        </button>
+                    </div>
                 </Header>
                 <Content
                     style={{

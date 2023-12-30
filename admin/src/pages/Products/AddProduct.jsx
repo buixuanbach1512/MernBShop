@@ -27,6 +27,10 @@ let schema = Yup.object().shape({
 });
 
 const AddProduct = () => {
+    const getUserFromSessionStorage = sessionStorage.getItem('user')
+        ? JSON.parse(sessionStorage.getItem('user'))
+        : null;
+    const permissions = getUserFromSessionStorage.permissions;
     const dispatch = useDispatch();
     const location = useLocation();
     const [colorP, setColorP] = useState(location.state?.color || []);
@@ -153,7 +157,7 @@ const AddProduct = () => {
             }
         },
     });
-    return (
+    return permissions.indexOf('add-product') !== -1 ? (
         <div className="content-wrapper bg-white p-5">
             <h3 className="mb-4">{location.state?.id !== undefined ? 'Sửa' : 'Thêm'} sản phẩm</h3>
             <div>
@@ -322,6 +326,8 @@ const AddProduct = () => {
                 </form>
             </div>
         </div>
+    ) : (
+        <>Không có quyền hạn</>
     );
 };
 

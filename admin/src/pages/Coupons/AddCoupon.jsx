@@ -14,6 +14,10 @@ const schema = Yup.object().shape({
 });
 
 const AddCoupon = () => {
+    const getUserFromSessionStorage = sessionStorage.getItem('user')
+        ? JSON.parse(sessionStorage.getItem('user'))
+        : null;
+    const permissions = getUserFromSessionStorage.permissions;
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
@@ -67,7 +71,7 @@ const AddCoupon = () => {
             }
         },
     });
-    return (
+    return permissions.indexOf('add-coupon') !== -1 ? (
         <div className="content-wrapper bg-white p-5">
             <h3 className="mb-4">{couponId !== undefined ? 'Sửa' : 'Thêm'} Phiếu mua hàng</h3>
             <div>
@@ -123,6 +127,8 @@ const AddCoupon = () => {
                 </form>
             </div>
         </div>
+    ) : (
+        <>Không có quyền hạn</>
     );
 };
 

@@ -14,6 +14,9 @@ var userSchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
+        googleId: {
+            type: String,
+        },
         mobile: {
             type: String,
             required: true,
@@ -26,9 +29,13 @@ var userSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
-        role: {
+        type: {
             type: String,
             default: 'user',
+        },
+        role: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Role',
         },
         cart: {
             type: Array,

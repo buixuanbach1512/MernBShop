@@ -7,6 +7,7 @@ import parse from 'html-react-parser';
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Color from '../components/ColorList';
+import Size from '../components/SizeList';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAProduct, getAllProduct, rating } from '../features/product/productSlice';
 import { toast } from 'react-toastify';
@@ -23,13 +24,15 @@ const Product = () => {
     const user = sessionStorage.getItem('customer');
     const [quantity, setQuantity] = useState(1);
     const [color, setColor] = useState(null);
+    const [size, setSize] = useState(null);
     const [added, setAdded] = useState(false);
     const [border, setBorder] = useState(null);
+    const [sizeStyle, setSizeStyle] = useState(null);
     const [star, setStar] = useState(0);
     const location = useLocation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const productId = location.state._id;
+    const productId = location.pathname.split('/')[3];
     const prodState = useSelector((state) => state.product.getAProd);
     const allProdState = useSelector((state) => state?.product?.products);
     const getCartState = useSelector((state) => state?.auth?.cart);
@@ -49,7 +52,10 @@ const Product = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const addCart = () => {
-        if (color === null) {
+        if (size === null) {
+            toast.error('Chưa chọn size sản phẩm');
+            return false;
+        } else if (color === null) {
             toast.error('Chưa chọn màu sản phẩm');
             return false;
         } else {
@@ -57,6 +63,7 @@ const Product = () => {
                 productId: prodState?._id,
                 quantity,
                 color,
+                size,
                 price: prodState?.price,
             };
             if (user) {
@@ -153,18 +160,17 @@ const Product = () => {
                                         <h3 className="product-label">Kho hàng :</h3>
                                         <p className=" product-data">{prodState?.quantity}</p>
                                     </div>
-                                    <div className="d-flex gap-10 flex-column my-2">
-                                        <h3 className="product-label">Size :</h3>
-                                        <div className="d-flex flex-wrap gap-10">
-                                            {prodState?.size?.map((item, index) => (
-                                                <div key={index} className="span-size">
-                                                    <p className="mb-0 text-center">{item.name}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
                                     {added === false && (
                                         <>
+                                            <div className="d-flex gap-10 flex-column my-2">
+                                                <h3 className="product-label">Size :</h3>
+                                                <Size
+                                                    sizeData={prodState?.size}
+                                                    setSize={setSize}
+                                                    setSizeStyle={setSizeStyle}
+                                                    sizeStyle={sizeStyle}
+                                                />
+                                            </div>
                                             <div className="d-flex gap-10 flex-column my-2">
                                                 <h3 className="product-label">Màu sắc :</h3>
                                                 <Color

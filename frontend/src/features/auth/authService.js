@@ -1,5 +1,5 @@
 import axios from 'axios';
-axios.defaults.baseURL = 'https://backend-liart-zeta.vercel.app/api/';
+axios.defaults.baseURL = 'http://localhost:5000/api/';
 
 const register = async (userData) => {
     const response = await axios.post(`user/register`, userData);
@@ -10,6 +10,13 @@ const register = async (userData) => {
 
 const login = async (userData) => {
     const response = await axios.post(`user/login`, userData);
+    if (response.data) {
+        return response.data;
+    }
+};
+
+const loginGoogle = async () => {
+    const response = await axios.get(`auth/google/callback`);
     if (response.data) {
         return response.data;
     }
@@ -157,4 +164,5 @@ export const authService = {
     applyCoupon,
     userOrder,
     logout,
+    loginGoogle,
 };

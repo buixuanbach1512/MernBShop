@@ -27,6 +27,13 @@ export const login = createAsyncThunk('auth/login', async (userData, thunkAPI) =
         return thunkAPI.rejectWithValue(e);
     }
 });
+export const loginGoogle = createAsyncThunk('auth/login-google', async (thunkAPI) => {
+    try {
+        return await authService.loginGoogle();
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
 
 export const getUserWishList = createAsyncThunk('auth/get-wishlist', async (thunkAPI) => {
     try {
@@ -176,6 +183,21 @@ export const authSlice = createSlice({
                 if (state.isError === true) {
                     toast.error(action.payload.response.data.message);
                 }
+            })
+            .addCase(loginGoogle.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(loginGoogle.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.loginUser = action.payload;
+            })
+            .addCase(loginGoogle.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
             })
             .addCase(login.pending, (state) => {
                 state.isLoading = true;

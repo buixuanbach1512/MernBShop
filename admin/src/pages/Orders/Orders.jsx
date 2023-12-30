@@ -31,6 +31,10 @@ const columns = [
     },
 ];
 const Orders = () => {
+    const getUserFromSessionStorage = sessionStorage.getItem('user')
+        ? JSON.parse(sessionStorage.getItem('user'))
+        : null;
+    const permissions = getUserFromSessionStorage.permissions;
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(getAllOrders());
@@ -79,7 +83,7 @@ const Orders = () => {
             dispatch(getAllOrders());
         }, 200);
     };
-    return (
+    return permissions.indexOf('orders') !== -1 ? (
         <div className="content-wrapper bg-white p-4">
             <h3 className="mb-4">Đơn Hàng</h3>
             <div className="mb-4 d-flex justify-content-between align-items-center">
@@ -100,6 +104,8 @@ const Orders = () => {
                 <Table columns={columns} dataSource={data1} />
             </div>
         </div>
+    ) : (
+        <>Không có quyền hạn</>
     );
 };
 

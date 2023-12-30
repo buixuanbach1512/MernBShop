@@ -11,6 +11,10 @@ const schema = Yup.object().shape({
 });
 
 const AddSize = () => {
+    const getUserFromSessionStorage = sessionStorage.getItem('user')
+        ? JSON.parse(sessionStorage.getItem('user'))
+        : null;
+    const permissions = getUserFromSessionStorage.permissions;
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
@@ -62,7 +66,7 @@ const AddSize = () => {
             }
         },
     });
-    return (
+    return permissions.indexOf('add-size') !== -1 ? (
         <div className="content-wrapper bg-white p-5">
             <h3 className="mb-4">{sizeId !== undefined ? 'Sửa' : 'Thêm'} size</h3>
             <div>
@@ -88,6 +92,8 @@ const AddSize = () => {
                 </form>
             </div>
         </div>
+    ) : (
+        <>Không có quyền hạn</>
     );
 };
 

@@ -75,7 +75,7 @@ const Cart = () => {
                                             </div>
                                             <div className="w-75">
                                                 <p>{item?.prodId.name}</p>
-                                                <p>Size: M</p>
+                                                <p>Size: {item?.size?.name}</p>
                                                 <div className="d-flex align-items-center gap-3">
                                                     <p>Màu sắc: </p>
                                                     <ul className="colors ps-0">

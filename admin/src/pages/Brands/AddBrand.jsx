@@ -11,6 +11,10 @@ const schema = Yup.object().shape({
 });
 
 const AddBrand = () => {
+    const getUserFromSessionStorage = sessionStorage.getItem('user')
+        ? JSON.parse(sessionStorage.getItem('user'))
+        : null;
+    const permissions = getUserFromSessionStorage.permissions;
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
@@ -62,7 +66,7 @@ const AddBrand = () => {
             }
         },
     });
-    return (
+    return permissions.indexOf('add-brand') !== -1 ? (
         <div className="content-wrapper bg-white p-5">
             <h3 className="mb-4">{brandId !== undefined ? 'Sửa' : 'Thêm'} thương hiệu</h3>
             <div>
@@ -88,6 +92,8 @@ const AddBrand = () => {
                 </form>
             </div>
         </div>
+    ) : (
+        <>Không có quyền hạn</>
     );
 };
 

@@ -4,16 +4,23 @@ const Product = require('../models/productModel');
 const Cart = require('../models/cartModel');
 const Coupon = require('../models/couponModel');
 const Order = require('../models/orderModel');
+const Role = require('../models/roleModel');
 const asyncHandler = require('express-async-handler');
 const validateMongoDbId = require('../utils/validateMongoDbId');
 const sendEmail = require('./emailController');
 const crypto = require('crypto');
 
 const createUser = asyncHandler(async (req, res) => {
-    const email = req.body.email;
+    const { name, email, password, mobile, address } = req.body;
     const findUser = await User.findOne({ email: email });
     if (!findUser) {
-        const newUser = await User.create(req.body);
+        const role = req.body.role;
+        const isBlocked = req.body.isBlocked || false;
+        let type = '';
+        if (role) {
+            type = 'admin';
+        }
+        const newUser = await User.create({ name, email, password, mobile, address, type, role, isBlocked });
         res.json(newUser);
     } else {
         throw new Error('User Already Exists');
@@ -43,15 +50,17 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const loginAdmin = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
-    const findAdmin = await User.findOne({ email });
+    const findAdmin = await User.findOne({ email }).populate('role');
     if (findAdmin && (await findAdmin.isPasswordMatched(password))) {
-        if (findAdmin.role !== 'admin') throw new Error('Not Authorised');
+        if (findAdmin.type !== 'admin') throw new Error('Not Authorised');
+        if (findAdmin.isBlocked === true) throw new Error('Tài khoản chưa được kích hoạt');
         res.json({
             _id: findAdmin?._id,
             name: findAdmin?.name,
             email: findAdmin?.email,
             mobile: findAdmin?.mobile,
             token: generateToken(findAdmin?._id),
+            permissions: findAdmin?.role?.permissions,
         });
     } else {
         throw new Error('Invalid Credentials');
@@ -63,7 +72,7 @@ const getAllUser = asyncHandler(async (req, res) => {
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
     try {
-        let query = User.find(JSON.parse(queryStr));
+        let query = User.find(JSON.parse(queryStr)).populate('role');
         const getAll = await query;
         res.json(getAll);
     } catch (e) {
@@ -224,7 +233,7 @@ const getWishList = asyncHandler(async (req, res) => {
 });
 
 const addToCart = asyncHandler(async (req, res) => {
-    const { productId, color, price, quantity } = req.body;
+    const { productId, size, color, price, quantity } = req.body;
     const { _id } = req.user;
     validateMongoDbId(_id);
     try {
@@ -234,6 +243,7 @@ const addToCart = asyncHandler(async (req, res) => {
             quantity,
             price,
             color,
+            size,
         }).save();
         res.json(newCart);
     } catch (e) {
@@ -245,7 +255,11 @@ const getUserCart = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     validateMongoDbId(_id);
     try {
-        const getCart = await Cart.find({ userId: _id }).populate('userId').populate('prodId').populate('color');
+        const getCart = await Cart.find({ userId: _id })
+            .populate('userId')
+            .populate('prodId')
+            .populate('color')
+            .populate('size');
         res.json(getCart);
     } catch (e) {
         throw new Error(e);

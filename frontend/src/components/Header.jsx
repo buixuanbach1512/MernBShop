@@ -81,7 +81,7 @@ const Header = () => {
     };
 
     const handleClick = (data) => {
-        navigate(`/product/${data.slug}`, { state: data });
+        navigate(`/product/${data.slug}/${data._id}`, { state: data });
         setFilteredData([]);
         setWordEntered('');
     };

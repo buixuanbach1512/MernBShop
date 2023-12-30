@@ -33,9 +33,13 @@ const columns = [
 ];
 
 const Sizes = () => {
+    const getUserFromSessionStorage = sessionStorage.getItem('user')
+        ? JSON.parse(sessionStorage.getItem('user'))
+        : null;
+    const permissions = getUserFromSessionStorage.permissions;
     const [open, setOpen] = useState(false);
     const [sizeId, setSizeId] = useState(null);
-    const [sizeName, setSizeName] = useState('')
+    const [sizeName, setSizeName] = useState('');
     const dispatch = useDispatch();
     const allSizeState = useSelector((state) => state.size.sizes);
     useEffect(() => {
@@ -73,7 +77,7 @@ const Sizes = () => {
         });
     }
 
-    const handleDelBrand = (id) => {
+    const handleDelSize = (id) => {
         dispatch(deleteSize(id));
         setOpen(false);
         setSizeId(null);
@@ -84,13 +88,13 @@ const Sizes = () => {
     };
 
     const handleChange = (e) => {
-        setSizeName(e.target.value)
-    }
+        setSizeName(e.target.value);
+    };
     const handleSubmit = () => {
-        dispatch(getSize(sizeName))
-        setSizeName('')
-    }
-    return (
+        dispatch(getSize(sizeName));
+        setSizeName('');
+    };
+    return permissions.indexOf('sizes') !== -1 ? (
         <div className="content-wrapper bg-white p-4">
             <h3 className="mb-4 border-bottom">Size sản phẩm</h3>
             <div className="mb-4 d-flex justify-content-between align-items-center">
@@ -101,7 +105,7 @@ const Sizes = () => {
                         placeholder="Tên size"
                         aria-label="Recipient's username"
                         aria-describedby="button-addon2"
-                        onChange={(e)=> handleChange(e)}
+                        onChange={(e) => handleChange(e)}
                         value={sizeName}
                     />
                     <button className="btn btn-secondary" type="button" id="button-addon2" onClick={handleSubmit}>
@@ -119,7 +123,7 @@ const Sizes = () => {
                 <Modal
                     title="Xóa size"
                     open={open}
-                    onOk={() => handleDelBrand(sizeId)}
+                    onOk={() => handleDelSize(sizeId)}
                     onCancel={hideModal}
                     okText="Đồng ý"
                     cancelText="Hủy"
@@ -128,6 +132,8 @@ const Sizes = () => {
                 </Modal>
             </div>
         </div>
+    ) : (
+        <>Không có quyền hạn</>
     );
 };
 

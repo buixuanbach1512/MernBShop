@@ -1,5 +1,5 @@
 import axios from 'axios';
-axios.defaults.baseURL = 'https://backend-liart-zeta.vercel.app/api/';
+axios.defaults.baseURL = 'http://localhost:5000/api/';
 
 const getAllProduct = async (data) => {
     const response = await axios.get(

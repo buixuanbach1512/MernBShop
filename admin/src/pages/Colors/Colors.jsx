@@ -36,9 +36,13 @@ const columns = [
 ];
 
 const Colors = () => {
+    const getUserFromSessionStorage = sessionStorage.getItem('user')
+        ? JSON.parse(sessionStorage.getItem('user'))
+        : null;
+    const permissions = getUserFromSessionStorage.permissions;
     const [open, setOpen] = useState(false);
     const [colorId, setColorId] = useState(null);
-    const [colorName, setColorName] = useState('')
+    const [colorName, setColorName] = useState('');
     const dispatch = useDispatch();
     const allColorState = useSelector((state) => state.color.colors);
     useEffect(() => {
@@ -58,7 +62,12 @@ const Colors = () => {
         data1.push({
             key: i + 1,
             name: allColorState[i].name,
-            code: allColorState[i].code,
+            code: (
+                <div className="d-flex gap-10 align-items-center">
+                    <p className="mb-0">{allColorState[i].code}</p>
+                    <div style={{ width: 20, height: 20, background: allColorState[i].code }}></div>
+                </div>
+            ),
             createdAt: moment(allColorState[i].createdAt).format('DD/MM/YYYY'),
             updatedAt: moment(allColorState[i].updatedAt).format('DD/MM/YYYY'),
             action: (
@@ -88,13 +97,13 @@ const Colors = () => {
     };
 
     const handleChange = (e) => {
-        setColorName(e.target.value)
-    }
+        setColorName(e.target.value);
+    };
     const handleSubmit = () => {
-        dispatch(getColors(colorName))
-        setColorName('')
-    }
-    return (
+        dispatch(getColors(colorName));
+        setColorName('');
+    };
+    return permissions.indexOf('colors') !== -1 ? (
         <div className="content-wrapper bg-white p-4">
             <h3 className="mb-4 border-bottom">Màu sắc</h3>
             <div className="mb-4 d-flex justify-content-between align-items-center">
@@ -105,7 +114,7 @@ const Colors = () => {
                         placeholder="Mã màu"
                         aria-label="Recipient's username"
                         aria-describedby="button-addon2"
-                        onChange={(e)=> handleChange(e)}
+                        onChange={(e) => handleChange(e)}
                         value={colorName}
                     />
                     <button className="btn btn-secondary" type="button" id="button-addon2" onClick={handleSubmit}>
@@ -132,6 +141,8 @@ const Colors = () => {
                 </Modal>
             </div>
         </div>
+    ) : (
+        <>Không có quyền hạn</>
     );
 };
 

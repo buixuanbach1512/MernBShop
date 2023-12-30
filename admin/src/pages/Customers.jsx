@@ -33,8 +33,12 @@ const columns = [
 ];
 
 const Customer = () => {
+    const getUserFromSessionStorage = sessionStorage.getItem('user')
+        ? JSON.parse(sessionStorage.getItem('user'))
+        : null;
+    const permissions = getUserFromSessionStorage.permissions;
     const [blocked, setBlocked] = useState(false);
-    const [userName, setUserName] = useState('')
+    const [userName, setUserName] = useState('');
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(getUsers());
@@ -43,7 +47,7 @@ const Customer = () => {
     const getCustomersState = useSelector((state) => state.customer.customers);
     const data1 = [];
     for (let i = 0; i < getCustomersState.length; i++) {
-        if (getCustomersState[i].role !== 'admin') {
+        if (getCustomersState[i].type == 'user') {
             data1.push({
                 key: i + 1,
                 name: getCustomersState[i].name,
@@ -102,14 +106,14 @@ const Customer = () => {
         }, 200);
     };
 
-    const handleChange = (e)=> {
-        setUserName(e.target.value)
-    }
+    const handleChange = (e) => {
+        setUserName(e.target.value);
+    };
     const handleSubmit = () => {
-        dispatch(getUsers(userName))
-        setUserName('')
-    }
-    return (
+        dispatch(getUsers(userName));
+        setUserName('');
+    };
+    return permissions.indexOf('dashboard') !== -1 ? (
         <div className="content-wrapper bg-white p-4">
             <h3 className="mb-4">Khách Hàng</h3>
             <div className="mb-4 d-flex justify-content-between align-items-center">
@@ -120,7 +124,7 @@ const Customer = () => {
                         placeholder="Tên khách hàng"
                         aria-label="Recipient's username"
                         aria-describedby="button-addon2"
-                        onChange={(e)=> handleChange(e)}
+                        onChange={(e) => handleChange(e)}
                         value={userName}
                     />
                     <button className="btn btn-secondary" type="button" id="button-addon2" onClick={handleSubmit}>
@@ -132,6 +136,8 @@ const Customer = () => {
                 <Table columns={columns} dataSource={data1} />
             </div>
         </div>
+    ) : (
+        <>Không có quyền hạn</>
     );
 };
 

@@ -17,15 +17,44 @@ import AddSize from './pages/Sizes/AddSize';
 import Coupons from './pages/Coupons/Coupons';
 import AddCoupon from './pages/Coupons/AddCoupon';
 import Orders from './pages/Orders/Orders';
+import Register from './pages/Register';
+import { OpenRoutes } from './routes/OpenRoutes';
+import { PrivateRoutes } from './routes/PrivateRoutes';
+import Staff from './pages/Staff/Staff';
+import Roles from './pages/Roles/Roles';
+import AddRole from './pages/Roles/AddRole';
 function App() {
     return (
         <>
             <Router>
                 <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/admin" element={<MainLayout />}>
+                    <Route
+                        path="/"
+                        element={
+                            <OpenRoutes>
+                                <Login />
+                            </OpenRoutes>
+                        }
+                    />
+                    <Route
+                        path="/register"
+                        element={
+                            <OpenRoutes>
+                                <Register />
+                            </OpenRoutes>
+                        }
+                    />
+                    <Route
+                        path="/admin"
+                        element={
+                            <PrivateRoutes>
+                                <MainLayout />
+                            </PrivateRoutes>
+                        }
+                    >
                         <Route index element={<Dashboard />} />
                         <Route path="customers" element={<Customers />} />
+                        <Route path="staff" element={<Staff />} />
                         <Route path="categories" element={<Categories />} />
                         <Route path="addCategory" element={<AddCategory />} />
                         <Route path="editCategory/:id" element={<AddCategory />} />
@@ -41,6 +70,9 @@ function App() {
                         <Route path="sizes" element={<Sizes />} />
                         <Route path="addSize" element={<AddSize />} />
                         <Route path="editSize/:id" element={<AddSize />} />
+                        <Route path="roles" element={<Roles />} />
+                        <Route path="addRole" element={<AddRole />} />
+                        <Route path="editRole" element={<AddRole />} />
                         <Route path="coupons" element={<Coupons />} />
                         <Route path="addCoupon" element={<AddCoupon />} />
                         <Route path="editCoupon/:id" element={<AddCoupon />} />

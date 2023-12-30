@@ -17,6 +17,10 @@ const schema = Yup.object().shape({
 });
 
 const AddCategory = () => {
+    const getUserFromSessionStorage = sessionStorage.getItem('user')
+        ? JSON.parse(sessionStorage.getItem('user'))
+        : null;
+    const permissions = getUserFromSessionStorage.permissions;
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
@@ -71,7 +75,7 @@ const AddCategory = () => {
             }
         },
     });
-    return (
+    return permissions.indexOf('add-category') !== -1 ? (
         <div className="content-wrapper bg-white p-5">
             <h3 className="mb-4">{cateId !== undefined ? 'Sửa' : 'Thêm'} danh mục</h3>
             <div>
@@ -112,6 +116,8 @@ const AddCategory = () => {
                 </form>
             </div>
         </div>
+    ) : (
+        <>Không có quyền hạn</>
     );
 };
 

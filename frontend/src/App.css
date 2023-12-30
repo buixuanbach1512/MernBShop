@@ -729,10 +729,10 @@ filter-card .form-check-label {
     color: var(--color-1c1c1b);
 }
 .main-product-details .span-size {
-    background-color: var(--color-ededed);
     padding: 5px;
     width: 30px;
     border-radius: 10px;
+    cursor: pointer;
 }
 .border-bottom {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);

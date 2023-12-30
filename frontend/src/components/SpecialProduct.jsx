@@ -5,7 +5,7 @@ const SpecialProduct = (props) => {
     const { item } = props;
     const navigate = useNavigate();
     const handleClick = (data) => {
-        navigate(`/product/${data.slug}`, { state: data });
+        navigate(`/product/${data.slug}/${data._id}`, { state: data });
     };
     return (
         <div key={item._id} className="col-xl-6 col-md-6 mb-3">

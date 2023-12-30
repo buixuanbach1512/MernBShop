@@ -24,23 +24,19 @@ const Login = () => {
         },
     });
     const authState = useSelector((state) => state.auth);
-    const { user, isLoading, isError, isSuccess, message } = authState;
     useEffect(() => {
-        if (user !== null || isSuccess) {
+        if (authState.user && authState.isSuccess) {
             navigate('admin');
-            navigate(0);
         } else {
-            navigate('');
+            navigate('/');
         }
-    }, [user, isLoading, isError, isSuccess, navigate]);
+    }, [authState, navigate]);
     return (
         <div className="py-5" style={{ background: '#1677ff', minHeight: '100vh' }}>
             <div className="my-5 w-25 bg-white rounded-3 mx-auto p-4">
                 <h3 className="text-center">Đăng Nhập</h3>
                 <p className="text-center">Người dùng đăng nhập để tiếp tục</p>
-                <div className="text-center text-danger error">
-                    {message.message === 'Rejected' ? 'Bạn Không có quyền Admin' : ''}
-                </div>
+                <div className="text-center text-danger error">{authState.isError ? authState.message : ''}</div>
                 <form onSubmit={formik.handleSubmit} action="">
                     <CustomInput
                         type="text"
@@ -68,19 +64,16 @@ const Login = () => {
                             <div className=" text-danger">{formik.errors.password}</div>
                         ) : null}
                     </div>
-
-                    <div className="mb-3 mt-3 text-end">
-                        <Link to="/forgot-password" className="text-dark text-decoration-none">
-                            Quên mật khẩu?
-                        </Link>
-                    </div>
                     <button
-                        className="border-0 px-3 py-2 text-white fw-bold w-100"
+                        className="border-0 px-3 py-2 text-white fw-bold w-100 mt-3"
                         style={{ background: '#1677ff' }}
                         type="submit"
                     >
                         Đăng Nhập
                     </button>
+                    <Link className="w-100 d-flex justify-content-end mt-3" to={'/register'}>
+                        Tạo tài khoản quản trị
+                    </Link>
                 </form>
             </div>
         </div>

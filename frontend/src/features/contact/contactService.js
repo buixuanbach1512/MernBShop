@@ -1,5 +1,5 @@
 import axios from 'axios';
-axios.defaults.baseURL = 'https://backend-liart-zeta.vercel.app/api/';
+axios.defaults.baseURL = 'http://localhost:5000/api/';
 
 const postContact = async (dataPost) => {
     const response = await axios.post(`contact/`, dataPost);

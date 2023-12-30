@@ -50,6 +50,10 @@ const columns = [
 ];
 
 const Products = () => {
+    const getUserFromSessionStorage = sessionStorage.getItem('user')
+        ? JSON.parse(sessionStorage.getItem('user'))
+        : null;
+    const permissions = getUserFromSessionStorage.permissions;
     const [open, setOpen] = useState(false);
     const [prodId, setProdId] = useState(null);
     const [nameProd, setNameProd] = useState('');
@@ -170,7 +174,7 @@ const Products = () => {
         setBrandProd('');
     };
 
-    return (
+    return permissions.indexOf('products') !== -1 ? (
         <div className="content-wrapper bg-white p-4">
             <h3 className="mb-4 border-bottom">Sản phẩm</h3>
             <div className="mb-4 d-flex justify-content-between align-items-center">
@@ -250,6 +254,8 @@ const Products = () => {
                 </Modal>
             </div>
         </div>
+    ) : (
+        <>Không có quyền hạn</>
     );
 };
 

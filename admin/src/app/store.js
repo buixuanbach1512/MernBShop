@@ -9,6 +9,7 @@ import couponReducer from '../features/coupon/couponSlice';
 import uploadReducer from '../features/upload/uploadSlice';
 import orderReducer from '../features/order/orderSlice';
 import sizeReducer from '../features/size/sizeSlice';
+import roleReducer from '../features/role/roleSlice';
 
 export const store = configureStore({
     reducer: {
@@ -22,5 +23,6 @@ export const store = configureStore({
         coupon: couponReducer,
         upload: uploadReducer,
         order: orderReducer,
+        role: roleReducer,
     },
 });

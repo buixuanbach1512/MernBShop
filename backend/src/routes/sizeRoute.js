@@ -1,6 +1,5 @@
 const express = require('express');
 const { authMiddleware, isAdmin } = require('../middlewares/authMiddleware');
-const {} = require('../controllers/colorController');
 const { createSize, getAllSize, getASize, updateSize, deleteSize } = require('../controllers/sizeController');
 const router = express.Router();
 

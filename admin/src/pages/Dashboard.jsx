@@ -47,7 +47,10 @@ const columns = [
 const Dashboard = () => {
     const [dataIncome, setDataIncome] = useState([]);
     const [dataCount, setDataCount] = useState([]);
-
+    const getUserFromSessionStorage = sessionStorage.getItem('user')
+        ? JSON.parse(sessionStorage.getItem('user'))
+        : null;
+    const permissions = getUserFromSessionStorage.permissions;
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -139,7 +142,7 @@ const Dashboard = () => {
             },
         },
     };
-    return (
+    return permissions.indexOf('dashboard') !== -1 ? (
         <>
             <h3 className="mb-4">Dash Board</h3>
             <div className="d-flex justify-content-between align-items-center gap-3 my-3">
@@ -209,6 +212,8 @@ const Dashboard = () => {
                 </div>
             </div>
         </>
+    ) : (
+        <>Không có quyền hạn</>
     );
 };
 

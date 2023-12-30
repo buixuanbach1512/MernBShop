@@ -49,6 +49,10 @@ const columns = [
 ];
 
 const Coupons = () => {
+    const getUserFromSessionStorage = sessionStorage.getItem('user')
+        ? JSON.parse(sessionStorage.getItem('user'))
+        : null;
+    const permissions = getUserFromSessionStorage.permissions;
     const [open, setOpen] = useState(false);
     const [couponId, setCouponId] = useState(null);
     const [couponName, setCouponName] = useState('');
@@ -117,7 +121,7 @@ const Coupons = () => {
         dispatch(getCoupons(couponName));
         setCouponName('');
     };
-    return (
+    return permissions.indexOf('coupons') !== -1 ? (
         <div className="content-wrapper bg-white p-4">
             <h3 className="mb-4 border-bottom">Phiếu mua hàng</h3>
             <div className="mb-4 d-flex justify-content-between align-items-center">
@@ -155,6 +159,8 @@ const Coupons = () => {
                 </Modal>
             </div>
         </div>
+    ) : (
+        <>Không có quyền hạn</>
     );
 };
 

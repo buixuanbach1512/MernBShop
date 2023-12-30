@@ -13,6 +13,14 @@ const initialState = {
     message: '',
 };
 
+export const register = createAsyncThunk('auth/admin-register', async (user, thunkAPI) => {
+    try {
+        return await authService.register(user);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
 export const login = createAsyncThunk('auth/admin-login', async (user, thunkAPI) => {
     try {
         return await authService.login(user);
@@ -45,6 +53,14 @@ export const updateOrder = createAsyncThunk('auth/update-order', async (data, th
     }
 });
 
+export const deleteUser = createAsyncThunk('auth/delete-user', async (id, thunkAPI) => {
+    try {
+        return await authService.deleteUser(id);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
 export const getCountOrderByMonth = createAsyncThunk('order/get-order-by-month', async (thunkAPI) => {
     try {
         return await authService.getCountOrderByMonth();
@@ -69,6 +85,27 @@ export const authSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            .addCase(register.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(register.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.isError = false;
+                state.createdUser = action.payload;
+                if (state.isSuccess === true) {
+                    toast.success('Tạo tài khoản thành công');
+                }
+            })
+            .addCase(register.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = false;
+                state.isError = true;
+                state.message = action.error;
+                if (state.isError === true) {
+                    toast.error('Đã có lỗi xảy ra');
+                }
+            })
             .addCase(login.pending, (state) => {
                 state.isLoading = true;
             })
@@ -77,12 +114,21 @@ export const authSlice = createSlice({
                 state.isSuccess = true;
                 state.user = action.payload;
                 state.isError = false;
+                if (state.isSuccess === true) {
+                    let newUserData = {
+                        _id: action.payload._id,
+                        token: action.payload.token,
+                        permissions: action.payload.permissions,
+                    };
+                    sessionStorage.setItem('user', JSON.stringify(newUserData));
+                    toast.success('Đăng nhập thành công!');
+                }
             })
             .addCase(login.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.isSuccess = false;
-                state.message = action.error;
+                state.message = action.payload.response.data.message;
             })
             .addCase(getAllOrders.pending, (state) => {
                 state.isLoading = true;
@@ -127,6 +173,24 @@ export const authSlice = createSlice({
                 }
             })
             .addCase(updateOrder.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+                if (state.isError === true) {
+                    toast.error('Đã có lỗi xảy ra');
+                }
+            })
+            .addCase(deleteUser.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(deleteUser.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.isError = false;
+                state.deletedUser = action.payload;
+            })
+            .addCase(deleteUser.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.isSuccess = false;
