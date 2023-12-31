@@ -184,21 +184,6 @@ export const authSlice = createSlice({
                     toast.error(action.payload.response.data.message);
                 }
             })
-            .addCase(loginGoogle.pending, (state) => {
-                state.isLoading = true;
-            })
-            .addCase(loginGoogle.fulfilled, (state, action) => {
-                state.isLoading = false;
-                state.isError = false;
-                state.isSuccess = true;
-                state.loginUser = action.payload;
-            })
-            .addCase(loginGoogle.rejected, (state, action) => {
-                state.isLoading = false;
-                state.isError = true;
-                state.isSuccess = false;
-                state.message = action.error;
-            })
             .addCase(login.pending, (state) => {
                 state.isLoading = true;
             })

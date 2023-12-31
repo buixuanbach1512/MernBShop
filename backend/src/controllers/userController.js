@@ -27,6 +27,8 @@ const createUser = asyncHandler(async (req, res) => {
     }
 });
 
+const loginGoogle = asyncHandler(async (req, res) => {});
+
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const findUser = await User.findOne({ email });
@@ -532,4 +534,5 @@ module.exports = {
     updateOrder,
     getCountOrderByMonth,
     getCountOrderByYear,
+    loginGoogle,
 };

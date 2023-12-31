@@ -19,11 +19,9 @@ var userSchema = new mongoose.Schema(
         },
         mobile: {
             type: String,
-            required: true,
         },
         password: {
             type: String,
-            required: true,
         },
         isBlocked: {
             type: Boolean,

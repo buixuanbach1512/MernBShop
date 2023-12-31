@@ -26,6 +26,7 @@ const {
     getCountOrderByYear,
     updateOrder,
     applyCoupon,
+    loginGoogle,
 } = require('../controllers/userController');
 const { authMiddleware, isAdmin } = require('../middlewares/authMiddleware');
 const router = express.Router();
@@ -37,6 +38,7 @@ router.post('/login-admin', loginAdmin);
 router.post('/forgot-password-token', forgotPasswordToken);
 router.put('/reset-password/:token', resetPassword);
 router.put('/change-password', authMiddleware, changePassword);
+router.post('/request', loginGoogle);
 
 // cart
 router.post('/add-to-cart', authMiddleware, addToCart);

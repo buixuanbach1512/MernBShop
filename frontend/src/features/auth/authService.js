@@ -15,13 +15,6 @@ const login = async (userData) => {
     }
 };
 
-const loginGoogle = async () => {
-    const response = await axios.get(`auth/google/callback`);
-    if (response.data) {
-        return response.data;
-    }
-};
-
 const getAUser = async (userId) => {
     const response = await axios.get(`user/get-user/${userId}`);
     if (response.data) {
