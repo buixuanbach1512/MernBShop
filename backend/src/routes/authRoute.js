@@ -27,6 +27,7 @@ const {
     updateOrder,
     applyCoupon,
     loginGoogle,
+    getCoupon,
 } = require('../controllers/userController');
 const { authMiddleware, isAdmin } = require('../middlewares/authMiddleware');
 const router = express.Router();
@@ -61,6 +62,7 @@ router.post('/create-order', authMiddleware, createOrder);
 // user
 router.get('/all-users', getAllUser);
 router.get('/wishlist', authMiddleware, getWishList);
+router.get('/coupon', authMiddleware, getCoupon);
 router.get('/get-user/:id', authMiddleware, getOneUser);
 router.put('/edit-user', authMiddleware, updateUser);
 router.delete('/:id', deleteUser);

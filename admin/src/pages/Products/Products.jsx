@@ -5,9 +5,10 @@ import { BiEdit } from 'react-icons/bi';
 import { FiDelete } from 'react-icons/fi';
 import { MdAdd } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
-import { deleteProduct, getProducts } from '../../features/product/productSlice';
+import { deleteProduct, getProducts, resetState } from '../../features/product/productSlice';
 import { getBrands } from '../../features/brand/brandSlice';
 import { getCategories } from '../../features/category/categorySlice';
+import linearCategories from '../../utils/linearCategories';
 
 const columns = [
     {
@@ -56,6 +57,7 @@ const Products = () => {
     const permissions = getUserFromSessionStorage.permissions;
     const [open, setOpen] = useState(false);
     const [prodId, setProdId] = useState(null);
+    const [categories, setCategories] = useState([]);
     const [nameProd, setNameProd] = useState('');
     const [cateProd, setCateProd] = useState('');
     const [brandProd, setBrandProd] = useState('');
@@ -64,11 +66,16 @@ const Products = () => {
     const productState = useSelector((state) => state.product.products);
     const brandState = useSelector((state) => state.brand.brands);
     const categoryState = useSelector((state) => state.category.categories);
+
     useEffect(() => {
         dispatch(getProducts());
         dispatch(getBrands());
         dispatch(getCategories());
     }, [dispatch]);
+
+    useEffect(() => {
+        setCategories(linearCategories(categoryState));
+    }, [categoryState]);
 
     const showModal = (id) => {
         setOpen(true);
@@ -174,6 +181,11 @@ const Products = () => {
         setBrandProd('');
     };
 
+    const handleNavigate = () => {
+        navigate(`/admin/addWareHouse`);
+        dispatch(resetState());
+    };
+
     return permissions.indexOf('products') !== -1 ? (
         <div className="content-wrapper bg-white p-4">
             <h3 className="mb-4 border-bottom">Sản phẩm</h3>
@@ -201,9 +213,9 @@ const Products = () => {
                             value={cateProd}
                         >
                             <option value="">Chọn danh mục</option>
-                            {categoryState.map((item, index) => {
+                            {categories.map((item, index) => {
                                 return (
-                                    <option key={index} value={item._id}>
+                                    <option key={index} value={item.id}>
                                         {item.name}
                                     </option>
                                 );
@@ -234,9 +246,14 @@ const Products = () => {
                         </button>
                     </div>
                 </div>
-                <Link className="btn btn-success d-flex align-items-center gap-2" to="/admin/addProduct">
-                    <MdAdd /> Thêm mới
-                </Link>
+                <div className=" d-flex gap-10">
+                    <button className="btn btn-warning d-flex align-items-center gap-2" onClick={handleNavigate}>
+                        <MdAdd /> Nhập hàng
+                    </button>
+                    <Link className="btn btn-success d-flex align-items-center gap-2" to="/admin/addProduct">
+                        <MdAdd /> Thêm mới
+                    </Link>
+                </div>
             </div>
             <div>
                 <Table columns={columns} dataSource={data1} />

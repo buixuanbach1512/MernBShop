@@ -8,6 +8,8 @@ const getAllColor = async () => {
     }
 };
 
-export const colorService = {
+const colorService = {
     getAllColor,
 };
+
+export default colorService;

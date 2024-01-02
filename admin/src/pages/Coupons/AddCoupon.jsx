@@ -9,6 +9,7 @@ import moment from 'moment';
 
 const schema = Yup.object().shape({
     name: Yup.string().required('Chưa nhập tên phiếu!'),
+    quantity: Yup.number().required('Chưa nhập số lượng!'),
     expiry: Yup.date().required('Chưa nhập ngày hết hạn!'),
     discount: Yup.string().required('Chưa nhập giảm giá!'),
 });
@@ -46,6 +47,7 @@ const AddCoupon = () => {
         enableReinitialize: true,
         initialValues: {
             name: aCouponState?.name || '',
+            quantity: aCouponState?.quantity || '',
             expiry: moment(aCouponState?.expiry).format('YYYY-MM-DD') || '',
             discount: aCouponState?.discount || '',
         },
@@ -90,6 +92,21 @@ const AddCoupon = () => {
                             Nhập tên phiếu ...
                         </label>
                         <div className="error">{formik.touched.name && formik.errors.name}</div>
+                    </div>
+                    <div className="mt-3 form-floating">
+                        <input
+                            type="number"
+                            id="quantity"
+                            className="form-control"
+                            onChange={formik.handleChange('quantity')}
+                            onBlur={formik.handleBlur('quantity')}
+                            value={formik.values.quantity}
+                            placeholder="Nhập số lượng ..."
+                        />
+                        <label className="label-input" htmlFor="quantity">
+                            Nhập số lượng ...
+                        </label>
+                        <div className="error">{formik.touched.quantity && formik.errors.quantity}</div>
                     </div>
                     <div className="mt-3 form-floating">
                         <input

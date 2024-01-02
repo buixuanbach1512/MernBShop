@@ -35,6 +35,21 @@ const getAProduct = asyncHandler(async (req, res) => {
     }
 });
 
+const getProduct = asyncHandler(async (req, res) => {
+    const nameProd = req.query.name;
+    try {
+        const getOne = await Product.findOne({ name: nameProd })
+            .populate('brand')
+            .populate('category')
+            .populate('color')
+            .populate('ratings.postedBy')
+            .populate('size');
+        res.json(getOne);
+    } catch (e) {
+        throw new Error(e);
+    }
+});
+
 const getAllProduct = asyncHandler(async (req, res) => {
     try {
         // Filter
@@ -73,10 +88,31 @@ const updateProduct = asyncHandler(async (req, res) => {
         if (req.body.name) {
             req.body.slug = slugify(req.body.name);
         }
-        const updatePro = await Product.findByIdAndUpdate({ _id: id }, req.body, {
+        const updatePro = await Product.findByIdAndUpdate(id, req.body, {
             new: true,
         });
         res.json(updatePro);
+    } catch (e) {
+        throw new Error(e);
+    }
+});
+
+const updateQuantity = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { quantity } = req.body;
+    validateMongoDbId(id);
+    try {
+        const product = await Product.findById(id);
+        const quantityProd = product.quantity;
+        const newQuantity = quantityProd + Number(quantity);
+        const update = await Product.findByIdAndUpdate(
+            id,
+            {
+                quantity: newQuantity,
+            },
+            { new: true },
+        );
+        res.json(update);
     } catch (e) {
         throw new Error(e);
     }
@@ -178,9 +214,11 @@ const deleteProduct = asyncHandler(async (req, res) => {
 module.exports = {
     createProduct,
     getAProduct,
+    getProduct,
     getAllProduct,
     updateProduct,
     deleteProduct,
     addToWishlist,
     rating,
+    updateQuantity,
 };

@@ -30,6 +30,8 @@ function getCategoryList(allCate, parentId = null) {
             name: cate.name,
             slug: cate.slug,
             children: getCategoryList(allCate, cate._id),
+            createdAt: cate.createdAt,
+            updatedAt: cate.updatedAt,
         });
     }
     return categoryList;

@@ -87,7 +87,7 @@ main::-webkit-scrollbar {
 .gap-10 {
     gap: 10px;
 }
-.btn-success {
+.btn {
     font-size: 1.4rem;
 }
 

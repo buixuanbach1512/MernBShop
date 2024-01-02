@@ -208,6 +208,11 @@ const Header = () => {
                                                     </Link>
                                                 </li>
                                                 <li>
+                                                    <Link to="/my-coupon" className="dropdown-item text-dark">
+                                                        Phiếu mua hàng của tôi
+                                                    </Link>
+                                                </li>
+                                                <li>
                                                     <Link
                                                         className="dropdown-item text-dark"
                                                         onClick={() => handleLogout()}
@@ -288,6 +293,9 @@ const Header = () => {
                                         <NavLink className="py-3" to="/order">
                                             Đơn hàng
                                         </NavLink>
+                                        <NavLink className="py-3" to="/get-coupon">
+                                            Giảm giá
+                                        </NavLink>
                                     </div>
                                 </div>
                                 <FaBars className="nav-button" onClick={() => setnavMenu(true)} />
@@ -337,6 +345,14 @@ const Header = () => {
                                                             to={`/my-profile/${authState.user._id}`}
                                                         >
                                                             Thông tin cá nhân
+                                                        </NavLink>
+                                                    </li>
+                                                    <li className="nav-item">
+                                                        <NavLink
+                                                            className="nav-link"
+                                                            to={`/my-profile/${authState.user._id}`}
+                                                        >
+                                                            Phiếu mua hàng của tôi
                                                         </NavLink>
                                                     </li>
                                                     <li className="nav-item">

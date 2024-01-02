@@ -19,6 +19,8 @@ const createUser = asyncHandler(async (req, res) => {
         let type = '';
         if (role) {
             type = 'admin';
+        } else {
+            type = 'user';
         }
         const newUser = await User.create({ name, email, password, mobile, address, type, role, isBlocked });
         res.json(newUser);
@@ -228,6 +230,17 @@ const getWishList = asyncHandler(async (req, res) => {
     validateMongoDbId(_id);
     try {
         const findUser = await User.findById(_id).populate('wishlist');
+        res.json(findUser);
+    } catch (e) {
+        throw new Error(e);
+    }
+});
+
+const getCoupon = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    validateMongoDbId(_id);
+    try {
+        const findUser = await User.findById(_id).populate('coupon');
         res.json(findUser);
     } catch (e) {
         throw new Error(e);
@@ -521,6 +534,7 @@ module.exports = {
     forgotPasswordToken,
     resetPassword,
     getWishList,
+    getCoupon,
     addToCart,
     getUserCart,
     removeProdCart,

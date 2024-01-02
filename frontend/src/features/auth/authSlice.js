@@ -43,6 +43,14 @@ export const getUserWishList = createAsyncThunk('auth/get-wishlist', async (thun
     }
 });
 
+export const getUserCoupon = createAsyncThunk('auth/get-coupon', async (thunkAPI) => {
+    try {
+        return await authService.getUserCoupon();
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
 export const getAUser = createAsyncThunk('auth/get-a-user', async (userId, thunkAPI) => {
     try {
         return await authService.getAUser(userId);
@@ -224,6 +232,21 @@ export const authSlice = createSlice({
                 state.wishList = action.payload;
             })
             .addCase(getUserWishList.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            .addCase(getUserCoupon.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getUserCoupon.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.coupons = action.payload;
+            })
+            .addCase(getUserCoupon.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.isSuccess = false;

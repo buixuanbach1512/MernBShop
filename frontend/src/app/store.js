@@ -4,6 +4,7 @@ import productReducer from '../features/product/productSlice';
 import categoryReducer from '../features/category/categorySlice';
 import contactReducer from '../features/contact/contactSlice';
 import colorReducer from '../features/color/colorSlice';
+import couponReducer from '../features/coupon/couponSlice';
 export const store = configureStore({
     reducer: {
         auth: authReducer,
@@ -11,6 +12,7 @@ export const store = configureStore({
         category: categoryReducer,
         contact: contactReducer,
         color: colorReducer,
+        coupon: couponReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

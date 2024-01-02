@@ -23,6 +23,7 @@ import { PrivateRoutes } from './routes/PrivateRoutes';
 import Staff from './pages/Staff/Staff';
 import Roles from './pages/Roles/Roles';
 import AddRole from './pages/Roles/AddRole';
+import AddWareHouse from './pages/Products/AddWareHouse';
 function App() {
     return (
         <>
@@ -60,6 +61,7 @@ function App() {
                         <Route path="editCategory/:id" element={<AddCategory />} />
                         <Route path="products" element={<Products />} />
                         <Route path="addProduct" element={<AddProduct />} />
+                        <Route path="addWareHouse" element={<AddWareHouse />} />
                         <Route path="editProduct" element={<AddProduct />} />
                         <Route path="brands" element={<Brands />} />
                         <Route path="addBrand" element={<AddBrand />} />

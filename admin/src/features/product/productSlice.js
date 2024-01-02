@@ -25,6 +25,14 @@ export const getAProduct = createAsyncThunk('product/get-a-product', async (prod
     }
 });
 
+export const getProduct = createAsyncThunk('product/get-product', async (queryData, thunkAPI) => {
+    try {
+        return await productService.getProduct(queryData);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
 export const createProducts = createAsyncThunk('product/create-products', async (productData, thunkAPI) => {
     try {
         return await productService.createProduct(productData);
@@ -36,6 +44,14 @@ export const createProducts = createAsyncThunk('product/create-products', async 
 export const updateProduct = createAsyncThunk('product/update-product', async (productData, thunkAPI) => {
     try {
         return await productService.updateProduct(productData);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
+export const updateQuantity = createAsyncThunk('product/update-quantity-product', async (productData, thunkAPI) => {
+    try {
+        return await productService.updateQuantity(productData);
     } catch (e) {
         return thunkAPI.rejectWithValue(e);
     }
@@ -103,6 +119,21 @@ export const productSlice = createSlice({
                 state.isSuccess = false;
                 state.message = action.error;
             })
+            .addCase(getProduct.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getProduct.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.getProduct = action.payload;
+            })
+            .addCase(getProduct.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
             .addCase(updateProduct.pending, (state) => {
                 state.isLoading = true;
             })
@@ -113,6 +144,21 @@ export const productSlice = createSlice({
                 state.updatedProd = action.payload;
             })
             .addCase(updateProduct.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            .addCase(updateQuantity.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(updateQuantity.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.updatedQuan = action.payload;
+            })
+            .addCase(updateQuantity.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.isSuccess = false;

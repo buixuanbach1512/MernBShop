@@ -61,6 +61,15 @@ const getUserWishList = async () => {
     }
 };
 
+const getUserCoupon = async () => {
+    let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.get(`user/coupon`);
+    if (response.data) {
+        return response.data;
+    }
+};
+
 const addToCart = async (cartData) => {
     let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
@@ -143,6 +152,7 @@ export const authService = {
     register,
     login,
     getUserWishList,
+    getUserCoupon,
     getAUser,
     updateUser,
     forgotPassToken,
@@ -157,5 +167,4 @@ export const authService = {
     applyCoupon,
     userOrder,
     logout,
-    loginGoogle,
 };

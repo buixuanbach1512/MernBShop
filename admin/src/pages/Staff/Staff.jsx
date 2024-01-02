@@ -15,7 +15,6 @@ const columns = [
     {
         title: 'Tên nhân viên',
         dataIndex: 'name',
-        defaultSortOrder: 'descend',
         sorter: (a, b) => a.name.length - b.name.length,
     },
     {
@@ -68,48 +67,50 @@ const Staff = () => {
 
     const data1 = [];
     for (let i = 0; i < getCustomersState.length; i++) {
-        data1.push({
-            key: i + 1,
-            name: getCustomersState[i].name,
-            email: getCustomersState[i].email,
-            mobile: getCustomersState[i].mobile,
-            address: getCustomersState[i].address,
-            role: getCustomersState[i].role.name,
-            status: (
-                <>
-                    {getCustomersState[i].isBlocked ? (
-                        <p
-                            className="bg-danger mb-0 text-center rounded-3 text-white py-2"
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleUnBlock(getCustomersState[i]._id)}
+        if (getCustomersState[i].type == 'admin') {
+            data1.push({
+                key: i + 1,
+                name: getCustomersState[i].name,
+                email: getCustomersState[i].email,
+                mobile: getCustomersState[i].mobile,
+                address: getCustomersState[i].address,
+                role: getCustomersState[i].role.name,
+                status: (
+                    <>
+                        {getCustomersState[i].isBlocked ? (
+                            <p
+                                className="bg-danger mb-0 text-center rounded-3 text-white py-2"
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => handleUnBlock(getCustomersState[i]._id)}
+                            >
+                                Chưa kích hoạt
+                            </p>
+                        ) : (
+                            <p
+                                className="bg-success mb-0 text-center rounded-3 text-white py-2"
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => handleBlock(getCustomersState[i]._id)}
+                            >
+                                Đã kích hoạt
+                            </p>
+                        )}
+                    </>
+                ),
+                action: (
+                    <div className="d-flex gap-10 align-items-center">
+                        <Link className="text-warning mb-0" to={`/admin/editSize/${getCustomersState[i]._id}`}>
+                            <BiEdit className="icon-action" />
+                        </Link>
+                        <button
+                            className=" fs-5 text-danger bg-transparent border-0"
+                            onClick={() => showModal(getCustomersState[i]._id)}
                         >
-                            Chưa kích hoạt
-                        </p>
-                    ) : (
-                        <p
-                            className="bg-success mb-0 text-center rounded-3 text-white py-2"
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleBlock(getCustomersState[i]._id)}
-                        >
-                            Đã kích hoạt
-                        </p>
-                    )}
-                </>
-            ),
-            action: (
-                <div className="d-flex gap-10 align-items-center">
-                    <Link className="text-warning mb-0" to={`/admin/editSize/${getCustomersState[i]._id}`}>
-                        <BiEdit className="icon-action" />
-                    </Link>
-                    <button
-                        className=" fs-5 text-danger bg-transparent border-0"
-                        onClick={() => showModal(getCustomersState[i]._id)}
-                    >
-                        <FiDelete className="icon-action" />
-                    </button>
-                </div>
-            ),
-        });
+                            <FiDelete className="icon-action" />
+                        </button>
+                    </div>
+                ),
+            });
+        }
     }
     useEffect(() => {
         if (customerState.isSuccess && customerState.blocked) {

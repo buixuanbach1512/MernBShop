@@ -103,6 +103,10 @@ const AddRole = () => {
             label: 'Thêm phiếu mua hàng',
         },
         {
+            value: 'add-warehouse',
+            label: 'Nhập hàng',
+        },
+        {
             value: 'orders',
             label: 'QL đơn hàng',
         },

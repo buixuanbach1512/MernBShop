@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
-import { colorService } from './colorService';
+import colorService from './colorService';
 
 const initialState = {
     colors: [],

@@ -31,16 +31,16 @@ const columns = [
         dataIndex: 'discount',
     },
     {
+        title: 'Số lượng',
+        dataIndex: 'quantity',
+    },
+    {
         title: 'Trạng thái',
         dataIndex: 'status',
     },
     {
         title: 'Ngày tạo',
         dataIndex: 'createdAt',
-    },
-    {
-        title: 'Ngày cập nhật',
-        dataIndex: 'updatedAt',
     },
     {
         title: 'Action',
@@ -79,6 +79,7 @@ const Coupons = () => {
             name: allCouponState[i].name,
             code: allCouponState[i].code,
             discount: allCouponState[i].discount,
+            quantity: allCouponState[i].quantity,
             expiry: moment(allCouponState[i].expiry).format('DD/MM/YYYY'),
             status:
                 Date.parse(allCouponState[i].expiry) > date.getTime() ? (
@@ -87,7 +88,6 @@ const Coupons = () => {
                     <p className="bg-danger mb-0 text-center rounded-3 text-white">Hết hạn</p>
                 ),
             createdAt: moment(allCouponState[i].createdAt).format('DD/MM/YYYY'),
-            updatedAt: moment(allCouponState[i].updatedAt).format('DD/MM/YYYY'),
             action: (
                 <div className="d-flex gap-10 align-items-center">
                     <Link className="text-warning mb-0" to={`/admin/editCoupon/${allCouponState[i]._id}`}>

@@ -19,6 +19,8 @@ import Profile from './pages/Profile';
 import ResetPassword from './pages/ResetPassword';
 import ChangePassword from './pages/ChangePassword';
 import Blogs from './pages/Blogs';
+import Coupon from './pages/Coupon';
+import MyCoupon from './pages/MyCoupon';
 
 function App() {
     return (
@@ -49,6 +51,22 @@ function App() {
                                 element={
                                     <PrivateRoutes>
                                         <WishList />
+                                    </PrivateRoutes>
+                                }
+                            />
+                            <Route
+                                path="get-coupon"
+                                element={
+                                    <PrivateRoutes>
+                                        <Coupon />
+                                    </PrivateRoutes>
+                                }
+                            />
+                            <Route
+                                path="my-coupon"
+                                element={
+                                    <PrivateRoutes>
+                                        <MyCoupon />
                                     </PrivateRoutes>
                                 }
                             />

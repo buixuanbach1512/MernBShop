@@ -44,6 +44,7 @@ var userSchema = new mongoose.Schema(
             default: '',
         },
         wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+        coupon: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Coupon' }],
         passwordChangedAt: Date,
         passwordResetToken: String,
         passwordResetExpires: Date,

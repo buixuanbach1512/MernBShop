@@ -13,6 +13,9 @@ var couponSchema = new mongoose.Schema(
             minlength: 6,
             maxlength: 10,
         },
+        quantity: {
+            type: Number,
+        },
         expiry: {
             type: Date,
             required: true,
