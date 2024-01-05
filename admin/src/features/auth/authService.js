@@ -32,6 +32,13 @@ const updateOrder = async (data) => {
     return response.data;
 };
 
+const deleteOrder = async (id) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.delete(`user/order/${id}`);
+    return response.data;
+};
+
 const deleteUser = async (id) => {
     let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
@@ -59,6 +66,7 @@ const authService = {
     getAllOrders,
     getOrderById,
     updateOrder,
+    deleteOrder,
     deleteUser,
     getCountOrderByMonth,
     getCountOrderByYear,

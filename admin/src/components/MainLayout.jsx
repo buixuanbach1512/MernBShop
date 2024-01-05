@@ -17,6 +17,7 @@ import { RiCoupon3Fill } from 'react-icons/ri';
 import { FaUsersCog } from 'react-icons/fa';
 import { CgSize } from 'react-icons/cg';
 import { TfiControlEject } from 'react-icons/tfi';
+import { MdContactPhone } from 'react-icons/md';
 
 // antd
 import { Layout, Menu, Button, theme } from 'antd';
@@ -52,7 +53,15 @@ const MainLayout = () => {
     };
     return (
         <Layout>
-            <Sider trigger={null} collapsible collapsed={collapsed}>
+            <Sider
+                trigger={null}
+                collapsible
+                collapsed={collapsed}
+                style={{
+                    overflow: 'auto',
+                    height: '100vh',
+                }}
+            >
                 <div className="logo d-flex align-items-center justify-content-center py-5">
                     <h2 className="text-white fs-5 py-3">
                         <span className="sm-logo">BS</span>
@@ -86,31 +95,40 @@ const MainLayout = () => {
                             icon: <FaUsersCog className="fs-3" />,
                             label: 'Nhân Viên',
                         },
+
                         {
-                            key: 'categories',
-                            icon: <BiCategory className="fs-3" />,
-                            label: 'Danh Mục',
-                        },
-                        {
-                            key: 'products',
+                            key: 'catalog',
                             icon: <AiOutlineShoppingCart className="fs-3" />,
-                            label: 'Sản Phẩm',
+                            label: 'Quản lý bán hàng',
+                            children: [
+                                {
+                                    key: 'products',
+                                    icon: <AiOutlineShoppingCart className="fs-3" />,
+                                    label: 'Sản Phẩm',
+                                },
+                                {
+                                    key: 'brands',
+                                    icon: <SiBrandfolder className="fs-3" />,
+                                    label: 'Thương Hiệu',
+                                },
+                                {
+                                    key: 'colors',
+                                    icon: <BiSolidColorFill className="fs-3" />,
+                                    label: 'Màu Sắc',
+                                },
+                                {
+                                    key: 'sizes',
+                                    icon: <CgSize className="fs-3" />,
+                                    label: 'Size',
+                                },
+                                {
+                                    key: 'categories',
+                                    icon: <BiCategory className="fs-3" />,
+                                    label: 'Danh Mục',
+                                },
+                            ],
                         },
-                        {
-                            key: 'brands',
-                            icon: <SiBrandfolder className="fs-3" />,
-                            label: 'Thương Hiệu',
-                        },
-                        {
-                            key: 'colors',
-                            icon: <BiSolidColorFill className="fs-3" />,
-                            label: 'Màu Sắc',
-                        },
-                        {
-                            key: 'sizes',
-                            icon: <CgSize className="fs-3" />,
-                            label: 'Size',
-                        },
+
                         {
                             key: 'roles',
                             icon: <TfiControlEject className="fs-3" />,
@@ -122,9 +140,26 @@ const MainLayout = () => {
                             label: 'Phiếu mua hàng',
                         },
                         {
-                            key: 'orders',
+                            key: 'rating',
+                            icon: <FaClipboardList className="fs-3" />,
+                            label: 'Đánh giá',
+                        },
+                        {
+                            key: 'order',
                             icon: <FaClipboardList className="fs-3" />,
                             label: 'Đơn Hàng',
+                            children: [
+                                {
+                                    key: 'orders',
+                                    icon: <FaClipboardList className="fs-3" />,
+                                    label: 'Đơn hàng',
+                                },
+                            ],
+                        },
+                        {
+                            key: 'contact',
+                            icon: <MdContactPhone className="fs-3" />,
+                            label: 'Liên hệ',
                         },
                     ]}
                 />

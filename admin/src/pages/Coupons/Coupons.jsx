@@ -104,7 +104,7 @@ const Coupons = () => {
         });
     }
 
-    const handleDelBrand = (id) => {
+    const handleDelCoupon = (id) => {
         dispatch(deleteCoupon(id));
         setOpen(false);
         setCouponId(null);
@@ -150,7 +150,7 @@ const Coupons = () => {
                 <Modal
                     title="Xóa phiếu mua hàng"
                     open={open}
-                    onOk={() => handleDelBrand(couponId)}
+                    onOk={() => handleDelCoupon(couponId)}
                     onCancel={hideModal}
                     okText="Đồng ý"
                     cancelText="Hủy"

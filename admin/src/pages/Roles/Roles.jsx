@@ -105,7 +105,7 @@ const Roles = () => {
         navigate('/admin/editRole', { state: dataRole });
     };
 
-    const handleDelSize = (id) => {
+    const handleDelRole = (id) => {
         dispatch(deleteRole(id));
         setOpen(false);
         setRoleId(null);
@@ -151,7 +151,7 @@ const Roles = () => {
                 <Modal
                     title="Xóa chức vụ"
                     open={open}
-                    onOk={() => handleDelSize(roleId)}
+                    onOk={() => handleDelRole(roleId)}
                     onCancel={hideModal}
                     okText="Đồng ý"
                     cancelText="Hủy"

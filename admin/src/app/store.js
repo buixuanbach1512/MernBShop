@@ -10,6 +10,8 @@ import uploadReducer from '../features/upload/uploadSlice';
 import orderReducer from '../features/order/orderSlice';
 import sizeReducer from '../features/size/sizeSlice';
 import roleReducer from '../features/role/roleSlice';
+import contactReducer from '../features/contact/contactSlice';
+import provinceReducer from '../features/province/provinceSlice';
 
 export const store = configureStore({
     reducer: {
@@ -24,5 +26,7 @@ export const store = configureStore({
         upload: uploadReducer,
         order: orderReducer,
         role: roleReducer,
+        contact: contactReducer,
+        province: provinceReducer,
     },
 });

@@ -3,19 +3,33 @@ import BreadScumb from '../components/BreadCrumb';
 import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../features/auth/authSlice';
+import { useEffect, useState } from 'react';
+import { getDistrict, getProvince } from '../features/province/provinceSlice';
 
 const schema = Yup.object().shape({
     name: Yup.string().required('Chưa nhập họ tên'),
     email: Yup.string().email('Không phải là email').required('Chưa nhập email'),
     password: Yup.string().required('Chưa nhập mật khẩu'),
     mobile: Yup.number().required('Chưa nhập số điện thoại'),
-    address: Yup.string().required('Chưa nhập địa chỉ'),
 });
 
 const SignUp = () => {
     const dispatch = useDispatch();
+    const [province, setProvince] = useState(null);
+    const [district, setDistrict] = useState(null);
+    const [home, setHome] = useState(null);
+    const provinceState = useSelector((state) => state.province.provinces);
+    const districtState = useSelector((state) => state.province.districts);
+    useEffect(() => {
+        dispatch(getProvince());
+    }, [dispatch]);
+    useEffect(() => {
+        if (province !== null) {
+            dispatch(getDistrict(province));
+        }
+    }, [dispatch, province]);
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -30,6 +44,15 @@ const SignUp = () => {
             formik.resetForm();
         },
     });
+
+    useEffect(() => {
+        if (province && district && home) {
+            formik.values.address = `${home}, ${district}, ${
+                province ? provinceState?.results?.find((item) => item.province_id === province)?.province_name : ''
+            }`;
+        }
+    }, [formik, province, district, home, provinceState]);
+
     return (
         <>
             <Meta title={'Đăng ký'} />
@@ -93,17 +116,41 @@ const SignUp = () => {
                                     </div>
                                 </div>
                                 <div className="mt-1">
+                                    <select
+                                        className=" form-control form-select"
+                                        onChange={(e) => setProvince(e.target.value)}
+                                        value={province}
+                                    >
+                                        <option value="">Tỉnh / Thành phố</option>
+                                        {provinceState?.results?.map((item, index) => (
+                                            <option key={index} value={item.province_id}>
+                                                {item.province_name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="mt-1">
+                                    <select
+                                        className=" form-control form-select"
+                                        onChange={(e) => setDistrict(e.target.value)}
+                                        value={district}
+                                    >
+                                        <option value="">Quận / Huyện</option>
+                                        {districtState?.results?.map((item, index) => (
+                                            <option key={index} value={item.district_name}>
+                                                {item.district_name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="mt-1">
                                     <input
                                         type="text"
-                                        onChange={formik.handleChange('address')}
-                                        onBlur={formik.handleBlur('address')}
-                                        value={formik.values.address}
-                                        placeholder="Địa chỉ"
+                                        onChange={(e) => setHome(e.target.value)}
+                                        value={home}
+                                        placeholder="Số nhà"
                                         className="form-control"
                                     />
-                                    <div className="input-err text-danger">
-                                        {formik.touched.address && formik.errors.address}
-                                    </div>
                                 </div>
                                 <div>
                                     <div className=" mt-3 d-flex justify-content-center align-items-center gap-15">

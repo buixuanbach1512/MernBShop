@@ -1,12 +1,9 @@
-const { json } = require('body-parser');
 const Product = require('../models/productModel');
 const User = require('../models/userModel');
 const asyncHandler = require('express-async-handler');
 const slugify = require('slugify');
 const validateMongoDbId = require('../utils/validateMongoDbId');
-const cloudinaryUploadImg = require('../utils/cloundinary');
-const fs = require('fs');
-const cloudinary = require('cloudinary');
+const { ObjectId } = require('mongodb');
 
 const createProduct = asyncHandler(async (req, res) => {
     try {
@@ -58,7 +55,11 @@ const getAllProduct = asyncHandler(async (req, res) => {
         excludeFields.forEach((el) => delete queryObj[el]);
         let queryStr = JSON.stringify(queryObj);
         queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-        let query = Product.find(JSON.parse(queryStr)).populate('brand').populate('category').populate('color');
+        let query = Product.find(JSON.parse(queryStr))
+            .populate('brand')
+            .populate('category')
+            .populate('color')
+            .populate('ratings.postedBy');
 
         if (req.query.sort) {
             const sortBy = req.query.sort.split(',').join(' ');
@@ -190,7 +191,45 @@ const rating = asyncHandler(async (req, res) => {
             },
             { new: true },
         );
-        res.json(allProduct);
+        res.json({ message: 'Đánh giá thành công' });
+    } catch (e) {
+        throw new Error(e);
+    }
+});
+
+const deleteRating = asyncHandler(async (req, res) => {
+    const { id, prodId } = req.params;
+    try {
+        const product = await Product.findById(prodId);
+        let alreadyRated = product.ratings.find((userId) => userId.postedBy.toString() === id.toString());
+        if (alreadyRated) {
+            const updateRating = await Product.findByIdAndUpdate(
+                prodId,
+                {
+                    $pull: { ratings: { postedBy: id } },
+                },
+                {
+                    new: true,
+                },
+            );
+        } else {
+            throw new Error('Không tìm thấy đánh giá');
+        }
+        const getAllRatings = await Product.findById(prodId);
+        let totalRating = getAllRatings.ratings.length || 1;
+        let ratingsum = getAllRatings.ratings.map((item) => item.star).reduce((prev, curr) => prev + curr, 0) || 0;
+        console.log(totalRating);
+        let actualRating = Math.round(ratingsum / totalRating);
+        let allProduct = await Product.findByIdAndUpdate(
+            prodId,
+            {
+                totalRating: actualRating,
+            },
+            { new: true },
+        );
+        res.json({
+            message: 'Delete Rate Successfully',
+        });
     } catch (e) {
         throw new Error(e);
     }
@@ -200,12 +239,51 @@ const deleteProduct = asyncHandler(async (req, res) => {
     const { id } = req.params;
     validateMongoDbId(id);
     try {
-        const aProd = await Product.findById(id);
-        const imgId = aProd.images[0].public_id;
         const deletePro = await Product.findByIdAndDelete({ _id: id });
         res.json({
             message: 'Delete Product Successfully',
         });
+    } catch (e) {
+        throw new Error(e);
+    }
+});
+
+const getProductAllCate = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const queryObj = { ...req.query };
+    try {
+        const allProduct = await Product.find().populate('category');
+        let product = [];
+        for (let i = 0; i < allProduct.length; i++) {
+            if (id == allProduct[i].category._id) {
+                product.push(allProduct[i]);
+            } else if (allProduct[i].category.parentId && id == allProduct[i].category.parentId) {
+                product.push(allProduct[i]);
+            }
+        }
+        if (queryObj.sort == 'name') {
+            product.sort((a, b) => a.name.localeCompare(b.name));
+        } else if (queryObj.sort == '-name') {
+            product.sort((a, b) => -1 * a.name.localeCompare(b.name));
+        } else if (queryObj.sort == 'price') {
+            product.sort((a, b) => a.price - b.price);
+        } else if (queryObj.sort == '-price') {
+            product.sort((a, b) => b.price - a.price);
+        }
+
+        if (queryObj.stock == 'outStock') {
+            product = product.filter((item) => item.quantity <= 0);
+        } else if (queryObj.stock == 'inStock') {
+            product = product.filter((item) => item.quantity > 0);
+        }
+
+        if (queryObj.price) {
+            const minPrice = queryObj.price.split('-')[0];
+            const maxPrice = queryObj.price.split('-')[1];
+            product = product.filter((item) => item.price <= maxPrice && item.price >= minPrice);
+        }
+
+        res.json(product);
     } catch (e) {
         throw new Error(e);
     }
@@ -221,4 +299,6 @@ module.exports = {
     addToWishlist,
     rating,
     updateQuantity,
+    getProductAllCate,
+    deleteRating,
 };

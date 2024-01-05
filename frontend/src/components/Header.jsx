@@ -203,8 +203,8 @@ const Header = () => {
                                                     </Link>
                                                 </li>
                                                 <li>
-                                                    <Link to="/change-password" className="dropdown-item text-dark">
-                                                        Đổi mật khẩu
+                                                    <Link to="/order" className="dropdown-item text-dark">
+                                                        Đơn hàng của tôi
                                                     </Link>
                                                 </li>
                                                 <li>
@@ -212,6 +212,12 @@ const Header = () => {
                                                         Phiếu mua hàng của tôi
                                                     </Link>
                                                 </li>
+                                                <li>
+                                                    <Link to="/change-password" className="dropdown-item text-dark">
+                                                        Đổi mật khẩu
+                                                    </Link>
+                                                </li>
+
                                                 <li>
                                                     <Link
                                                         className="dropdown-item text-dark"
@@ -268,7 +274,10 @@ const Header = () => {
                                         </NavLink>
                                         {categoryState?.map((item, index) => (
                                             <div key={index} className="dropdown">
-                                                <button className="dropbtn d-block border-0 bg-transparent py-3">
+                                                <button
+                                                    onClick={() => handleSubmit(item)}
+                                                    className="dropbtn d-block border-0 bg-transparent py-3"
+                                                >
                                                     {item.name}
                                                 </button>
                                                 <div className="dropdown-content">
@@ -289,9 +298,6 @@ const Header = () => {
                                         </NavLink>
                                         <NavLink className="py-3" to="/contact">
                                             Liên Hệ
-                                        </NavLink>
-                                        <NavLink className="py-3" to="/order">
-                                            Đơn hàng
                                         </NavLink>
                                         <NavLink className="py-3" to="/get-coupon">
                                             Giảm giá

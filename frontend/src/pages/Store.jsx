@@ -3,19 +3,17 @@ import BreadCrumb from '../components/BreadCrumb';
 import Meta from '../components/Meta';
 import ProductCard from '../components/ProductCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllProduct } from '../features/product/productSlice';
 import Color from '../components/ColorList';
 import { getAllColor } from '../features/color/colorSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Pagination from '../components/Pagination';
+import { getProductByCate } from '../features/product/productSlice';
 
 const Store = () => {
     const [grid, setGrid] = useState(3);
-    const [sort, setSort] = useState(null);
-    const [minPrice, setMinPrice] = useState(null);
-    const [maxPrice, setMaxPrice] = useState(null);
-    const [inStock, setInStock] = useState(null);
-    const [outStock, setOutStock] = useState(null);
+    const [sort, setSort] = useState('');
+    const [stock, setStock] = useState('');
+    const [price, setPrice] = useState('');
     const location = useLocation();
     const navigate = useNavigate();
     const catId = location.state?._id;
@@ -24,40 +22,25 @@ const Store = () => {
     const [itemsPerPage, setItemsPerPage] = useState(8);
 
     const dispatch = useDispatch();
-    const productState = useSelector((state) => state.product.products);
-
+    const productState = useSelector((state) => state.product.productCate);
+    const categoryState = useSelector((state) => state.category.categories);
     const colorState = useSelector((state) => state.color.colors);
     useEffect(() => {
-        const data = {
-            catId,
-            sort,
-            minPrice,
-            maxPrice,
-            inStock,
-            outStock,
-        };
-        dispatch(getAllProduct(data));
+        dispatch(getProductByCate({ catId, sort, stock, price }));
         dispatch(getAllColor());
-    }, [catId, dispatch, inStock, maxPrice, minPrice, outStock, sort]);
+    }, [catId, dispatch, sort, stock, price]);
+
+    const handleStock = (data) => {
+        setStock(data);
+    };
+
+    const handleNav = (data) => {
+        navigate(`/store/${data.slug}`, { state: data });
+    };
 
     const lastItemIndex = currentPage * itemsPerPage;
     const firstItemIndex = lastItemIndex - itemsPerPage;
     const currentItems = productState && productState.slice(firstItemIndex, lastItemIndex);
-
-    const handleAll = () => {
-        setInStock(null);
-        setOutStock(null);
-    };
-
-    const handleInStock = (value) => {
-        setInStock(value);
-        setOutStock(null);
-    };
-
-    const handleOutStock = (value) => {
-        setOutStock(value);
-        setInStock(null);
-    };
 
     return (
         <>
@@ -67,27 +50,23 @@ const Store = () => {
                 <div className="container-xxl">
                     <div className="row">
                         <div className="col-xl-3 col-md-3 col-12">
-                            {location.state?._id && location.state?.children.length > 0 ? (
-                                <div className="filter-card mb-3">
-                                    <div>
-                                        <h3 className="filter-title">Mua Hàng Theo Danh Mục</h3>
-                                        <ul className="ps-0">
-                                            {location.state.children.map((item, index) => (
-                                                <li key={index}>
-                                                    <button
-                                                        onClick={() => navigate(`/store/${item.slug}`, { state: item })}
-                                                        className="bg-transparent border-0"
-                                                    >
-                                                        {item?.name}
-                                                    </button>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
+                            <div className="filter-card mb-3">
+                                <div>
+                                    <h3 className="filter-title">Mua Hàng Theo Danh Mục</h3>
+                                    <ul className="ps-0">
+                                        {categoryState.map((item, index) => (
+                                            <li key={index}>
+                                                <button
+                                                    onClick={() => handleNav(item)}
+                                                    className="bg-transparent border-0"
+                                                >
+                                                    {item?.name}
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
-                            ) : (
-                                <></>
-                            )}
+                            </div>
                             <div className="filter-card mb-3">
                                 <h3 className="filter-title">Lọc Sản Phẩm Theo</h3>
                                 <div>
@@ -96,23 +75,24 @@ const Store = () => {
                                         <div className="form-check">
                                             <input
                                                 type="radio"
+                                                value=""
                                                 name="stocks"
-                                                id="all-stocks"
+                                                id="in-stocks"
                                                 className="form-check-input"
-                                                onChange={() => handleAll()}
+                                                onChange={(e) => handleStock(e.target.value)}
                                             />
-                                            <label htmlFor="all-stocks" className="form-check-label">
+                                            <label htmlFor="in-stocks" className="form-check-label">
                                                 Tất cả
                                             </label>
                                         </div>
                                         <div className="form-check">
                                             <input
                                                 type="radio"
-                                                value="0"
+                                                value="inStock"
                                                 name="stocks"
                                                 id="in-stocks"
                                                 className="form-check-input"
-                                                onChange={(e) => handleInStock(e.target.value)}
+                                                onChange={(e) => handleStock(e.target.value)}
                                             />
                                             <label htmlFor="in-stocks" className="form-check-label">
                                                 Còn hàng(1)
@@ -121,11 +101,11 @@ const Store = () => {
                                         <div className="form-check">
                                             <input
                                                 type="radio"
-                                                value="0"
+                                                value="outStock"
                                                 name="stocks"
                                                 id="out-stocks"
                                                 className="form-check-input"
-                                                onChange={(e) => handleOutStock(e.target.value)}
+                                                onChange={(e) => handleStock(e.target.value)}
                                             />
                                             <label htmlFor="out-stocks" className="form-check-label">
                                                 Hết hàng(0)
@@ -134,23 +114,26 @@ const Store = () => {
                                     </div>
                                     <h5 className="sub-title">Giá Sản Phẩm</h5>
                                     <div className="d-flex align-items-center gap-10">
-                                        <div>
-                                            <label htmlFor="floatingInputFrom">Từ ...</label>
-                                            <input
-                                                type="number"
-                                                className="form-control py-3"
-                                                id="floatingInputFrom"
-                                                onChange={(e) => setMinPrice(e.target.value)}
-                                            />
-                                        </div>
-                                        <div>
-                                            <label htmlFor="floatingInputTo">Đến ...</label>
-                                            <input
-                                                type="number"
-                                                className="form-control py-3"
-                                                id="floatingInputTo"
-                                                onChange={(e) => setMaxPrice(e.target.value)}
-                                            />
+                                        <div className="w-75">
+                                            {/* <label htmlFor="floatingInputFrom">Từ ...</label> */}
+                                            <select
+                                                className="form-control text-center"
+                                                onChange={(e) => setPrice(e.target.value)}
+                                            >
+                                                <option value="">--- Chọn giá tiền ---</option>
+                                                <option value="50000-100000">
+                                                    50.000<sup>đ</sup> - 100.000<sup>đ</sup>
+                                                </option>
+                                                <option value="100000-200000">
+                                                    100.000<sup>đ</sup> - 200.000<sup>đ</sup>
+                                                </option>
+                                                <option value="200000-500000">
+                                                    200.000<sup>đ</sup> - 500.000<sup>đ</sup>
+                                                </option>
+                                                <option value="500000-1000000">
+                                                    500.000<sup>đ</sup> - 1.000.000<sup>đ</sup>
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
                                     <h5 className="sub-title">Màu Sắc</h5>

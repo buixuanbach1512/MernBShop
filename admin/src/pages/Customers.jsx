@@ -25,6 +25,7 @@ const columns = [
     {
         title: 'Địa chỉ',
         dataIndex: 'address',
+        width: '25%',
     },
     {
         title: 'Hành động',
@@ -45,38 +46,37 @@ const Customer = () => {
     }, [dispatch]);
     const customerState = useSelector((state) => state.customer);
     const getCustomersState = useSelector((state) => state.customer.customers);
+    const customer = getCustomersState.filter((item) => item.type == 'user');
     const data1 = [];
-    for (let i = 0; i < getCustomersState.length; i++) {
-        if (getCustomersState[i].type == 'user') {
-            data1.push({
-                key: i + 1,
-                name: getCustomersState[i].name,
-                email: getCustomersState[i].email,
-                mobile: getCustomersState[i].mobile,
-                address: getCustomersState[i].address,
-                action: (
-                    <>
-                        {blocked ? (
-                            <button
-                                type="button"
-                                className="bg-transparent border-0"
-                                onClick={() => handleUnBlock(getCustomersState[i]._id)}
-                            >
-                                Hủy khóa
-                            </button>
-                        ) : (
-                            <button
-                                type="button"
-                                className="bg-transparent border-0"
-                                onClick={() => handleBlock(getCustomersState[i]._id)}
-                            >
-                                Khóa tài khoản
-                            </button>
-                        )}
-                    </>
-                ),
-            });
-        }
+    for (let i = 0; i < customer.length; i++) {
+        data1.push({
+            key: i + 1,
+            name: customer[i].name,
+            email: customer[i].email,
+            mobile: customer[i].mobile,
+            address: customer[i].address,
+            action: (
+                <>
+                    {blocked ? (
+                        <button
+                            type="button"
+                            className="bg-transparent border-0"
+                            onClick={() => handleUnBlock(customer[i]._id)}
+                        >
+                            Hủy khóa
+                        </button>
+                    ) : (
+                        <button
+                            type="button"
+                            className="bg-transparent border-0"
+                            onClick={() => handleBlock(customer[i]._id)}
+                        >
+                            Khóa tài khoản
+                        </button>
+                    )}
+                </>
+            ),
+        });
     }
     useEffect(() => {
         if (customerState.isSuccess && customerState.blocked) {

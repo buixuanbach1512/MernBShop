@@ -27,7 +27,7 @@ const deleteContact = asyncHandler(async (req, res) => {
     validateMongoDbId(id);
     try {
         const deletedContact = await Contact.findByIdAndDelete(id);
-        res.json(deletedContact);
+        res.json({ message: 'Xóa liên hệ thành công' });
     } catch (error) {
         throw new Error(error);
     }

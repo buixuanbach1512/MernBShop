@@ -65,6 +65,10 @@ var productSchema = new mongoose.Schema(
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'User',
                 },
+                date: {
+                    type: Date,
+                    default: new Date(),
+                },
             },
         ],
         totalRating: {

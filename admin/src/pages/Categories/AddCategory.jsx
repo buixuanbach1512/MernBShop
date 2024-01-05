@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
@@ -11,6 +11,7 @@ import {
     resetState,
     updateCategory,
 } from '../../features/category/categorySlice';
+import linearCategories from '../../utils/linearCategories';
 
 const schema = Yup.object().shape({
     name: Yup.string().required('Chưa nhập tên danh mục!'),
@@ -21,6 +22,7 @@ const AddCategory = () => {
         ? JSON.parse(sessionStorage.getItem('user'))
         : null;
     const permissions = getUserFromSessionStorage.permissions;
+    const [categories, setCategories] = useState([]);
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
@@ -47,6 +49,9 @@ const AddCategory = () => {
             dispatch(resetState());
         }
     }, [dispatch, cateId]);
+    useEffect(() => {
+        setCategories(linearCategories(allCategoryState));
+    }, [allCategoryState]);
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -100,7 +105,7 @@ const AddCategory = () => {
                             value={formik.values.parentId}
                         >
                             <option value="">Chọn danh mục</option>
-                            {allCategoryState.map((item, index) => {
+                            {categories.map((item, index) => {
                                 return (
                                     <option key={index} value={item._id}>
                                         {item.name}

@@ -65,6 +65,22 @@ export const deleteProduct = createAsyncThunk('product/delete-product', async (p
     }
 });
 
+export const updateRating = createAsyncThunk('product/update-rating', async (data, thunkAPI) => {
+    try {
+        return await productService.updateRating(data);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
+export const deleteRating = createAsyncThunk('product/delete-rating', async (data, thunkAPI) => {
+    try {
+        return await productService.deleteRating(data);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
 export const resetState = createAction('Reset_all');
 
 export const productSlice = createSlice({
@@ -174,6 +190,36 @@ export const productSlice = createSlice({
                 state.deletedProd = action.payload;
             })
             .addCase(deleteProduct.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            .addCase(updateRating.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(updateRating.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.updatedRate = action.payload;
+            })
+            .addCase(updateRating.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            .addCase(deleteRating.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(deleteRating.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.deletedRate = action.payload;
+            })
+            .addCase(deleteRating.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.isSuccess = false;

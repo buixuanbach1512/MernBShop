@@ -31,7 +31,7 @@ var orderSchema = new mongoose.Schema(
         month: { type: String, default: new Date().getMonth() + 1 },
         totalPrice: { type: Number, required: true },
         totalPriceAfterDiscount: { type: Number, required: true },
-        orderStatus: { type: String, default: 'Đã đặt hàng' },
+        orderStatus: { type: String, default: 'Chờ duyệt' },
         payment: String,
     },
     {

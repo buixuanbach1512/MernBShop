@@ -17,6 +17,15 @@ const getAProduct = async (prodId) => {
     return response.data;
 };
 
+const getProductByCate = async (data) => {
+    const response = await axios.get(
+        `product/get-product-cate/${data.catId}?${data.sort ? `sort=${data.sort}&` : ''}${
+            data.stock ? `stock=${data.stock}&` : ''
+        }${data.price ? `price=${data.price}&` : ''}`,
+    );
+    return response.data;
+};
+
 const addToWishList = async (prodId) => {
     let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
@@ -34,6 +43,7 @@ const rating = async (data) => {
 export const productService = {
     getAllProduct,
     getAProduct,
+    getProductByCate,
     addToWishList,
     rating,
 };

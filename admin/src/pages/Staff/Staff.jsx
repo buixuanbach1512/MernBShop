@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { BiEdit } from 'react-icons/bi';
 import { FiDelete } from 'react-icons/fi';
 import { deleteUser } from '../../features/auth/authSlice';
+import { MdAdd } from 'react-icons/md';
 const columns = [
     {
         title: 'STT',
@@ -65,52 +66,51 @@ const Staff = () => {
         setOpen(false);
     };
 
+    const staff = getCustomersState.filter((item) => item.type == 'admin');
     const data1 = [];
-    for (let i = 0; i < getCustomersState.length; i++) {
-        if (getCustomersState[i].type == 'admin') {
-            data1.push({
-                key: i + 1,
-                name: getCustomersState[i].name,
-                email: getCustomersState[i].email,
-                mobile: getCustomersState[i].mobile,
-                address: getCustomersState[i].address,
-                role: getCustomersState[i].role.name,
-                status: (
-                    <>
-                        {getCustomersState[i].isBlocked ? (
-                            <p
-                                className="bg-danger mb-0 text-center rounded-3 text-white py-2"
-                                style={{ cursor: 'pointer' }}
-                                onClick={() => handleUnBlock(getCustomersState[i]._id)}
-                            >
-                                Chưa kích hoạt
-                            </p>
-                        ) : (
-                            <p
-                                className="bg-success mb-0 text-center rounded-3 text-white py-2"
-                                style={{ cursor: 'pointer' }}
-                                onClick={() => handleBlock(getCustomersState[i]._id)}
-                            >
-                                Đã kích hoạt
-                            </p>
-                        )}
-                    </>
-                ),
-                action: (
-                    <div className="d-flex gap-10 align-items-center">
-                        <Link className="text-warning mb-0" to={`/admin/editSize/${getCustomersState[i]._id}`}>
-                            <BiEdit className="icon-action" />
-                        </Link>
-                        <button
-                            className=" fs-5 text-danger bg-transparent border-0"
-                            onClick={() => showModal(getCustomersState[i]._id)}
+    for (let i = 0; i < staff.length; i++) {
+        data1.push({
+            key: i + 1,
+            name: staff[i].name,
+            email: staff[i].email,
+            mobile: staff[i].mobile,
+            address: staff[i].address,
+            role: staff[i].role.name,
+            status: (
+                <>
+                    {staff[i].isBlocked ? (
+                        <p
+                            className="bg-danger mb-0 text-center rounded-3 text-white py-2"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleUnBlock(staff[i]._id)}
                         >
-                            <FiDelete className="icon-action" />
-                        </button>
-                    </div>
-                ),
-            });
-        }
+                            Chưa kích hoạt
+                        </p>
+                    ) : (
+                        <p
+                            className="bg-success mb-0 text-center rounded-3 text-white py-2"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleBlock(staff[i]._id)}
+                        >
+                            Đã kích hoạt
+                        </p>
+                    )}
+                </>
+            ),
+            action: (
+                <div className="d-flex gap-10 align-items-center">
+                    <Link className="text-warning mb-0" to={`/admin/editStaff/${staff[i]._id}`}>
+                        <BiEdit className="icon-action" />
+                    </Link>
+                    <button
+                        className=" fs-5 text-danger bg-transparent border-0"
+                        onClick={() => showModal(staff[i]._id)}
+                    >
+                        <FiDelete className="icon-action" />
+                    </button>
+                </div>
+            ),
+        });
     }
     useEffect(() => {
         if (customerState.isSuccess && customerState.blocked) {
@@ -173,6 +173,9 @@ const Staff = () => {
                         Tìm kiếm
                     </button>
                 </div>
+                <Link className="btn btn-success d-flex align-items-center gap-2" to="/admin/addStaff">
+                    <MdAdd /> Thêm mới
+                </Link>
             </div>
             <div>
                 <Table columns={columns} dataSource={data1} />

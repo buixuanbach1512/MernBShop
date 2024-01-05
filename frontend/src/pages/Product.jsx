@@ -45,12 +45,11 @@ const Product = () => {
     }, [dispatch, productId, user]);
     useEffect(() => {
         for (let i = 0; i < getCartState.length; i++) {
-            if (productId === getCartState[i].prodId._id) {
+            if (productId === getCartState[i].prodId?._id) {
                 setAdded(true);
             }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [getCartState, productId]);
     const addCart = () => {
         if (size === null) {
             toast.error('Chưa chọn size sản phẩm');
@@ -338,7 +337,7 @@ const Product = () => {
                         {allProdState
                             ?.filter((item) => item.tags === 'Sản phẩm nổi bật')
                             ?.map((item) => (
-                                <ProductCard key={item._id} item={item} />
+                                <ProductCard key={item?._id} item={item} />
                             ))}
                     </div>
                 </div>

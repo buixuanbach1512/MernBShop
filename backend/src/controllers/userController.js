@@ -117,6 +117,19 @@ const updateUser = asyncHandler(async (req, res) => {
     }
 });
 
+const updateUserById = asyncHandler(async (req, res) => {
+    try {
+        const { id } = req.params;
+        validateMongoDbId(id);
+        const updateUser = await User.findByIdAndUpdate(id, req.body, {
+            new: true,
+        });
+        res.json(updateUser);
+    } catch (e) {
+        throw new Error(e);
+    }
+});
+
 const deleteUser = asyncHandler(async (req, res) => {
     try {
         const { id } = req.params;
@@ -430,6 +443,19 @@ const updateOrder = asyncHandler(async (req, res) => {
     }
 });
 
+const deleteOrder = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    try {
+        validateMongoDbId(id);
+        const deleteOrder = await Order.findByIdAndDelete(id);
+        res.json({
+            message: 'Delete Order Successfully!',
+        });
+    } catch (e) {
+        throw new Error(e);
+    }
+});
+
 const getCountOrderByMonth = asyncHandler(async (req, res) => {
     let month = [
         'January',
@@ -528,6 +554,7 @@ module.exports = {
     getOneUser,
     deleteUser,
     updateUser,
+    updateUserById,
     blockUser,
     unBlockUser,
     changePassword,
@@ -546,6 +573,7 @@ module.exports = {
     getOrder,
     getOrderbyId,
     updateOrder,
+    deleteOrder,
     getCountOrderByMonth,
     getCountOrderByYear,
     loginGoogle,

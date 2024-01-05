@@ -28,6 +28,8 @@ const {
     applyCoupon,
     loginGoogle,
     getCoupon,
+    deleteOrder,
+    updateUserById,
 } = require('../controllers/userController');
 const { authMiddleware, isAdmin } = require('../middlewares/authMiddleware');
 const router = express.Router();
@@ -55,9 +57,10 @@ router.get('/all-order', authMiddleware, isAdmin, getAllOrder);
 router.get('/order', authMiddleware, getOrder);
 router.get('/order-by-month', authMiddleware, isAdmin, getCountOrderByMonth);
 router.get('/order-by-year', authMiddleware, isAdmin, getCountOrderByYear);
+router.post('/create-order', authMiddleware, createOrder);
 router.get('/order/:id', authMiddleware, isAdmin, getOrderbyId);
 router.put('/order/:id', authMiddleware, isAdmin, updateOrder);
-router.post('/create-order', authMiddleware, createOrder);
+router.delete('/order/:id', authMiddleware, isAdmin, deleteOrder);
 
 // user
 router.get('/all-users', getAllUser);
@@ -65,6 +68,7 @@ router.get('/wishlist', authMiddleware, getWishList);
 router.get('/coupon', authMiddleware, getCoupon);
 router.get('/get-user/:id', authMiddleware, getOneUser);
 router.put('/edit-user', authMiddleware, updateUser);
+router.put('/edit-user/:id', authMiddleware, updateUserById);
 router.delete('/:id', deleteUser);
 
 // block users

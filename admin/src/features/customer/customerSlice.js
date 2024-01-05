@@ -17,6 +17,22 @@ export const getUsers = createAsyncThunk('customer/get-customers', async (userNa
     }
 });
 
+export const getUser = createAsyncThunk('customer/get-customer', async (id, thunkAPI) => {
+    try {
+        return await customerService.getUser(id);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
+export const updateUserById = createAsyncThunk('customer/update-customer', async (data, thunkAPI) => {
+    try {
+        return await customerService.updateUserById(data);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
 export const blockUser = createAsyncThunk('customer/block-user', async (userId, thunkAPI) => {
     try {
         return await customerService.blockUser(userId);
@@ -52,6 +68,38 @@ export const customerSlice = createSlice({
                 state.message = 'Success';
             })
             .addCase(getUsers.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            .addCase(getUser.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getUser.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.getAUser = action.payload;
+                state.message = 'Success';
+            })
+            .addCase(getUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            .addCase(updateUserById.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(updateUserById.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.updatedUser = action.payload;
+                state.message = 'Success';
+            })
+            .addCase(updateUserById.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.isSuccess = false;

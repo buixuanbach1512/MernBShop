@@ -53,6 +53,14 @@ export const updateOrder = createAsyncThunk('auth/update-order', async (data, th
     }
 });
 
+export const deleteOrder = createAsyncThunk('auth/delete-order', async (id, thunkAPI) => {
+    try {
+        return await authService.deleteOrder(id);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
 export const deleteUser = createAsyncThunk('auth/delete-user', async (id, thunkAPI) => {
     try {
         return await authService.deleteUser(id);
@@ -173,6 +181,27 @@ export const authSlice = createSlice({
                 }
             })
             .addCase(updateOrder.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+                if (state.isError === true) {
+                    toast.error('Đã có lỗi xảy ra');
+                }
+            })
+            .addCase(deleteOrder.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(deleteOrder.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.isError = false;
+                state.deletedOrder = action.payload;
+                if (state.isSuccess === true) {
+                    toast.success('Đã xóa đơn hàng');
+                }
+            })
+            .addCase(deleteOrder.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.isSuccess = false;

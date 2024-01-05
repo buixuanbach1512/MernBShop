@@ -17,6 +17,7 @@ import AddSize from './pages/Sizes/AddSize';
 import Coupons from './pages/Coupons/Coupons';
 import AddCoupon from './pages/Coupons/AddCoupon';
 import Orders from './pages/Orders/Orders';
+import OrderDetail from './pages/Orders/OrderDetail';
 import Register from './pages/Register';
 import { OpenRoutes } from './routes/OpenRoutes';
 import { PrivateRoutes } from './routes/PrivateRoutes';
@@ -24,6 +25,9 @@ import Staff from './pages/Staff/Staff';
 import Roles from './pages/Roles/Roles';
 import AddRole from './pages/Roles/AddRole';
 import AddWareHouse from './pages/Products/AddWareHouse';
+import Contact from './pages/Contact';
+import Rating from './pages/Rating';
+import AddStaff from './pages/Staff/AddStaff';
 function App() {
     return (
         <>
@@ -56,6 +60,8 @@ function App() {
                         <Route index element={<Dashboard />} />
                         <Route path="customers" element={<Customers />} />
                         <Route path="staff" element={<Staff />} />
+                        <Route path="addStaff" element={<AddStaff />} />
+                        <Route path="editStaff/:id" element={<AddStaff />} />
                         <Route path="categories" element={<Categories />} />
                         <Route path="addCategory" element={<AddCategory />} />
                         <Route path="editCategory/:id" element={<AddCategory />} />
@@ -75,10 +81,13 @@ function App() {
                         <Route path="roles" element={<Roles />} />
                         <Route path="addRole" element={<AddRole />} />
                         <Route path="editRole" element={<AddRole />} />
+                        <Route path="contact" element={<Contact />} />
                         <Route path="coupons" element={<Coupons />} />
                         <Route path="addCoupon" element={<AddCoupon />} />
                         <Route path="editCoupon/:id" element={<AddCoupon />} />
+                        <Route path="rating" element={<Rating />} />
                         <Route path="orders" element={<Orders />} />
+                        <Route path="order-detail/:id" element={<OrderDetail />} />
                     </Route>
                 </Routes>
             </Router>

@@ -95,6 +95,10 @@ const AddRole = () => {
             label: 'Thêm chức vụ',
         },
         {
+            value: 'contact',
+            label: 'QL liên hệ',
+        },
+        {
             value: 'coupons',
             label: 'QL phiếu mua hàng',
         },
@@ -109,6 +113,10 @@ const AddRole = () => {
         {
             value: 'orders',
             label: 'QL đơn hàng',
+        },
+        {
+            value: 'order-detail',
+            label: 'Chi tiết đơn hàng',
         },
     ];
     const handlepermissions = (e) => {

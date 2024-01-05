@@ -52,6 +52,20 @@ const deleteProduct = async (id) => {
     return response.data;
 };
 
+const updateRating = async (data) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.put(`product/update-rating/${data.id}/${data.prodId}`);
+    return response.data;
+};
+
+const deleteRating = async (data) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.put(`product/delete-rating/${data.id}/${data.prodId}`);
+    return response.data;
+};
+
 const productService = {
     getProducts,
     getAProduct,
@@ -60,5 +74,7 @@ const productService = {
     updateProduct,
     deleteProduct,
     updateQuantity,
+    updateRating,
+    deleteRating,
 };
 export default productService;
