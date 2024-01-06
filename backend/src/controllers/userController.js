@@ -33,7 +33,7 @@ const loginGoogle = asyncHandler(async (req, res) => {});
 
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
-    const findUser = await User.findOne({ email });
+    const findUser = await User.findOne({ email }).populate('role');
     if (findUser && (await findUser.isPasswordMatched(password))) {
         if (findUser.isBlocked === false) {
             res.json({
@@ -43,6 +43,8 @@ const loginUser = asyncHandler(async (req, res) => {
                 address: findUser?.address,
                 mobile: findUser?.mobile,
                 token: generateToken(findUser?._id),
+                type: findUser?.type,
+                permissions: findUser?.role?.permissions,
             });
         } else {
             throw new Error('Tài khoản đã bị khóa!!!');
@@ -478,7 +480,6 @@ const getCountOrderByMonth = asyncHandler(async (req, res) => {
         d.setMonth(d.getMonth() - 1);
         endDate = month[d.getMonth()] + ' ' + d.getFullYear();
     }
-    console.log(endDate);
     const data = await Order.aggregate([
         {
             $match: {
@@ -486,6 +487,7 @@ const getCountOrderByMonth = asyncHandler(async (req, res) => {
                     $lte: new Date(),
                     $gte: new Date(endDate),
                 },
+                orderStatus: 'Đã giao hàng',
             },
         },
         {
@@ -531,6 +533,7 @@ const getCountOrderByYear = asyncHandler(async (req, res) => {
                     $lte: new Date(),
                     $gte: new Date(endDate),
                 },
+                orderStatus: 'Đã giao hàng',
             },
         },
         {

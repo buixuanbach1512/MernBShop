@@ -1,26 +1,51 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
-import Home from './pages/Home';
-import Contact from './pages/Contact';
-import Store from './pages/Store';
-import Login from './pages/Login';
-import ForgotPassword from './pages/ForgotPassword';
-import SignUp from './pages/SignUp';
-import WishList from './pages/WishList';
-import Product from './pages/Product';
+import Layout from './components/customer/Layout';
+import Home from './pages/customer/Home';
+import Contact from './pages/customer/Contact';
+import Store from './pages/customer/Store';
+import Login from './pages/customer/Login';
+import ForgotPassword from './pages/customer/ForgotPassword';
+import SignUp from './pages/customer/SignUp';
+import WishList from './pages/customer/WishList';
+import Product from './pages/customer/Product';
 import ScrollToTop from './utils/ScrollToTop';
-import Cart from './pages/Cart';
-import Checkout from './pages/Checkout';
+import Cart from './pages/customer/Cart';
+import Checkout from './pages/customer/Checkout';
 import { PrivateRoutes } from './routes/PrivateRoutes';
 import { OpenRoutes } from './routes/OpenRoutes';
-import Order from './pages/Order';
-import Profile from './pages/Profile';
-import ResetPassword from './pages/ResetPassword';
-import ChangePassword from './pages/ChangePassword';
-import Blogs from './pages/Blogs';
-import Coupon from './pages/Coupon';
-import MyCoupon from './pages/MyCoupon';
+import Order from './pages/customer/Order';
+import Profile from './pages/customer/Profile';
+import ResetPassword from './pages/customer/ResetPassword';
+import ChangePassword from './pages/customer/ChangePassword';
+import Blogs from './pages/customer/Blogs';
+import Coupon from './pages/customer/Coupon';
+import MyCoupon from './pages/customer/MyCoupon';
+
+import MainLayout from './components/admin/MainLayout';
+import Dashboard from './pages/admin/Dashboard';
+import Customer from './pages/admin/Customers';
+import ContactAdmin from './pages/admin/Contact';
+import Rating from './pages/admin/Rating';
+import Staff from './pages/admin/Staff/Staff';
+import AddStaff from './pages/admin/Staff/AddStaff';
+import Sizes from './pages/admin/Sizes/Sizes';
+import AddSize from './pages/admin/Sizes/AddSize';
+import Roles from './pages/admin/Roles/Roles';
+import AddRole from './pages/admin/Roles/AddRole';
+import Products from './pages/admin/Products/Products';
+import AddProduct from './pages/admin/Products/AddProduct';
+import AddWareHouse from './pages/admin/Products/AddWareHouse';
+import Orders from './pages/admin/Orders/Orders';
+import OrderDetail from './pages/admin/Orders/OrderDetail';
+import Coupons from './pages/admin/Coupons/Coupons';
+import AddCoupon from './pages/admin/Coupons/AddCoupon';
+import Colors from './pages/admin/Colors/Colors';
+import AddColor from './pages/admin/Colors/AddColor';
+import Categories from './pages/admin/Categories/Categories';
+import AddCategory from './pages/admin/Categories/AddCategory';
+import Brands from './pages/admin/Brands/Brands';
+import AddBrand from './pages/admin/Brands/AddBrand';
 
 function App() {
     return (
@@ -70,8 +95,7 @@ function App() {
                                     </PrivateRoutes>
                                 }
                             />
-                            <Route path="store" element={<Store />} />
-                            <Route path="store/:slug" element={<Store />} />
+                            <Route path="store/:slug/:id" element={<Store />} />
                             <Route path="product/:slug/:id" element={<Product />} />
                             <Route
                                 path="cart"
@@ -117,6 +141,46 @@ function App() {
                                     </PrivateRoutes>
                                 }
                             />
+                        </Route>
+                        <Route
+                            path="/admin"
+                            element={
+                                <PrivateRoutes>
+                                    <MainLayout />
+                                </PrivateRoutes>
+                            }
+                        >
+                            <Route index element={<Dashboard />} />
+                            <Route path="customers" element={<Customer />} />
+                            <Route path="staff" element={<Staff />} />
+                            <Route path="addStaff" element={<AddStaff />} />
+                            <Route path="editStaff/:id" element={<AddStaff />} />
+                            <Route path="categories" element={<Categories />} />
+                            <Route path="addCategory" element={<AddCategory />} />
+                            <Route path="editCategory/:id" element={<AddCategory />} />
+                            <Route path="products" element={<Products />} />
+                            <Route path="addProduct" element={<AddProduct />} />
+                            <Route path="addWareHouse" element={<AddWareHouse />} />
+                            <Route path="editProduct" element={<AddProduct />} />
+                            <Route path="brands" element={<Brands />} />
+                            <Route path="addBrand" element={<AddBrand />} />
+                            <Route path="editBrand/:id" element={<AddBrand />} />
+                            <Route path="colors" element={<Colors />} />
+                            <Route path="addColor" element={<AddColor />} />
+                            <Route path="editColor/:id" element={<AddColor />} />
+                            <Route path="sizes" element={<Sizes />} />
+                            <Route path="addSize" element={<AddSize />} />
+                            <Route path="editSize/:id" element={<AddSize />} />
+                            <Route path="roles" element={<Roles />} />
+                            <Route path="addRole" element={<AddRole />} />
+                            <Route path="editRole" element={<AddRole />} />
+                            <Route path="contact" element={<ContactAdmin />} />
+                            <Route path="coupons" element={<Coupons />} />
+                            <Route path="addCoupon" element={<AddCoupon />} />
+                            <Route path="editCoupon/:id" element={<AddCoupon />} />
+                            <Route path="rating" element={<Rating />} />
+                            <Route path="orders" element={<Orders />} />
+                            <Route path="order-detail/:id" element={<OrderDetail />} />
                         </Route>
                     </Routes>
                 </ScrollToTop>

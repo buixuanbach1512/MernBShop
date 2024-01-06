@@ -1,34 +1,75 @@
 import axios from 'axios';
 axios.defaults.baseURL = 'http://localhost:5000/api/';
 
-const register = async (userData) => {
-    const response = await axios.post(`user/register`, userData);
+const register = async (data) => {
+    const response = await axios.post(`user/register`, data);
     if (response.data) {
         return response.data;
     }
 };
 
-const login = async (userData) => {
-    const response = await axios.post(`user/login`, userData);
+const login = async (data) => {
+    const response = await axios.post(`user/login`, data);
     if (response.data) {
         return response.data;
     }
 };
 
-const getAUser = async (userId) => {
-    const response = await axios.get(`user/get-user/${userId}`);
+const loginAdmin = async (data) => {
+    const response = await axios.post(`user/login-admin`, data);
     if (response.data) {
         return response.data;
     }
 };
 
-const updateUser = async (userData) => {
-    let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
+const getUser = async (id) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
-    const response = await axios.put(`user/edit-user`, userData);
+    const response = await axios.get(`user/get-user/${id}`);
     if (response.data) {
         return response.data;
     }
+};
+
+const getAllUser = async (data) => {
+    const response = await axios.get(`user/all-users?${data ? `name=${data}` : ''}`);
+    if (response.data) {
+        return response.data;
+    }
+};
+
+const updateUser = async (data) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.put(`user/edit-user`, data);
+    if (response.data) {
+        return response.data;
+    }
+};
+
+const updateUserById = async (data) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.put(`user/edit-user/${data.id}`, data.userData);
+    if (response.data) {
+        return response.data;
+    }
+};
+
+const blockUser = async (id) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.put(`user/block-user/${id}`);
+    if (response.data) {
+        return response.data;
+    }
+};
+
+const deleteUser = async (id) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.delete(`user/${id}`);
+    return response.data;
 };
 
 const forgotPassToken = async (data) => {
@@ -53,7 +94,7 @@ const changePassword = async (data) => {
 };
 
 const getUserWishList = async () => {
-    let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
     const response = await axios.get(`user/wishlist`);
     if (response.data) {
@@ -62,7 +103,7 @@ const getUserWishList = async () => {
 };
 
 const getUserCoupon = async () => {
-    let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
     const response = await axios.get(`user/coupon`);
     if (response.data) {
@@ -70,17 +111,17 @@ const getUserCoupon = async () => {
     }
 };
 
-const addToCart = async (cartData) => {
-    let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
+const addToCart = async (data) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
-    const response = await axios.post(`user/add-to-cart`, cartData);
+    const response = await axios.post(`user/add-to-cart`, data);
     if (response.data) {
         return response.data;
     }
 };
 
 const getCart = async () => {
-    let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
     const response = await axios.get(`user/cart`);
     if (response.data) {
@@ -89,33 +130,33 @@ const getCart = async () => {
 };
 
 const removeProdCart = async (id) => {
-    let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
     const response = await axios.delete(`user/delete-cart/${id}`);
     if (response.data) {
         return response.data;
     }
 };
-const updateQuantityCart = async (cartData) => {
-    let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
+const updateQuantityCart = async (data) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
-    const response = await axios.put(`user/update-cart/${cartData.id}/${cartData.quantity}`);
+    const response = await axios.put(`user/update-cart/${data.id}/${data.quantity}`);
     if (response.data) {
         return response.data;
     }
 };
 
-const createOrder = async (orderData) => {
-    let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
+const createOrder = async (data) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
-    const response = await axios.post(`user/create-order/`, orderData);
+    const response = await axios.post(`user/create-order/`, data);
     if (response.data) {
         return response.data;
     }
 };
 
 const emptyCart = async () => {
-    let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
     const response = await axios.delete(`user/empty-cart/`);
     if (response.data) {
@@ -123,17 +164,17 @@ const emptyCart = async () => {
     }
 };
 
-const applyCoupon = async (couponData) => {
-    let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
+const applyCoupon = async (data) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
-    const response = await axios.post(`user/cart/applyCoupon`, { coupon: couponData });
+    const response = await axios.post(`user/cart/applyCoupon`, { coupon: data });
     if (response.data) {
         return response.data;
     }
 };
 
 const userOrder = async () => {
-    let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
     const response = await axios.get(`user/order`);
     if (response.data) {
@@ -141,8 +182,10 @@ const userOrder = async () => {
     }
 };
 
-const logout = async () => {
-    const response = await axios.post(`user/logout`);
+const unBlockUser = async (id) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.put(`user/unblock-user/${id}`);
     if (response.data) {
         return response.data;
     }
@@ -151,10 +194,16 @@ const logout = async () => {
 export const authService = {
     register,
     login,
+    loginAdmin,
     getUserWishList,
     getUserCoupon,
-    getAUser,
+    getAllUser,
+    getUser,
     updateUser,
+    updateUserById,
+    deleteUser,
+    blockUser,
+    unBlockUser,
     forgotPassToken,
     resetPassword,
     changePassword,
@@ -166,5 +215,6 @@ export const authService = {
     emptyCart,
     applyCoupon,
     userOrder,
-    logout,
 };
+
+export default authService;

@@ -1,35 +1,37 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
-import { authService } from './authService';
+import authService from './authService';
 import { toast } from 'react-toastify';
 
 const initialState = {
-    user: JSON.parse(sessionStorage.getItem('customer')),
+    user: JSON.parse(sessionStorage.getItem('user')),
     cart: [],
     createdUser: '',
+    allUser: [],
     isLoading: false,
     isSuccess: false,
     isError: false,
     message: '',
 };
 
-export const register = createAsyncThunk('auth/register', async (userData, thunkAPI) => {
+export const register = createAsyncThunk('auth/register', async (data, thunkAPI) => {
     try {
-        return await authService.register(userData);
+        return await authService.register(data);
     } catch (e) {
         return thunkAPI.rejectWithValue(e);
     }
 });
 
-export const login = createAsyncThunk('auth/login', async (userData, thunkAPI) => {
+export const login = createAsyncThunk('auth/login', async (data, thunkAPI) => {
     try {
-        return await authService.login(userData);
+        return await authService.login(data);
     } catch (e) {
         return thunkAPI.rejectWithValue(e);
     }
 });
-export const loginGoogle = createAsyncThunk('auth/login-google', async (thunkAPI) => {
+
+export const getAllUser = createAsyncThunk('auth/get-all-user', async (data, thunkAPI) => {
     try {
-        return await authService.loginGoogle();
+        return await authService.getAllUser(data);
     } catch (e) {
         return thunkAPI.rejectWithValue(e);
     }
@@ -51,17 +53,49 @@ export const getUserCoupon = createAsyncThunk('auth/get-coupon', async (thunkAPI
     }
 });
 
-export const getAUser = createAsyncThunk('auth/get-a-user', async (userId, thunkAPI) => {
+export const getUser = createAsyncThunk('auth/get-user', async (id, thunkAPI) => {
     try {
-        return await authService.getAUser(userId);
+        return await authService.getUser(id);
     } catch (e) {
         return thunkAPI.rejectWithValue(e);
     }
 });
 
-export const updateUser = createAsyncThunk('auth/update-user', async (userData, thunkAPI) => {
+export const updateUser = createAsyncThunk('auth/update-user', async (data, thunkAPI) => {
     try {
-        return await authService.updateUser(userData);
+        return await authService.updateUser(data);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
+export const updateUserById = createAsyncThunk('customer/update-customer', async (data, thunkAPI) => {
+    try {
+        return await authService.updateUserById(data);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
+export const blockUser = createAsyncThunk('customer/block-user', async (id, thunkAPI) => {
+    try {
+        return await authService.blockUser(id);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
+export const unBlockUser = createAsyncThunk('customer/unblock-user', async (id, thunkAPI) => {
+    try {
+        return await authService.unBlockUser(id);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
+export const deleteUser = createAsyncThunk('auth/delete-user', async (id, thunkAPI) => {
+    try {
+        return await authService.deleteUser(id);
     } catch (e) {
         return thunkAPI.rejectWithValue(e);
     }
@@ -91,9 +125,9 @@ export const changePassword = createAsyncThunk('auth/change-password', async (da
     }
 });
 
-export const addToCart = createAsyncThunk('auth/add-to-cart', async (dataCart, thunkAPI) => {
+export const addToCart = createAsyncThunk('auth/add-to-cart', async (data, thunkAPI) => {
     try {
-        return await authService.addToCart(dataCart);
+        return await authService.addToCart(data);
     } catch (e) {
         return thunkAPI.rejectWithValue(e);
     }
@@ -115,17 +149,17 @@ export const removeProdCart = createAsyncThunk('auth/remove-product-cart', async
     }
 });
 
-export const updateCart = createAsyncThunk('auth/update-cart', async (cartData, thunkAPI) => {
+export const updateCart = createAsyncThunk('auth/update-cart', async (data, thunkAPI) => {
     try {
-        return await authService.updateQuantityCart(cartData);
+        return await authService.updateQuantityCart(data);
     } catch (e) {
         return thunkAPI.rejectWithValue(e);
     }
 });
 
-export const createOrder = createAsyncThunk('auth/create-order', async (orderData, thunkAPI) => {
+export const createOrder = createAsyncThunk('auth/create-order', async (data, thunkAPI) => {
     try {
-        return await authService.createOrder(orderData);
+        return await authService.createOrder(data);
     } catch (e) {
         return thunkAPI.rejectWithValue(e);
     }
@@ -139,9 +173,9 @@ export const emptyCart = createAsyncThunk('auth/emptycart', async (thunkAPI) => 
     }
 });
 
-export const applyCoupon = createAsyncThunk('auth/apply-coupon', async (couponData, thunkAPI) => {
+export const applyCoupon = createAsyncThunk('auth/apply-coupon', async (data, thunkAPI) => {
     try {
-        return await authService.applyCoupon(couponData);
+        return await authService.applyCoupon(data);
     } catch (e) {
         return thunkAPI.rejectWithValue(e);
     }
@@ -201,15 +235,17 @@ export const authSlice = createSlice({
                 state.isSuccess = true;
                 state.user = action.payload;
                 if (state.isSuccess === true) {
-                    let newUserData = {
+                    let newdata = {
                         _id: action.payload._id,
                         token: action.payload.token,
                         name: action.payload.name,
                         email: action.payload.email,
                         mobile: action.payload.mobile,
                         address: action.payload.address,
+                        type: action.payload.type,
+                        permissions: action.payload.permissions,
                     };
-                    sessionStorage.setItem('customer', JSON.stringify(newUserData));
+                    sessionStorage.setItem('user', JSON.stringify(newdata));
                     toast.success('Đăng nhập thành công!');
                 }
             })
@@ -221,6 +257,21 @@ export const authSlice = createSlice({
                 if (state.isError === true) {
                     toast.error(action.payload.response.data.message);
                 }
+            })
+            .addCase(getAllUser.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getAllUser.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.allUser = action.payload;
+            })
+            .addCase(getAllUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
             })
             .addCase(getUserWishList.pending, (state) => {
                 state.isLoading = true;
@@ -252,16 +303,16 @@ export const authSlice = createSlice({
                 state.isSuccess = false;
                 state.message = action.error;
             })
-            .addCase(getAUser.pending, (state) => {
+            .addCase(getUser.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(getAUser.fulfilled, (state, action) => {
+            .addCase(getUser.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isError = false;
                 state.isSuccess = true;
                 state.getUser = action.payload;
             })
-            .addCase(getAUser.rejected, (state, action) => {
+            .addCase(getUser.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.isSuccess = false;
@@ -276,17 +327,17 @@ export const authSlice = createSlice({
                 state.isSuccess = true;
                 state.updatedUser = action.payload;
                 if (state.isSuccess === true) {
-                    let currentUserData = JSON.parse(sessionStorage.getItem('customer'));
-                    let newUserData = {
-                        _id: currentUserData?._id,
-                        token: currentUserData?.token,
+                    let currentdata = JSON.parse(sessionStorage.getItem('user'));
+                    let newdata = {
+                        _id: currentdata?._id,
+                        token: currentdata?.token,
                         name: action.payload.name,
                         email: action.payload.email,
                         mobile: action.payload.mobile,
                         address: action.payload.address,
                     };
-                    sessionStorage.setItem('customer', JSON.stringify(newUserData));
-                    state.user = newUserData;
+                    sessionStorage.setItem('user', JSON.stringify(newdata));
+                    state.user = newdata;
                     toast.success('Cập nhật thành công');
                 }
             })
@@ -298,6 +349,73 @@ export const authSlice = createSlice({
                 if (state.isError === true) {
                     toast.error('Cập nhật thất bại');
                 }
+            })
+            .addCase(deleteUser.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(deleteUser.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.deletedUser = action.payload;
+                if (state.isSuccess === true) {
+                    toast.success('Xóa người dùng thành công');
+                }
+            })
+            .addCase(deleteUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+                if (state.isError === true) {
+                    toast.error('Đã có lỗi xảy ra');
+                }
+            })
+            .addCase(updateUserById.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(updateUserById.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.updatedUser = action.payload;
+                state.message = 'Success';
+            })
+            .addCase(updateUserById.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            .addCase(blockUser.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(blockUser.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.blocked = action.payload;
+                state.isError = false;
+            })
+            .addCase(blockUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            .addCase(unBlockUser.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(unBlockUser.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.unBlocked = action.payload;
+                state.isError = false;
+            })
+            .addCase(unBlockUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
             })
             .addCase(forgotPassToken.pending, (state) => {
                 state.isLoading = true;

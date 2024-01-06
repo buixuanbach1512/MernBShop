@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, createAction } from '@reduxjs/toolkit';
-import { categoryService } from './categoryService';
+import categoryService from './categoryService';
 
 const initialState = {
     categories: [],
@@ -9,9 +9,25 @@ const initialState = {
     message: '',
 };
 
-export const getAllCategory = createAsyncThunk('category/get-all-categories', async (thunkAPI) => {
+export const getAllCategory = createAsyncThunk('category/get-all-categories', async (data, thunkAPI) => {
     try {
-        return await categoryService.getAllCategory();
+        return await categoryService.getAllCategory(data);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
+export const createCategories = createAsyncThunk('category/create-categories', async (data, thunkAPI) => {
+    try {
+        return await categoryService.createCategories(data);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
+export const getACategory = createAsyncThunk('category/get-a-category', async (id, thunkAPI) => {
+    try {
+        return await categoryService.getACategory(id);
     } catch (e) {
         return thunkAPI.rejectWithValue(e);
     }
@@ -25,10 +41,26 @@ export const getProdCategory = createAsyncThunk('category/get-category-product',
     }
 });
 
+export const updateCategory = createAsyncThunk('category/update-category', async (data, thunkAPI) => {
+    try {
+        return await categoryService.updateCategory(data);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
+export const deleteCategory = createAsyncThunk('category/delete-category', async (id, thunkAPI) => {
+    try {
+        return await categoryService.deleteCategory(id);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
 export const resetState = createAction('Reset-All');
 
 export const categorySlice = createSlice({
-    name: 'category',
+    name: 'categories',
     initialState: initialState,
     reducers: {},
     extraReducers: (builder) => {
@@ -46,6 +78,66 @@ export const categorySlice = createSlice({
                 state.isLoading = false;
                 state.isSuccess = false;
                 state.isError = true;
+                state.message = action.error;
+            })
+            .addCase(createCategories.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(createCategories.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.createdCategory = action.payload;
+            })
+            .addCase(createCategories.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            .addCase(getACategory.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getACategory.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.getACat = action.payload;
+            })
+            .addCase(getACategory.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            .addCase(updateCategory.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(updateCategory.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.updatedCat = action.payload;
+            })
+            .addCase(updateCategory.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            .addCase(deleteCategory.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(deleteCategory.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.deletedCat = action.payload;
+            })
+            .addCase(deleteCategory.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
                 state.message = action.error;
             })
             .addCase(getProdCategory.pending, (state) => {

@@ -3,18 +3,63 @@ axios.defaults.baseURL = 'http://localhost:5000/api/';
 
 const getAllProduct = async (data) => {
     const response = await axios.get(
-        `product?${data.catId ? `category=${data.catId}&` : ''}${data.sort ? `sort=${data.sort}&` : ''}${
-            data.inStock ? `quantity[gt]=${data.inStock}&` : ''
-        }${data.outStock ? `quantity[lte]=${data.outStock}&` : ''}${
-            data.minPrice ? `price[gte]=${data.minPrice}&` : ''
-        }${data.maxPrice ? `price[lte]=${data.maxPrice}&` : ''}`,
+        `product?${data?.name ? `name=${data?.name}&` : ''}${data?.category ? `category=${data?.category}&` : ''}${
+            data?.brand ? `brand=${data?.brand}&` : ''
+        }${data?.id ? `_id=${data?.id}&` : ''}`,
     );
-    return response.data;
+    if (response.data) {
+        return response.data;
+    }
 };
 
-const getAProduct = async (prodId) => {
-    const response = await axios.get(`product/${prodId}`);
-    return response.data;
+const getAProduct = async (id) => {
+    const response = await axios.get(`product/${id}`);
+    if (response.data) {
+        return response.data;
+    }
+};
+
+const getProduct = async (data) => {
+    const response = await axios.get(`product/get-one?${data?.name ? `name=${data?.name}` : ''}`);
+    if (response.data) {
+        return response.data;
+    }
+};
+
+const createProduct = async (data) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.post(`product/`, data);
+    if (response.data) {
+        return response.data;
+    }
+};
+
+const updateProduct = async (data) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.put(`product/${data.id}`, data.data);
+    if (response.data) {
+        return response.data;
+    }
+};
+
+const updateQuantity = async (data) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.put(`product/update-quantity/${data.id}`, { quantity: data.quantity });
+    if (response.data) {
+        return response.data;
+    }
+};
+
+const deleteProduct = async (id) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.delete(`product/${id}`);
+    if (response.data) {
+        return response.data;
+    }
 };
 
 const getProductByCate = async (data) => {
@@ -23,27 +68,58 @@ const getProductByCate = async (data) => {
             data.stock ? `stock=${data.stock}&` : ''
         }${data.price ? `price=${data.price}&` : ''}`,
     );
-    return response.data;
+    if (response.data) {
+        return response.data;
+    }
 };
 
 const addToWishList = async (prodId) => {
-    let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
     const response = await axios.put(`product/wishlist`, { prodId });
-    return response.data;
+    if (response.data) {
+        return response.data;
+    }
 };
 
 const rating = async (data) => {
-    let getToken = JSON.parse(sessionStorage.getItem('customer'))?.token;
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
     const response = await axios.put(`product/rating`, data);
-    return response.data;
+    if (response.data) {
+        return response.data;
+    }
+};
+
+const updateRating = async (data) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.put(`product/update-rating/${data.id}/${data.prodId}`);
+    if (response.data) {
+        return response.data;
+    }
+};
+
+const deleteRating = async (data) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.put(`product/delete-rating/${data.id}/${data.prodId}`);
+    if (response.data) {
+        return response.data;
+    }
 };
 
 export const productService = {
     getAllProduct,
     getAProduct,
+    getProduct,
+    createProduct,
+    updateProduct,
+    updateQuantity,
+    deleteProduct,
     getProductByCate,
     addToWishList,
     rating,
+    updateRating,
+    deleteRating,
 };
