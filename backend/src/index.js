@@ -29,67 +29,10 @@ connectDB();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(cors({ origin: 'https://frontend-gold-beta.vercel.app', methods: 'GET,POST,PUT,DELETE', credentials: true }));
 app.use(cors({ origin: true, methods: 'GET,POST,PUT,DELETE', credentials: true }));
-// app.use((req, res, next) => {
-//     res.setHeader("Access-Control-Allow-Origin", "https://frontend-gold-beta.vercel.app/");
-//     res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE");
-//     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-//     next();
-//   })
 app.use(cookieParser());
 app.use(morgan('dev'));
-// app.use(
-//     session({
-//         secret: '15122001buixuanbach',
-//         resave: false,
-//         saveUninitialized: true,
-//     }),
-// );
-// app.use(passport.initialize());
-// app.use(passport.session());
-// passport.use(
-//     new OAuth20(
-//         {
-//             clientID: process.env.CLIENT_ID,
-//             clientSecret: process.env.CLIENT_SECRET,
-//             callbackURL: '/api/auth/google/callback',
-//             scope: ['profile', 'email'],
-//         },
-//         async (accessToken, refreshToken, profile, done) => {
-//             console.log('profile', profile);
-//             try {
-//                 let user = await User.findOne({ googleId: profile.id });
-//                 if (!user) {
-//                     user = new User({
-//                         googleId: profile.id,
-//                         name: profile.displayName,
-//                         email: profile.emails[0].value,
-//                     });
-//                     await user.save();
-//                 }
-
-//                 return done(null, user);
-//             } catch (error) {
-//                 return done(error, null);
-//             }
-//         },
-//     ),
-// );
-// passport.serializeUser((user, done) => {
-//     done(null, user);
-// });
-// passport.deserializeUser((user, done) => {
-//     done(null, user);
-// });
-
-// app.get('/api/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-// app.get(
-//     '/api/auth/google/callback',
-//     passport.authenticate('google', {
-//         successRedirect: 'http://localhost:5174/',
-//         failureRedirect: 'http://localhost:5174/login',
-//     }),
-// );
 
 app.use('/api/user', authRouter);
 app.use('/api/product', productRouter);

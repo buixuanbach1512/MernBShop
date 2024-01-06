@@ -1,5 +1,6 @@
 import axios from 'axios';
-axios.defaults.baseURL = 'http://localhost:5000/api/';
+import { baseUrl } from '../../utils/baseUrl';
+axios.defaults.baseURL = baseUrl;
 
 const uploadImg = async (data) => {
     let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
