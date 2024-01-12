@@ -74,10 +74,17 @@ const getProductByCate = async (data) => {
     }
 };
 
-const addToWishList = async (prodId) => {
+const addToWishList = async (id) => {
     let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
-    const response = await axios.put(`product/wishlist`, { prodId });
+    const response = await axios.put(`product/wishlist`, { id });
+    if (response.data) {
+        return response.data;
+    }
+};
+
+const compareProduct = async (id) => {
+    const response = await axios.get(`product/compare-product/${id}`);
     if (response.data) {
         return response.data;
     }
@@ -120,6 +127,7 @@ export const productService = {
     deleteProduct,
     getProductByCate,
     addToWishList,
+    compareProduct,
     rating,
     updateRating,
     deleteRating,

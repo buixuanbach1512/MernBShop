@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FiDelete } from 'react-icons/fi';
 import { useState } from 'react';
 import { deleteContact, getAllContact, resetState } from '../../features/contact/contactSlice';
+import handlePermission from '../../utils/permissionService';
 
 const columns = [
     {
@@ -35,10 +36,7 @@ const columns = [
 ];
 
 const Contact = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
     const [open, setOpen] = useState(false);
     const [contactId, setContactId] = useState(null);
     const dispatch = useDispatch();

@@ -31,7 +31,7 @@ const WishList = () => {
                             </div>
                         )}
                         {wishListState?.map((item) => (
-                            <div key={item._id} className="col-2">
+                            <div key={item._id} className="col-xl-2 col-md-4 col-12 mb-3">
                                 <div className="wishlist-card position-relative">
                                     <IoMdClose
                                         onClick={() => removeProdWishList(item._id)}
@@ -40,7 +40,7 @@ const WishList = () => {
                                     <div className="wishlist-card-img">
                                         <img src={item.images[0].url} className="img-fluid w-100" alt="product" />
                                     </div>
-                                    <div className="bg-white px-3 py-3">
+                                    <div className="wishlist-detail bg-white">
                                         <h5 className="title">{item.name}</h5>
                                         <h6 className="price">
                                             {item.price.toLocaleString('vi')}

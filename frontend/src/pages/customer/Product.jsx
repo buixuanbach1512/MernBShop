@@ -9,12 +9,13 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Color from '../../components/customer/ColorList';
 import Size from '../../components/customer/SizeList';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAProduct, getAllProduct, rating } from '../../features/product/productSlice';
+import { getAProduct, getAllProduct, rating, resetState } from '../../features/product/productSlice';
 import { toast } from 'react-toastify';
 import { addToCart, getCart } from '../../features/auth/authSlice';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import ProductImages from '../../components/customer/ProductImages';
+import { createConversation } from '../../features/conversation/consversationSlice';
 
 const schema = Yup.object().shape({
     comment: Yup.string().required('Chưa viết đánh giá!!'),
@@ -33,6 +34,7 @@ const Product = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const productId = location.pathname.split('/')[3];
+    const authState = useSelector((state) => state.auth.user);
     const prodState = useSelector((state) => state.product.getAProd);
     const allProdState = useSelector((state) => state?.product?.products);
     const getCartState = useSelector((state) => state?.auth?.cart);
@@ -61,9 +63,11 @@ const Product = () => {
             const data = {
                 productId: prodState?._id,
                 quantity,
+                stock: prodState?.quantity,
                 color,
                 size,
                 price: prodState?.price,
+                salePrice: prodState?.salePrice != 0 ? prodState?.salePrice : 0,
             };
             if (user) {
                 if (prodState?.quantity > 0) {
@@ -97,6 +101,7 @@ const Product = () => {
             if (user) {
                 dispatch(rating(data));
                 setTimeout(() => {
+                    dispatch(resetState());
                     dispatch(getAProduct(productId));
                     dispatch(getAllProduct());
                     formik.resetForm();
@@ -108,6 +113,26 @@ const Product = () => {
     });
     const ratingChanged = (newRating) => {
         setStar(newRating);
+    };
+    const handleMessageSubmit = () => {
+        if (user) {
+            if (authState._id !== prodState?.postedBy) {
+                const data = {
+                    groupTitle: authState._id + prodState?._id,
+                    groupName: prodState?.brand?.name,
+                    userId: authState._id,
+                    sellerId: prodState?.postedBy,
+                };
+                dispatch(createConversation(data));
+                setTimeout(() => {
+                    navigate('/inbox-shop');
+                }, 200);
+            } else {
+                toast.error('Không thể tự chat với bản thân');
+            }
+        } else {
+            toast.warning('Chưa đăng nhập');
+        }
     };
     return (
         <>
@@ -124,8 +149,24 @@ const Product = () => {
                                 </div>
                                 <div className="border-bottom py-3">
                                     <p className="price">
-                                        {prodState?.price.toLocaleString('vi')}
-                                        <sup>đ</sup>
+                                        {prodState?.tags == 'Sản phẩm đặc biệt' ? (
+                                            <>
+                                                <span>
+                                                    {prodState?.salePrice.toLocaleString('vi')}
+                                                    <sup>đ</sup>
+                                                </span>
+                                                &nbsp;&nbsp;
+                                                <strike className="text-danger">
+                                                    {prodState?.price.toLocaleString('vi')}
+                                                    <sup>đ</sup>
+                                                </strike>
+                                            </>
+                                        ) : (
+                                            <span>
+                                                {prodState?.price.toLocaleString('vi')}
+                                                <sup>đ</sup>
+                                            </span>
+                                        )}
                                     </p>
                                     <div className="d-flex align-items-center gap-10">
                                         <StarRatings
@@ -215,9 +256,9 @@ const Product = () => {
                                             >
                                                 {added ? 'Đến giỏ hàng' : 'Thêm vào giỏ hàng'}
                                             </button>
-                                            {/* <button to="" className="button border-0">
-                                                Mua ngay
-                                            </button> */}
+                                            <button onClick={handleMessageSubmit} className="button border-0">
+                                                Chat với Shop
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -330,15 +371,25 @@ const Product = () => {
             </section>
             <section className="blog-wrapper py-5 home-wrapper-2">
                 <div className="container">
-                    <div className="row">
+                    <div className="row my-3">
                         <div className="col-12">
-                            <h3 className="section-heading">Sản Phẩm Nổi Bật</h3>
+                            <h3 className="section-heading">Sản phẩm cùng danh mục</h3>
                         </div>
-                        {allProdState
-                            ?.filter((item) => item.tags === 'Sản phẩm nổi bật')
-                            ?.map((item) => (
-                                <ProductCard key={item?._id} item={item} />
-                            ))}
+                        {allProdState &&
+                            allProdState
+                                .filter((item) => item.category._id === prodState?.category?._id)
+                                .slice(0, 6)
+                                .map((item) => <ProductCard key={item?._id} item={item} />)}
+                    </div>
+                    <div className="row my-3">
+                        <div className="col-12">
+                            <h3 className="section-heading">Sản phẩm cùng thương hiệu</h3>
+                        </div>
+                        {allProdState &&
+                            allProdState
+                                .filter((item) => item.brand._id === prodState?.brand?._id)
+                                .slice(0, 6)
+                                .map((item) => <ProductCard key={item?._id} item={item} />)}
                     </div>
                 </div>
             </section>

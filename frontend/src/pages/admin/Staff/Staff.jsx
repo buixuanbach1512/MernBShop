@@ -7,6 +7,7 @@ import { BiEdit } from 'react-icons/bi';
 import { FiDelete } from 'react-icons/fi';
 import { MdAdd } from 'react-icons/md';
 import { blockUser, deleteUser, getAllUser, resetState, unBlockUser } from '../../../features/auth/authSlice';
+import handlePermission from '../../../utils/permissionService';
 const columns = [
     {
         title: 'STT',
@@ -26,10 +27,6 @@ const columns = [
         dataIndex: 'mobile',
     },
     {
-        title: 'Địa chỉ',
-        dataIndex: 'address',
-    },
-    {
         title: 'Chức vụ',
         dataIndex: 'role',
     },
@@ -44,10 +41,7 @@ const columns = [
 ];
 
 const Staff = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
     const [userName, setUserName] = useState('');
     const [open, setOpen] = useState(false);
     const [staffId, setStaffId] = useState('');
@@ -73,7 +67,6 @@ const Staff = () => {
             name: staff[i].name,
             email: staff[i].email,
             mobile: staff[i].mobile,
-            address: staff[i].address,
             role: staff[i].role.name,
             status: (
                 <>

@@ -7,6 +7,7 @@ import { MdAdd } from 'react-icons/md';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { deleteCategory, getAllCategory, resetState } from '../../../features/category/categorySlice';
+import handlePermission from '../../../utils/permissionService';
 
 const columns = [
     {
@@ -33,10 +34,7 @@ const columns = [
 ];
 
 const Categories = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
     const [open, setOpen] = useState(false);
     const [catId, setCatId] = useState(null);
     const [catName, setCatName] = useState('');

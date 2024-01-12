@@ -29,11 +29,9 @@ const createUser = asyncHandler(async (req, res) => {
     }
 });
 
-const loginGoogle = asyncHandler(async (req, res) => {});
-
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
-    const findUser = await User.findOne({ email }).populate('role');
+    const findUser = await User.findOne({ email }).populate({ path: 'role', populate: { path: 'permissions' } });
     if (findUser && (await findUser.isPasswordMatched(password))) {
         if (findUser.isBlocked === false) {
             res.json({
@@ -204,13 +202,12 @@ const changePassword = asyncHandler(async (req, res) => {
 
 const forgotPasswordToken = asyncHandler(async (req, res) => {
     const { email } = req.body;
-    console.log(email);
     const findUser = await User.findOne({ email });
     if (!findUser) throw new Error('User not found with this email');
     try {
         const token = await findUser.createPasswordResetToken();
         await findUser.save();
-        const resetURL = `Hi, Please follow this link to reset Your Password. This link is valid till 10 minutes from now. <a href='http://localhost:8000/reset-password/${token}'>Click Here</>`;
+        const resetURL = `Xin chào, Vui lòng nhấp vào liên kết này để đặt lại Mật khẩu của bạn. Liên kết này có hiệu lực đến 10 phút kể từ bây giờ. <a href='http://localhost:5174/reset-password/${token}'>Click Here</>`;
         const data = {
             to: email,
             text: 'Hey User',
@@ -263,19 +260,36 @@ const getCoupon = asyncHandler(async (req, res) => {
 });
 
 const addToCart = asyncHandler(async (req, res) => {
-    const { productId, size, color, price, quantity } = req.body;
+    let { productId, size, color, quantity, stock } = req.body;
     const { _id } = req.user;
     validateMongoDbId(_id);
+
     try {
-        let newCart = await new Cart({
-            userId: _id,
-            prodId: productId,
-            quantity,
-            price,
-            color,
-            size,
-        }).save();
-        res.json(newCart);
+        if (req.body.tags == 'Sản phẩm đặc biệt') {
+            const price = req.body.salePrice;
+            let newCart = await new Cart({
+                userId: _id,
+                prodId: productId,
+                quantity,
+                price,
+                color,
+                size,
+                stock,
+            }).save();
+            res.json(newCart);
+        } else {
+            const price = req.body.price;
+            let newCart = await new Cart({
+                userId: _id,
+                prodId: productId,
+                quantity,
+                price,
+                color,
+                stock,
+                size,
+            }).save();
+            res.json(newCart);
+        }
     } catch (e) {
         throw new Error(e);
     }
@@ -504,20 +518,7 @@ const getCountOrderByMonth = asyncHandler(async (req, res) => {
 });
 
 const getCountOrderByYear = asyncHandler(async (req, res) => {
-    let month = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-    ];
+    let month = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
     let d = new Date();
     let endDate = '';
     d.setDate(1);
@@ -579,5 +580,4 @@ module.exports = {
     deleteOrder,
     getCountOrderByMonth,
     getCountOrderByYear,
-    loginGoogle,
 };

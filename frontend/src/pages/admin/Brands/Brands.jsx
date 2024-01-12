@@ -7,6 +7,7 @@ import { MdAdd } from 'react-icons/md';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { deleteBrand, getBrands, resetState } from '../../../features/brand/brandSlice';
+import handlePermission from '../../../utils/permissionService';
 
 const columns = [
     {
@@ -33,10 +34,7 @@ const columns = [
 ];
 
 const Brands = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
     const [open, setOpen] = useState(false);
     const [brandId, setBrandId] = useState(null);
     const [brandName, setBrandName] = useState('');

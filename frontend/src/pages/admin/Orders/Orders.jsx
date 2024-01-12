@@ -7,6 +7,7 @@ import { BiEdit } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
 import { FiDelete } from 'react-icons/fi';
 import { deleteOrder, getAllOrders, updateOrder } from '../../../features/order/orderSlice';
+import handlePermission from '../../../utils/permissionService';
 const columns = [
     {
         title: 'STT',
@@ -34,10 +35,7 @@ const columns = [
     },
 ];
 const Orders = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
     const [open, setOpen] = useState(false);
     const [open1, setOpen1] = useState(false);
     const [orderId, setOrderId] = useState(null);
@@ -154,6 +152,7 @@ const Orders = () => {
                 >
                     <div className="py-3">
                         <select onChange={(e) => handleChange(e.target.value)} className=" form-control form-select">
+                            <option value="">-- Chọn trạng thái --</option>
                             <option value="Chờ xét duyệt" disabled>
                                 Chờ xét duyệt
                             </option>

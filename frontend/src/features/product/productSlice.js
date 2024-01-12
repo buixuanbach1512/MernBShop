@@ -96,6 +96,14 @@ export const addToWishList = createAsyncThunk('product/add-to-wishlist', async (
     }
 });
 
+export const compareProduct = createAsyncThunk('product/compare-product', async (id, thunkAPI) => {
+    try {
+        return await productService.compareProduct(id);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
 export const rating = createAsyncThunk('product/rating', async (data, thunkAPI) => {
     try {
         return await productService.rating(data);
@@ -257,6 +265,21 @@ export const productSlice = createSlice({
                 state.addToWl = action.payload;
             })
             .addCase(addToWishList.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = false;
+                state.isError = true;
+                state.message = action.error;
+            })
+            .addCase(compareProduct.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(compareProduct.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.isError = false;
+                state.compareList = action.payload;
+            })
+            .addCase(compareProduct.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = false;
                 state.isError = true;

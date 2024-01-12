@@ -18,9 +18,13 @@ import Order from './pages/customer/Order';
 import Profile from './pages/customer/Profile';
 import ResetPassword from './pages/customer/ResetPassword';
 import ChangePassword from './pages/customer/ChangePassword';
-import Blogs from './pages/customer/Blogs';
+import Blog from './pages/customer/Blog';
+import SingleBlog from './pages/customer/SingleBlog';
 import Coupon from './pages/customer/Coupon';
 import MyCoupon from './pages/customer/MyCoupon';
+import OrderHistory from './pages/customer/OrderHistory';
+import InBoxShop from './pages/customer/InBoxShop';
+import Compare from './pages/customer/Compare';
 
 import MainLayout from './components/admin/MainLayout';
 import Dashboard from './pages/admin/Dashboard';
@@ -35,7 +39,7 @@ import Roles from './pages/admin/Roles/Roles';
 import AddRole from './pages/admin/Roles/AddRole';
 import Products from './pages/admin/Products/Products';
 import AddProduct from './pages/admin/Products/AddProduct';
-import AddWareHouse from './pages/admin/Products/AddWareHouse';
+import AddWareHouse from './pages/admin/Statistics/AddWareHouse';
 import Orders from './pages/admin/Orders/Orders';
 import OrderDetail from './pages/admin/Orders/OrderDetail';
 import Coupons from './pages/admin/Coupons/Coupons';
@@ -46,6 +50,12 @@ import Categories from './pages/admin/Categories/Categories';
 import AddCategory from './pages/admin/Categories/AddCategory';
 import Brands from './pages/admin/Brands/Brands';
 import AddBrand from './pages/admin/Brands/AddBrand';
+import AddBlog from './pages/admin/Blogs/AddBlog';
+import Blogs from './pages/admin/Blogs/Blogs';
+import ShopInbox from './pages/admin/ShopInbox';
+import Permissions from './pages/admin/Permissions/Permissions';
+import AddPermission from './pages/admin/Permissions/AddPermission';
+import WarehouseStatistics from './pages/admin/Statistics/WarehouseStatistics';
 
 function App() {
     return (
@@ -95,6 +105,14 @@ function App() {
                                     </PrivateRoutes>
                                 }
                             />
+                            <Route
+                                path="inbox-shop"
+                                element={
+                                    <PrivateRoutes>
+                                        <InBoxShop />
+                                    </PrivateRoutes>
+                                }
+                            />
                             <Route path="store/:slug/:id" element={<Store />} />
                             <Route path="product/:slug/:id" element={<Product />} />
                             <Route
@@ -121,8 +139,18 @@ function App() {
                                     </PrivateRoutes>
                                 }
                             />
+                            <Route
+                                path="order-history"
+                                element={
+                                    <PrivateRoutes>
+                                        <OrderHistory />
+                                    </PrivateRoutes>
+                                }
+                            />
                             <Route path="contact" element={<Contact />} />
-                            <Route path="blogs" element={<Blogs />} />
+                            <Route path="blogs" element={<Blog />} />
+                            <Route path="single-blog/:id" element={<SingleBlog />} />
+                            <Route path="compare-product/:id" element={<Compare />} />
                             <Route path="forgot-password" element={<ForgotPassword />} />
                             <Route
                                 path="my-profile/:id"
@@ -181,6 +209,14 @@ function App() {
                             <Route path="rating" element={<Rating />} />
                             <Route path="orders" element={<Orders />} />
                             <Route path="order-detail/:id" element={<OrderDetail />} />
+                            <Route path="inbox" element={<ShopInbox />} />
+                            <Route path="blogs" element={<Blogs />} />
+                            <Route path="addBlog" element={<AddBlog />} />
+                            <Route path="blogs" element={<Blogs />} />
+                            <Route path="warehouse-statistics" element={<WarehouseStatistics />} />
+                            <Route path="permissions" element={<Permissions />} />
+                            <Route path="addPermission" element={<AddPermission />} />
+                            <Route path="editPermission/:id" element={<AddPermission />} />
                         </Route>
                     </Routes>
                 </ScrollToTop>

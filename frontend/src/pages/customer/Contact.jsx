@@ -8,7 +8,7 @@ import { FaInfo } from 'react-icons/fa';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { useDispatch } from 'react-redux';
-import { postContact, resetState } from '../../features/contact/contactSlice';
+import { postContact } from '../../features/contact/contactSlice';
 
 const schema = Yup.object().shape({
     name: Yup.string().required('Chưa nhập tên người gửi'),
@@ -30,9 +30,6 @@ const Contact = () => {
         onSubmit: (values) => {
             dispatch(postContact(values));
             formik.resetForm();
-            setTimeout(() => {
-                dispatch(resetState());
-            }, 200);
         },
     });
     return (
@@ -45,11 +42,10 @@ const Contact = () => {
                         <div className="col-12">
                             <iframe
                                 title="B-Shop"
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14900.863225388688!2d105.8308609816679!3d20.9839847404624!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ac43b9df7159%3A0xedf6f428a5bc9fd5!2zR2nDoXAgQsOhdCwgSG_DoG5nIE1haSwgSMOgIE7hu5lpLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1701185071640!5m2!1svi!2s"
-                                width="600"
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5266.042951180522!2d105.78095547230032!3d21.046498750119504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135abb158a2305d%3A0x5c357d21c785ea3d!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyDEkGnhu4duIEzhu7Fj!5e0!3m2!1svi!2s!4v1704717623379!5m2!1svi!2s"
                                 height="450"
                                 className="border-0 w-100"
-                                allowFullScreen=""
+                                allowfullscreen=""
                                 loading="lazy"
                                 referrerPolicy="no-referrer-when-downgrade"
                             ></iframe>

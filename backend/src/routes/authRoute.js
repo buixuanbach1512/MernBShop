@@ -26,7 +26,6 @@ const {
     getCountOrderByYear,
     updateOrder,
     applyCoupon,
-    loginGoogle,
     getCoupon,
     deleteOrder,
     updateUserById,
@@ -41,7 +40,6 @@ router.post('/login-admin', loginAdmin);
 router.post('/forgot-password-token', forgotPasswordToken);
 router.put('/reset-password/:token', resetPassword);
 router.put('/change-password', authMiddleware, changePassword);
-router.post('/request', loginGoogle);
 
 // cart
 router.post('/add-to-cart', authMiddleware, addToCart);
@@ -59,7 +57,7 @@ router.get('/order-by-month', authMiddleware, isAdmin, getCountOrderByMonth);
 router.get('/order-by-year', authMiddleware, isAdmin, getCountOrderByYear);
 router.post('/create-order', authMiddleware, createOrder);
 router.get('/order/:id', authMiddleware, isAdmin, getOrderbyId);
-router.put('/order/:id', authMiddleware, isAdmin, updateOrder);
+router.put('/order/:id', authMiddleware, updateOrder);
 router.delete('/order/:id', authMiddleware, isAdmin, deleteOrder);
 
 // user

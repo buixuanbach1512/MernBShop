@@ -1,13 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { addToWishList } from '../../features/product/productSlice';
 import { IoIosHeartEmpty } from 'react-icons/io';
+import { PiArrowsCounterClockwiseFill } from 'react-icons/pi';
 import { toast } from 'react-toastify';
 import StarRatings from 'react-star-ratings';
+import { addToWishList } from '../../features/product/productSlice';
 
 const ProductCard = (props) => {
     const navigate = useNavigate();
-    const { grid, item } = props;
+    const { grid, item, type } = props;
     let location = useLocation();
     const authState = useSelector((state) => state.auth);
     const dispatch = useDispatch();
@@ -20,7 +21,10 @@ const ProductCard = (props) => {
     };
 
     const handleClick = (data) => {
-        navigate(`/product/${data.slug}/${data._id}`, { state: data });
+        navigate(`/product/${data.slug}/${data._id}`);
+    };
+    const handleSubmit = (id) => {
+        navigate(`/compare-product/${id}`);
     };
     return (
         <div
@@ -32,7 +36,7 @@ const ProductCard = (props) => {
             style={{ padding: 5 }}
         >
             <div className="product-card position-relative">
-                <div className="wishlist-icon position-absolute">
+                <div className="wishlist-icon position-absolute d-flex flex-column gap-10">
                     <button
                         className="bg-transparent border-0"
                         onClick={() => {
@@ -41,14 +45,20 @@ const ProductCard = (props) => {
                     >
                         <IoIosHeartEmpty className="prod-icon heart-icon" />
                     </button>
+                    <button className="bg-transparent border-0" onClick={() => handleSubmit(item._id)}>
+                        <PiArrowsCounterClockwiseFill className="prod-icon" />
+                    </button>
                 </div>
-                <div className="product-image">
+                <div className="product-image py-3">
                     <button className="bg-transparent border-0" onClick={() => handleClick(item)}>
                         <img className="img-fluid" src={item.images[0].url} alt="productimage" />
                     </button>
                 </div>
                 <div className="product-details mt-2">
-                    <h6 className="brand">{item.brand.name}</h6>
+                    <div className="d-flex justify-content-between">
+                        <h6 className="brand">{item.brand.name}</h6>
+                        {type == 'best-selling' ? <span>(đã bán: {item.sold})</span> : ''}
+                    </div>
                     <h5 className="product-title">{item.name}</h5>
                     <div className="mb-2">
                         <StarRatings

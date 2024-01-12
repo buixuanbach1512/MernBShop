@@ -1,18 +1,29 @@
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import moment from 'moment';
 
-const BlogCard = () => {
+const BlogCard = (props) => {
     let location = useLocation();
+    const navigate = useNavigate();
+    const { item } = props;
+    const handleClick = (data) => {
+        navigate(`/single-blog/${data._id}`);
+    };
     return (
-        <div className={`${location.pathname === '/blogs' ? `col-xl-4 col-md-4 col-12 ` : 'col-xl-3 col-md-3 col-4'}`}>
+        <div className={`${location.pathname === '/blogs' ? `col-xl-4 col-md-4 col-12 ` : 'col-xl-3 col-md-4 col-6'}`}>
             <div className="blog-card">
                 <div className="card-image">
-                    <img src="images/blog-1.jpg" className="img-fluid" alt="blog" />
+                    <img src={item.images[0].url} className="img-fluid" alt="blog" />
                 </div>
                 <div className="blog-content">
-                    <p className="date">7 Tháng 11, 2023</p>
-                    <h5 className="title">Một buổi sáng chủ nhật đẹp trời</h5>
-                    <p className="desc">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                    <Link className="button text-uppercase">Read More</Link>
+                    <p className="date">
+                        {moment(item.createdAt).format('DD')} Tháng {moment(item.createdAt).format('MM')},{' '}
+                        {moment(item.createdAt).format('YYYY')}
+                    </p>
+                    <h5 className="title">{item.title}</h5>
+                    <p className="desc">{item.subTitle}</p>
+                    <button className="button text-uppercase border-0" onClick={() => handleClick(item)}>
+                        Read More
+                    </button>
                 </div>
             </div>
         </div>

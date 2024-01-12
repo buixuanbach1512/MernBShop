@@ -8,6 +8,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { deleteColor, getAllColor } from '../../../features/color/colorSlice';
 import { resetState } from '../../../features/category/categorySlice';
+import handlePermission from '../../../utils/permissionService';
 
 const columns = [
     {
@@ -37,10 +38,7 @@ const columns = [
 ];
 
 const Colors = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
     const [open, setOpen] = useState(false);
     const [colorId, setColorId] = useState(null);
     const [colorName, setColorName] = useState('');

@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { PiArrowDownRight } from 'react-icons/pi';
-import { PiArrowUpRight } from 'react-icons/pi';
 import { Column } from '@ant-design/plots';
 import { Table } from 'antd';
+import { CSVLink } from 'react-csv';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllOrders, getCountOrderByMonth, getCountOrderByYear } from '../../features/order/orderSlice';
+import { CgExport } from 'react-icons/cg';
+import { getAllProduct } from '../../features/product/productSlice';
+import handlePermission from '../../utils/permissionService';
 
 const monthNames = [
     'Tháng 1',
@@ -21,7 +23,7 @@ const monthNames = [
     'Tháng 12',
 ];
 
-const columns = [
+const columns1 = [
     {
         title: 'STT',
         dataIndex: 'key',
@@ -44,24 +46,46 @@ const columns = [
     },
 ];
 
+const columns2 = [
+    {
+        title: 'STT',
+        dataIndex: 'key',
+    },
+    {
+        title: 'Sản phẩm',
+        dataIndex: 'name',
+        width: '45%',
+    },
+    {
+        title: 'Ảnh',
+        dataIndex: 'image',
+    },
+    {
+        title: 'Giá tiền',
+        dataIndex: 'price',
+    },
+    {
+        title: 'Đã bán',
+        dataIndex: 'sold',
+    },
+];
+
 const Dashboard = () => {
+    const permissions = handlePermission();
     const [dataIncome, setDataIncome] = useState([]);
     const [dataCount, setDataCount] = useState([]);
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(getCountOrderByMonth());
-        dispatch(getCountOrderByYear());
-        dispatch(getAllOrders());
-    }, [dispatch]);
 
     const orderMonthState = useSelector((state) => state.order.countOrderMonth);
     const orderYearState = useSelector((state) => state.order.countOrderYear);
     const allOrderState = useSelector((state) => state.order.orders);
+    const allProductState = useSelector((state) => state.product.products);
+    useEffect(() => {
+        dispatch(getCountOrderByMonth());
+        dispatch(getCountOrderByYear());
+        dispatch(getAllOrders());
+        dispatch(getAllProduct());
+    }, [dispatch]);
 
     useEffect(() => {
         let newDataIncome = [];
@@ -80,6 +104,26 @@ const Dashboard = () => {
         setDataCount(newDataCount);
     }, [orderMonthState]);
 
+    const products = [];
+    allProductState && allProductState.forEach((item) => products.push(item));
+
+    for (let i = 0; i < products?.length - 1; i++) {
+        for (let j = i + 1; j < products.length; j++) {
+            if (products[i].sold < products[j].sold) {
+                let temp = products[i];
+                products[i] = products[j];
+                products[j] = temp;
+            }
+        }
+    }
+
+    let orderQuantity = 0;
+    for (let i = 0; i < allOrderState.length; i++) {
+        if (allOrderState[i].orderStatus == 'Đã giao hàng') {
+            orderQuantity = orderQuantity + 1;
+        }
+    }
+
     const orders = allOrderState?.filter((value) => value.orderStatus == 'Chờ duyệt');
     const data1 = [];
     for (let i = 0; i < orders.length; i++) {
@@ -89,6 +133,16 @@ const Dashboard = () => {
             totalPrice: orders[i].totalPrice,
             totalPriceAfterDiscount: orders[i].totalPriceAfterDiscount,
             status: orders[i].orderStatus,
+        });
+    }
+    const data2 = [];
+    for (let i = 0; i < products.length; i++) {
+        data2.push({
+            key: i + 1,
+            name: products[i]?.name,
+            image: <img src={products[i].images[0]?.url} alt="" width={50} height={50} />,
+            price: products[i]?.price,
+            sold: products[i]?.sold,
         });
     }
     const config = {
@@ -156,11 +210,7 @@ const Dashboard = () => {
                         </h4>
                     </div>
                     <div className="d-flex flex-column align-items-end">
-                        <h6 className="red">
-                            <PiArrowDownRight />
-                            32%
-                        </h6>
-                        <p className="mb-0">{orderYearState && orderYearState[0]?._id?.compareDate} đến hiện tại</p>
+                        <p className="mb-0">Tính từ tháng {orderYearState && orderYearState[0]?._id?.compareDate}</p>
                     </div>
                 </div>
                 <div className="content-wrapper d-flex justify-content-between align-items-end flex-grow-1 bg-white p-3 rounded-3">
@@ -169,26 +219,13 @@ const Dashboard = () => {
                         <h4 className="mb-0">{orderYearState && orderYearState[0]?.count} sản phẩm</h4>
                     </div>
                     <div className="d-flex flex-column align-items-end">
-                        <h6 className="green">
-                            <PiArrowUpRight />
-                            32%
-                        </h6>
-                        <p className="mb-0">{orderYearState && orderYearState[0]?._id?.compareDate} đến hiện tại</p>
+                        <p className="mb-0">Tính từ tháng {orderYearState && orderYearState[0]?._id?.compareDate}</p>
                     </div>
                 </div>
                 <div className=" content-wrapper d-flex justify-content-between align-items-end flex-grow-1 bg-white p-3 rounded-3">
                     <div>
-                        <p>Total</p>
-                        <h4 className="mb-0">
-                            100000<sup>đ</sup>
-                        </h4>
-                    </div>
-                    <div className="d-flex flex-column align-items-end">
-                        <h6 className="red">
-                            <PiArrowDownRight />
-                            32%
-                        </h6>
-                        <p className="mb-0">Compared To April 2022</p>
+                        <p>Đơn hàng</p>
+                        <h4 className="mb-0">{orderQuantity} đơn hàng đã xong</h4>
                     </div>
                 </div>
             </div>
@@ -206,10 +243,59 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
-            <div className="content-wrapper my-5 p-4 bg-white">
-                <h4 className="mb-4">Đơn hàng chờ duyệt</h4>
-                <div>
-                    <Table columns={columns} dataSource={data1} />
+            <div className="my-5">
+                <div className="content-wrapper  p-4 bg-white">
+                    <div className=" d-flex justify-content-between mb-4 align-items-center">
+                        <h4 className="mb-0">Đơn hàng chờ duyệt</h4>
+                        <CSVLink
+                            data={data1}
+                            onClick={() => {
+                                console.log('exportCSV');
+                            }}
+                            className="btn btn-success d-flex align-items-center gap-2"
+                        >
+                            <CgExport /> CSV
+                        </CSVLink>
+                    </div>
+                    <div>
+                        <Table columns={columns1} dataSource={data1} />
+                    </div>
+                </div>
+            </div>
+            <div className="d-flex justify-content-between gap-10 my-5">
+                <div className="content-wrapper  p-4 bg-white">
+                    <div className=" d-flex justify-content-between mb-4 align-items-center">
+                        <h4 className="mb-0">Sản phẩm bán chạy</h4>
+                        <CSVLink
+                            data={data2}
+                            onClick={() => {
+                                console.log('exportCSV');
+                            }}
+                            className="btn btn-success d-flex align-items-center gap-2"
+                        >
+                            <CgExport /> CSV
+                        </CSVLink>
+                    </div>
+                    <div>
+                        <Table size="small" columns={columns2} dataSource={data2} pagination={{ pageSize: 5 }} />
+                    </div>
+                </div>
+                <div className="content-wrapper p-4 bg-white">
+                    <div className=" d-flex justify-content-between mb-4 align-items-center">
+                        <h4 className="mb-0">Đơn hàng chờ duyệt</h4>
+                        <CSVLink
+                            data={data1}
+                            onClick={() => {
+                                console.log('exportCSV');
+                            }}
+                            className="btn btn-success d-flex align-items-center gap-2"
+                        >
+                            <CgExport /> CSV
+                        </CSVLink>
+                    </div>
+                    <div>
+                        <Table columns={columns2} dataSource={data2} />
+                    </div>
                 </div>
             </div>
         </>

@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { RiArrowGoBackFill } from 'react-icons/ri';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { getAllProduct, getProduct, updateQuantity } from '../../../features/product/productSlice';
+import { getAllProduct, getProduct, resetState, updateQuantity } from '../../../features/product/productSlice';
+import handlePermission from '../../../utils/permissionService';
 
 const columns = [
     {
@@ -33,10 +34,7 @@ const columns = [
 ];
 
 const AddWareHouse = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
     const [nameProd, setNameProd] = useState('');
     const [edit, setEdit] = useState(false);
     const [quantity, setQuantity] = useState(null);
@@ -45,7 +43,7 @@ const AddWareHouse = () => {
     const navigate = useNavigate();
     const productState = useSelector((state) => state.product);
     const aProductState = useSelector((state) => state.product.getProduct);
-    const allaProductState = useSelector((state) => state.product.products);
+    const allProductState = useSelector((state) => state.product.products);
     useEffect(() => {
         dispatch(getAllProduct());
     }, [dispatch]);
@@ -122,22 +120,25 @@ const AddWareHouse = () => {
     useEffect(() => {
         if (productState.updatedQuan) {
             toast.success('Nhập hàng thành công');
-            navigate('/admin/products');
+            setTimeout(() => {
+                dispatch(resetState());
+                navigate('/admin/warehouse-statistics');
+            }, 200);
         }
         if (productState.isError) {
             toast.error('Đã có lỗi xảy ra');
         }
-    }, [productState, navigate]);
+    }, [productState, navigate, dispatch]);
 
     return permissions.indexOf('add-warehouse') !== -1 ? (
         <div className="content-wrapper bg-white p-4">
-            <h3 className="mb-4 border-bottom">Kho hàng</h3>
+            <h3 className="mb-4 border-bottom">Nhập hàng</h3>
             <div className="mb-4 d-flex justify-content-between align-items-center">
                 <div className=" d-flex align-items-center gap-15">
                     <div className=" input-group">
                         <select className="form-control" name="category" onChange={(e) => handleChangeProd(e)}>
                             <option value="">Chọn sản phẩm</option>
-                            {allaProductState.map((item, index) => {
+                            {allProductState.map((item, index) => {
                                 return (
                                     <option key={index} value={item.name}>
                                         {item.name}
@@ -162,9 +163,12 @@ const AddWareHouse = () => {
                     </div>
                 </div>
                 <div className=" d-flex gap-10">
-                    <button className="btn btn-success d-flex align-items-center gap-2" onClick={() => navigate(-1)}>
+                    <Link
+                        to={'/admin/warehouse-statistics'}
+                        className="btn btn-success d-flex align-items-center gap-2"
+                    >
                         <RiArrowGoBackFill /> Trở lại
-                    </button>
+                    </Link>
                 </div>
             </div>
             <div>

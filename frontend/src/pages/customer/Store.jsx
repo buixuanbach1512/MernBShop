@@ -3,7 +3,6 @@ import BreadCrumb from '../../components/customer/BreadCrumb';
 import Meta from '../../components/customer/Meta';
 import ProductCard from '../../components/customer/ProductCard';
 import { useDispatch, useSelector } from 'react-redux';
-import Color from '../../components/customer/ColorList';
 import { getAllColor } from '../../features/color/colorSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Pagination from '../../components/customer/Pagination';
@@ -25,7 +24,6 @@ const Store = () => {
     const dispatch = useDispatch();
     const productState = useSelector((state) => state.product.productCate);
     const categoryState = useSelector((state) => state.category.categories);
-    const colorState = useSelector((state) => state.color.colors);
     useEffect(() => {
         dispatch(getProductByCate({ catId, sort, stock, price }));
         dispatch(getAllColor());
@@ -36,7 +34,7 @@ const Store = () => {
     };
 
     const handleNav = (data) => {
-        navigate(`/store/${data.slug}`, { state: data });
+        navigate(`/store/${data.slug}/${data._id}`);
     };
 
     const lastItemIndex = currentPage * itemsPerPage;
@@ -150,10 +148,10 @@ const Store = () => {
                                             </select>
                                         </div>
                                     </div>
-                                    <h5 className="sub-title">Màu Sắc</h5>
+                                    {/* <h5 className="sub-title">Màu Sắc</h5>
                                     <div>
                                         <Color colorData={colorState} />
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>

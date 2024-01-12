@@ -1,9 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Table } from 'antd';
 import { RiArrowGoBackFill } from 'react-icons/ri';
+import { IoIosPrint } from 'react-icons/io';
+import { useReactToPrint } from 'react-to-print';
 import { getOrderById } from '../../../features/order/orderSlice';
+import handlePermission from '../../../utils/permissionService';
 
 const columns = [
     {
@@ -34,10 +37,13 @@ const columns = [
 ];
 
 const OrderDetail = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
+    const componentRef = useRef();
+    const handlePrint = useReactToPrint({
+        content: () => componentRef.current,
+        documentTitle: 'Chi tiết đơn hàng',
+        pageStyle: 'print',
+    });
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
@@ -73,11 +79,22 @@ const OrderDetail = () => {
             <div>
                 <div className="d-flex justify-content-between align-items-center mb-3">
                     <h3 className="mb-4">Chi tiết đơn hàng</h3>
-                    <button className="btn btn-success d-flex align-items-center gap-2" onClick={() => navigate(-1)}>
-                        <RiArrowGoBackFill /> Trở lại
-                    </button>
+                    <div className=" d-flex gap-10">
+                        <button
+                            className="btn btn-warning d-flex align-items-center gap-2"
+                            onClick={() => handlePrint()}
+                        >
+                            <IoIosPrint /> In
+                        </button>
+                        <button
+                            className="btn btn-success d-flex align-items-center gap-2"
+                            onClick={() => navigate(-1)}
+                        >
+                            <RiArrowGoBackFill /> Trở lại
+                        </button>
+                    </div>
                 </div>
-                <div>
+                <div ref={componentRef}>
                     <ul className="list-group">
                         <li className="list-group-item active">
                             <h5 className="mb-0">Thông tin khách hàng</h5>
@@ -95,10 +112,10 @@ const OrderDetail = () => {
                             <p className="mb-0">Địa chỉ giao hàng khác( nếu có ): {orderState?.shippingInfo?.other}</p>
                         </li>
                     </ul>
+                    <div className="mt-5">
+                        <Table columns={columns} dataSource={data1} />
+                    </div>
                 </div>
-            </div>
-            <div className="mt-5">
-                <Table columns={columns} dataSource={data1} />
             </div>
         </div>
     ) : (

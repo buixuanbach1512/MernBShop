@@ -6,11 +6,16 @@ const validateMongoDbId = require('../utils/validateMongoDbId');
 const { ObjectId } = require('mongodb');
 
 const createProduct = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    validateMongoDbId(_id);
     try {
         if (req.body.name) {
             req.body.slug = slugify(req.body.name);
         }
-        const newProduct = await Product.create(req.body);
+        if (req.body.tags == 'Sản phẩm đặc biệt') {
+            req.body.salePrice = (req.body.price - (req.body.price * 10) / 100).toFixed(0);
+        }
+        const newProduct = await Product.create({ ...req.body, postedBy: _id });
         res.json(newProduct);
     } catch (e) {
         throw new Error(e);
@@ -25,7 +30,8 @@ const getAProduct = asyncHandler(async (req, res) => {
             .populate('category')
             .populate('color')
             .populate('ratings.postedBy')
-            .populate('size');
+            .populate('size')
+            .populate('postedBy');
         res.json(getOne);
     } catch (e) {
         throw new Error(e);
@@ -59,7 +65,8 @@ const getAllProduct = asyncHandler(async (req, res) => {
             .populate('brand')
             .populate('category')
             .populate('color')
-            .populate('ratings.postedBy');
+            .populate('ratings.postedBy')
+            .populate('postedBy');
 
         if (req.query.sort) {
             const sortBy = req.query.sort.split(',').join(' ');
@@ -84,14 +91,24 @@ const getAllProduct = asyncHandler(async (req, res) => {
 });
 
 const updateProduct = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { _id } = req.user;
+    validateMongoDbId(id);
+    validateMongoDbId(_id);
     try {
-        const { id } = req.params;
         if (req.body.name) {
             req.body.slug = slugify(req.body.name);
         }
-        const updatePro = await Product.findByIdAndUpdate(id, req.body, {
-            new: true,
-        });
+        if (req.body.tags == 'Sản phẩm đặc biệt') {
+            req.body.salePrice = (req.body.price - (req.body.price * 10) / 100).toFixed(0);
+        }
+        const updatePro = await Product.findByIdAndUpdate(
+            id,
+            { ...req.body, postedBy: _id },
+            {
+                new: true,
+            },
+        );
         res.json(updatePro);
     } catch (e) {
         throw new Error(e);
@@ -150,6 +167,23 @@ const addToWishlist = asyncHandler(async (req, res) => {
         }
     } catch (error) {
         throw new Error(error);
+    }
+});
+
+const compare = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    validateMongoDbId(id);
+    try {
+        const product = await Product.findById(id).populate('category');
+        const catId = product.category._id;
+        const products = await Product.find({ category: catId })
+            .populate('category')
+            .populate('brand')
+            .populate('color')
+            .populate('size');
+        res.json(products);
+    } catch (e) {
+        throw new Error(e);
     }
 });
 
@@ -297,6 +331,7 @@ module.exports = {
     updateProduct,
     deleteProduct,
     addToWishlist,
+    compare,
     rating,
     updateQuantity,
     getProductAllCate,

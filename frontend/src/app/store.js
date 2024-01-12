@@ -11,6 +11,10 @@ import sizeReducer from '../features/size/sizeSlice';
 import uploadReducer from '../features/upload/uploadSlice';
 import orderReducer from '../features/order/orderSlice';
 import roleReducer from '../features/role/roleSlice';
+import blogReducer from '../features/blog/blogSlice';
+import consversationReducer from '../features/conversation/consversationSlice';
+import messageReducer from '../features/message/messageSlice';
+import permissionReducer from '../features/permission/permissionSlice';
 export const store = configureStore({
     reducer: {
         auth: authReducer,
@@ -25,5 +29,9 @@ export const store = configureStore({
         upload: uploadReducer,
         order: orderReducer,
         role: roleReducer,
+        blog: blogReducer,
+        conversation: consversationReducer,
+        message: messageReducer,
+        permission: permissionReducer,
     },
 });

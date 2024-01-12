@@ -2,8 +2,22 @@ import Meta from '../../components/customer/Meta';
 import BreadCrumb from '../../components/customer/BreadCrumb';
 import { Link } from 'react-router-dom';
 import BlogCard from '../../components/customer/BlogCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { getAllBlog } from '../../features/blog/blogSlice';
+import Pagination from '../../components/customer/Pagination';
 
 const Blogs = () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(8);
+    const dispatch = useDispatch();
+    const allBlogState = useSelector((state) => state.blog.blogs);
+    useEffect(() => {
+        dispatch(getAllBlog());
+    }, [dispatch]);
+    const lastItemIndex = currentPage * itemsPerPage;
+    const firstItemIndex = lastItemIndex - itemsPerPage;
+    const currentItems = allBlogState && allBlogState.slice(firstItemIndex, lastItemIndex);
     return (
         <>
             <Meta title={'Blog'} />
@@ -48,14 +62,16 @@ const Blogs = () => {
                             </div>
                             <div className="product-list pb-5">
                                 <div className="d-flex flex-wrap">
-                                    <BlogCard />
+                                    {currentItems?.map((item) => (
+                                        <BlogCard key={item._id} item={item} />
+                                    ))}
                                 </div>
-                                {/* <Pagination
-                                    totalItems={productState?.length}
+                                <Pagination
+                                    totalItems={allBlogState?.length}
                                     itemsPerPage={itemsPerPage}
                                     setCurrentPage={setCurrentPage}
                                     currentPage={currentPage}
-                                /> */}
+                                />
                             </div>
                         </div>
                     </div>

@@ -18,6 +18,10 @@ import { FaUsersCog } from 'react-icons/fa';
 import { CgSize } from 'react-icons/cg';
 import { TfiControlEject } from 'react-icons/tfi';
 import { MdContactPhone } from 'react-icons/md';
+import { FaBloggerB } from 'react-icons/fa';
+import { MdOutlineRateReview } from 'react-icons/md';
+import { GiKeyring } from 'react-icons/gi';
+import { FcStatistics } from 'react-icons/fc';
 
 // antd
 import { Layout, Menu, Button, theme } from 'antd';
@@ -25,6 +29,7 @@ import { Layout, Menu, Button, theme } from 'antd';
 // react toastify
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { IoChatboxEllipsesOutline } from 'react-icons/io5';
 
 const { Header, Sider, Content } = Layout;
 const MainLayout = () => {
@@ -88,16 +93,32 @@ const MainLayout = () => {
                             label: 'Dash Board',
                         },
                         {
-                            key: 'customers',
+                            key: 'user',
                             icon: <AiOutlineUser className="fs-3" />,
-                            label: 'Khách Hàng',
+                            label: 'Quản lý người dùng',
+                            children: [
+                                {
+                                    key: 'customers',
+                                    icon: <AiOutlineUser className="fs-3" />,
+                                    label: 'Khách Hàng',
+                                },
+                                {
+                                    key: 'staff',
+                                    icon: <FaUsersCog className="fs-3" />,
+                                    label: 'Nhân Viên',
+                                },
+                                {
+                                    key: 'roles',
+                                    icon: <TfiControlEject className="fs-3" />,
+                                    label: 'Chức vụ',
+                                },
+                                {
+                                    key: 'permissions',
+                                    icon: <GiKeyring className="fs-3" />,
+                                    label: 'Các quyền',
+                                },
+                            ],
                         },
-                        {
-                            key: 'staff',
-                            icon: <FaUsersCog className="fs-3" />,
-                            label: 'Nhân Viên',
-                        },
-
                         {
                             key: 'catalog',
                             icon: <AiOutlineShoppingCart className="fs-3" />,
@@ -128,14 +149,14 @@ const MainLayout = () => {
                                     icon: <BiCategory className="fs-3" />,
                                     label: 'Danh Mục',
                                 },
+                                {
+                                    key: 'blogs',
+                                    icon: <FaBloggerB className="fs-3" />,
+                                    label: 'Blog',
+                                },
                             ],
                         },
 
-                        {
-                            key: 'roles',
-                            icon: <TfiControlEject className="fs-3" />,
-                            label: 'Chức vụ',
-                        },
                         {
                             key: 'coupons',
                             icon: <RiCoupon3Fill className="fs-3" />,
@@ -143,13 +164,30 @@ const MainLayout = () => {
                         },
                         {
                             key: 'rating',
-                            icon: <FaClipboardList className="fs-3" />,
+                            icon: <MdOutlineRateReview className="fs-3" />,
                             label: 'Đánh giá',
                         },
                         {
                             key: 'orders',
                             icon: <FaClipboardList className="fs-3" />,
                             label: 'Đơn Hàng',
+                        },
+                        {
+                            key: 'statistics',
+                            icon: <FcStatistics className="fs-3" />,
+                            label: 'Thống kê',
+                            children: [
+                                {
+                                    key: 'warehouse-statistics',
+                                    icon: <FcStatistics className="fs-3" />,
+                                    label: 'Thống kê kho hàng',
+                                },
+                            ],
+                        },
+                        {
+                            key: 'inbox',
+                            icon: <IoChatboxEllipsesOutline className="fs-3" />,
+                            label: 'Chat với khách hàng',
                         },
                         {
                             key: 'contact',
@@ -178,23 +216,16 @@ const MainLayout = () => {
                             height: 60,
                         }}
                     />
-                    <div className="d-flex align-items-center">
-                        <button
-                            style={{
-                                width: '50px',
-                                height: '20px',
-                                fontSize: '1rem',
-                            }}
-                            onClick={handleLogout}
-                        >
+                    <div className="">
+                        <button onClick={handleLogout} className="btn btn-danger border-0">
                             Đăng xuất
                         </button>
                     </div>
                 </Header>
                 <Content
                     style={{
-                        margin: '24px 16px',
-                        padding: 24,
+                        margin: '18px 16px',
+                        padding: 10,
                         minHeight: 280,
                         background: colorBgContainer,
                     }}

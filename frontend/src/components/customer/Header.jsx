@@ -215,6 +215,11 @@ const Header = () => {
                                                     </Link>
                                                 </li>
                                                 <li>
+                                                    <Link to="/order-history" className="dropdown-item text-dark">
+                                                        Lịch sử mua hàng
+                                                    </Link>
+                                                </li>
+                                                <li>
                                                     <Link to="/my-coupon" className="dropdown-item text-dark">
                                                         Phiếu mua hàng của tôi
                                                     </Link>
@@ -322,6 +327,13 @@ const Header = () => {
                                                     Trang chủ
                                                 </NavLink>
                                             </li>
+                                            {authState && authState?.user?.type == 'admin' && (
+                                                <li className="nav-item">
+                                                    <NavLink className="dropdown-item text-dark" to={`/admin`}>
+                                                        Trang quản trị
+                                                    </NavLink>
+                                                </li>
+                                            )}
                                             <li className="nav-item">
                                                 <NavLink className="nav-link" to="/store">
                                                     Cửa Hàng

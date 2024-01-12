@@ -8,6 +8,8 @@ import { Select } from 'antd';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Dropzone from 'react-dropzone';
+import moment from 'moment';
+import { RiArrowGoBackFill } from 'react-icons/ri';
 import { createProduct, getAllProduct, resetState, updateProduct } from '../../../features/product/productSlice';
 import { getBrands } from '../../../features/brand/brandSlice';
 import { getAllCategory } from '../../../features/category/categorySlice';
@@ -15,6 +17,7 @@ import { getAllColor } from '../../../features/color/colorSlice';
 import { getSize } from '../../../features/size/sizeSlice';
 import linearCategories from '../../../utils/linearCategories';
 import { deleteImg, resetStateUpload, uploadImg } from '../../../features/upload/uploadSlice';
+import handlePermission from '../../../utils/permissionService';
 
 let schema = Yup.object().shape({
     name: Yup.string().required('Chưa nhập tên sản phẩm!'),
@@ -27,10 +30,7 @@ let schema = Yup.object().shape({
 });
 
 const AddProduct = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
     const dispatch = useDispatch();
     const location = useLocation();
     const [colorP, setColorP] = useState(location.state?.color || []);
@@ -116,6 +116,7 @@ const AddProduct = () => {
             tags: location.state?.tags || '',
             brand: location.state?.brand || '',
             quantity: location.state?.quantity || '',
+            dateSale: (location.state?.dateSale && moment(location.state?.dateSale).format('YYYY-MM-DD')) || '',
         },
         validationSchema: schema,
         onSubmit: (values) => {
@@ -159,7 +160,12 @@ const AddProduct = () => {
     });
     return permissions.indexOf('add-product') !== -1 ? (
         <div className="content-wrapper bg-white p-5">
-            <h3 className="mb-4">{location.state?.id !== undefined ? 'Sửa' : 'Thêm'} sản phẩm</h3>
+            <div className="d-flex justify-content-between align-items-center">
+                <h3 className="mb-4">{location.state?.id !== undefined ? 'Sửa' : 'Thêm'} sản phẩm</h3>
+                <button className="btn btn-success d-flex align-items-center gap-2" onClick={() => navigate(-1)}>
+                    <RiArrowGoBackFill /> Trở lại
+                </button>
+            </div>
             <div>
                 <form onSubmit={formik.handleSubmit} className="mt-3">
                     <div className="mt-3 form-floating">
@@ -252,7 +258,25 @@ const AddProduct = () => {
                         <option value="Sản phẩm bình thường">Sản phẩm bình thường</option>
                     </select>
                     <div className="error">{formik.touched.tags && formik.errors.tags}</div>
-
+                    {formik.values.tags == 'Sản phẩm đặc biệt' ? (
+                        <div className="mt-3 form-floating">
+                            <input
+                                type="date"
+                                id="dateSale"
+                                className="form-control"
+                                onChange={formik.handleChange('dateSale')}
+                                onBlur={formik.handleBlur('dateSale')}
+                                value={formik.values.dateSale}
+                                placeholder="Nhập ngày hạn sale ..."
+                            />
+                            <label className="label-input" htmlFor="dateSale">
+                                Nhập ngày hạn sale ...
+                            </label>
+                            <div className="error">{formik.touched.dateSale && formik.errors.dateSale}</div>
+                        </div>
+                    ) : (
+                        ''
+                    )}
                     <Select
                         mode="multiple"
                         allowClear

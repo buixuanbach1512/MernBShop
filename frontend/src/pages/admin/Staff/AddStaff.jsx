@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getAllRole } from '../../../features/role/roleSlice';
 import { getDistrict, getProvince } from '../../../features/province/provinceSlice';
 import { getUser, register, resetState, updateUserById } from '../../../features/auth/authSlice';
+import handlePermission from '../../../utils/permissionService';
 
 const schema = Yup.object().shape({
     name: Yup.string().required('Chưa nhập tên danh mục!'),
@@ -17,10 +18,7 @@ const schema = Yup.object().shape({
 });
 
 const AddStaff = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
 
     const [province, setProvince] = useState('');
     const [district, setDistrict] = useState('');

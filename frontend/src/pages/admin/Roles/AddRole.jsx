@@ -6,21 +6,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Select } from 'antd';
 import { createRole, resetState, updateRole } from '../../../features/role/roleSlice';
+import { getAllPermission } from '../../../features/permission/permissionSlice';
+import handlePermission from '../../../utils/permissionService';
 
 let schema = Yup.object().shape({
     name: Yup.string().required('Chưa nhập tên chức vụ!'),
 });
 
 const AddRole = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permission = getUserFromSessionStorage.permissions;
-    const dispatch = useDispatch();
+    const permission = handlePermission();
     const location = useLocation();
     const [permissions, setPermissions] = useState(location.state?.permissions || []);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const roleState = useSelector((state) => state.role);
+    const allPermissionState = useSelector((state) => state.permission.permissions);
+    useEffect(() => {
+        dispatch(getAllPermission());
+    }, [dispatch]);
     useEffect(() => {
         if (roleState.isSuccess && roleState.createdRole) {
             toast.success('Thêm chức vụ thành công!');
@@ -33,92 +36,9 @@ const AddRole = () => {
         }
     }, [roleState]);
 
-    const permissionsOpt = [
-        {
-            value: 'dashboard',
-            label: 'dashboard',
-        },
-        {
-            value: 'customers',
-            label: 'QL khách hàng',
-        },
-        {
-            value: 'staffs',
-            label: 'QL nhân viên',
-        },
-        {
-            value: 'categories',
-            label: 'QL danh mục',
-        },
-        {
-            value: 'add-category',
-            label: 'Thêm danh mục',
-        },
-        {
-            value: 'products',
-            label: 'QL sản phẩm',
-        },
-        {
-            value: 'add-product',
-            label: 'Thêm sản phẩm',
-        },
-        {
-            value: 'brands',
-            label: 'QL thương hiệu',
-        },
-        {
-            value: 'add-brand',
-            label: 'Thêm thương hiệu',
-        },
-        {
-            value: 'colors',
-            label: 'QL màu',
-        },
-        {
-            value: 'add-color',
-            label: 'Thêm màu',
-        },
-        {
-            value: 'sizes',
-            label: 'QL size',
-        },
-        {
-            value: 'add-size',
-            label: 'Thêm size',
-        },
-        {
-            value: 'roles',
-            label: 'QL chức vụ',
-        },
-        {
-            value: 'add-role',
-            label: 'Thêm chức vụ',
-        },
-        {
-            value: 'contact',
-            label: 'QL liên hệ',
-        },
-        {
-            value: 'coupons',
-            label: 'QL phiếu mua hàng',
-        },
-        {
-            value: 'add-coupon',
-            label: 'Thêm phiếu mua hàng',
-        },
-        {
-            value: 'add-warehouse',
-            label: 'Nhập hàng',
-        },
-        {
-            value: 'orders',
-            label: 'QL đơn hàng',
-        },
-        {
-            value: 'order-detail',
-            label: 'Chi tiết đơn hàng',
-        },
-    ];
+    const permissionsOpt = [];
+    allPermissionState &&
+        allPermissionState.forEach((item) => permissionsOpt.push({ label: item.name, value: item._id }));
     const handlepermissions = (e) => {
         setPermissions(e);
     };

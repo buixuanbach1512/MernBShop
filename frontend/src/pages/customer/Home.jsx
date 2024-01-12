@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import Marquee from 'react-fast-marquee';
 import BlogCard from '../../components/customer/BlogCard';
 import ProductCard from '../../components/customer/ProductCard';
@@ -8,8 +7,9 @@ import Meta from '../../components/customer/Meta';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllProduct } from '../../features/product/productSlice';
 import { getProdCategory } from '../../features/category/categorySlice';
-import mainBanner from '../../assets/main-banner-1.jpg';
-import smallBanner1 from '../../assets/small-banner-1.jpg';
+import mainBanner1 from '../../assets/main-banner-1.jpg';
+import mainBanner2 from '../../assets/main-banner-2.jpg';
+import mainBanner3 from '../../assets/main-banner-3.jpg';
 import service from '../../assets/service.png';
 import service2 from '../../assets/service-02.png';
 import service3 from '../../assets/service-03.png';
@@ -21,100 +21,105 @@ import nike from '../../assets/nike.png';
 import chanel from '../../assets/chanel.png';
 import supreme from '../../assets/supreme.png';
 import lv from '../../assets/lv.png';
+import Loading from '../../components/customer/Loading';
+import { getAllBlog } from '../../features/blog/blogSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+    let [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const productState = useSelector((state) => state.product.products);
     const prodCateState = useSelector((state) => state.category.prodCategories);
+    const allBlogState = useSelector((state) => state.blog.blogs);
     useEffect(() => {
         dispatch(getAllProduct({}));
         dispatch(getProdCategory());
+        dispatch(getAllBlog());
+        setLoading(true);
     }, [dispatch]);
-    return (
+    let listProdSell = [];
+    productState.forEach((item) => {
+        listProdSell.push(item);
+    });
+    for (let i = 0; i < listProdSell.length - 1; i++) {
+        for (let j = i + 1; j < listProdSell.length; j++) {
+            if (listProdSell[i].sold < listProdSell[j].sold) {
+                let temp = listProdSell[i];
+                listProdSell[i] = listProdSell[j];
+                listProdSell[j] = temp;
+            }
+        }
+    }
+    // const handleSubmit = (data) => {
+    //     navigate(`/store/${data.slug}/${data._id}`);
+    // };
+    return loading ? (
         <>
             <Meta title={'B-Shop'} />
             <section className="banner-wrapper home-wrapper-1 py-5">
                 <div className="container-xxl">
                     <div className="row">
-                        <div className="col-6 main-banner">
+                        <div className="col-8 main-banner">
                             <div className="position-relative">
-                                <img
-                                    src={mainBanner}
-                                    className="img-fluid w-100 rounded-3 main-img-banner"
-                                    alt="main-banner"
-                                />
-                                <div className="main-banner-content position-absolute">
-                                    <h4>Giảm giá cho sản phẩm</h4>
-                                    <h5>Áo Thun </h5>
-                                    <p>
-                                        Chỉ từ 99.000<sup>đ</sup>/cái | 190.000<sup>đ</sup>/cặp
-                                    </p>
-                                    <Link className="button">Mua Ngay</Link>
+                                <div id="carouselExampleFade" className="carousel slide carousel-fade">
+                                    <div className="carousel-inner">
+                                        <div className="carousel-item active">
+                                            <img src={mainBanner1} className="d-block w-100" alt="..." />
+                                            <div className="main-banner-content position-absolute">
+                                                <div className=" d-flex flex-column gap-15 align-items-center">
+                                                    <h1 className=" text-uppercase text-banner text-center">
+                                                        Thời trang <br /> nữ
+                                                    </h1>
+                                                    <button className="button border-0">Xem ngay</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="carousel-item">
+                                            <img src={mainBanner2} className="d-block w-100" alt="..." />
+                                            <div className="main-banner-content position-absolute">
+                                                <div className=" d-flex flex-column gap-15 align-items-center">
+                                                    <h1 className=" text-uppercase text-banner text-center">
+                                                        Thời trang <br /> nam
+                                                    </h1>
+                                                    <button className="button border-0">Xem ngay</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="carousel-item">
+                                            <img src={mainBanner3} className="d-block w-100" alt="..." />
+                                            <div className="main-banner-content position-absolute">
+                                                <div className=" d-flex flex-column gap-15 align-items-center">
+                                                    <h1 className=" text-uppercase text-banner text-center">
+                                                        Túi xách <br /> Balo
+                                                    </h1>
+                                                    <button className="button border-0">Xem ngay</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button
+                                        className="carousel-control-prev"
+                                        type="button"
+                                        data-bs-target="#carouselExampleFade"
+                                        data-bs-slide="prev"
+                                    >
+                                        <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span className="visually-hidden">Previous</span>
+                                    </button>
+                                    <button
+                                        className="carousel-control-next"
+                                        type="button"
+                                        data-bs-target="#carouselExampleFade"
+                                        data-bs-slide="next"
+                                    >
+                                        <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span className="visually-hidden">Next</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                        <div className="secondary-banner col-6">
-                            <div className="d-flex flex-wrap gap-5 justify-content-between align-items-center">
-                                <div className="small-banner position-relative">
-                                    <img
-                                        src={smallBanner1}
-                                        className="img-fluid rounded-3 small-banner-img"
-                                        alt="main-banner"
-                                    />
-                                    <div className="small-banner-content position-absolute">
-                                        <h4>Giảm giá cho sản phẩm</h4>
-                                        <h5>Áo Thun </h5>
-                                        <p>
-                                            Chỉ từ 99.000<sup>đ</sup>/cái <br /> 190.000<sup>đ</sup>/cặp
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="small-banner position-relative">
-                                    <img
-                                        src={smallBanner1}
-                                        className="img-fluid rounded-3 small-banner-img"
-                                        alt="main-banner"
-                                    />
-                                    <div className="small-banner-content position-absolute">
-                                        <h4>Hàng Mới Về</h4>
-                                        <h5>Quần Jean </h5>
-                                        <p>
-                                            Chỉ từ 89.000<sup>đ</sup>/cái <br /> 180.000<sup>đ</sup>/cặp
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="d-flex flex-wrap gap-5 justify-content-between align-items-center mt-3">
-                                <div className="small-banner position-relative">
-                                    <img
-                                        src={smallBanner1}
-                                        className="img-fluid rounded-3 small-banner-img"
-                                        alt="main-banner"
-                                    />
-                                    <div className="small-banner-content position-absolute">
-                                        <h4>Giảm giá cho sản phẩm</h4>
-                                        <h5>Áo Thun </h5>
-                                        <p>
-                                            Chỉ từ 99.000<sup>đ</sup>/cái <br /> 190.000<sup>đ</sup>/cặp
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="small-banner position-relative">
-                                    <img
-                                        src={smallBanner1}
-                                        className="img-fluid rounded-3 small-banner-img"
-                                        alt="main-banner"
-                                    />
-                                    <div className="small-banner-content position-absolute">
-                                        <h4>Hàng Mới Về</h4>
-                                        <h5>Quần Jean </h5>
-                                        <p>
-                                            Chỉ từ 89.000<sup>đ</sup>/cái <br /> 180.000<sup>đ</sup>/cặp
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div className="secondary-banner col-4"></div>
                     </div>
                 </div>
             </section>
@@ -191,12 +196,24 @@ const Home = () => {
                 <div className="container">
                     <div className="row">
                         <div className="col-12">
+                            <h3 className="section-heading">Top sản phẩm bán chạy</h3>
+                        </div>
+                        {listProdSell?.slice(0, 6)?.map((item) => (
+                            <ProductCard key={item._id} item={item} type="best-selling" />
+                        ))}
+                    </div>
+                </div>
+            </section>
+            <section className="featured-wrapper py-5 home-wrapper-2">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-12">
                             <h3 className="section-heading">sản phẩm nổi bật</h3>
                         </div>
                         {productState &&
                             productState
+                                ?.filter((item) => item.tags == 'Sản phẩm nổi bật')
                                 ?.slice(0, 12)
-                                ?.filter((item) => item.tags === 'Sản phẩm nổi bật')
                                 ?.map((item) => <ProductCard key={item._id} item={item} />)}
                     </div>
                 </div>
@@ -211,8 +228,8 @@ const Home = () => {
                     <div className="row">
                         {productState &&
                             productState
+                                ?.filter((item) => item.tags == 'Sản phẩm đặc biệt')
                                 ?.slice(0, 4)
-                                ?.filter((item) => item.tags === 'Sản phẩm đặc biệt')
                                 ?.map((item) => <SpecialProduct key={item._id} item={item} />)}
                     </div>
                 </div>
@@ -253,14 +270,15 @@ const Home = () => {
                         <div className="col-12">
                             <h3 className="section-heading">Blogs Mới Nhất</h3>
                         </div>
-                        <BlogCard />
-                        <BlogCard />
-                        <BlogCard />
-                        <BlogCard />
+                        {allBlogState?.slice(0, 4)?.map((item, index) => (
+                            <BlogCard key={index} item={item} />
+                        ))}
                     </div>
                 </div>
             </section>
         </>
+    ) : (
+        <Loading />
     );
 };
 

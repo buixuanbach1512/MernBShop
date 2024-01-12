@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BiEdit } from 'react-icons/bi';
 import { FiDelete } from 'react-icons/fi';
 import { MdAdd } from 'react-icons/md';
-import moment from 'moment';
 import { Link, useNavigate } from 'react-router-dom';
 import { deleteRole, getAllRole, resetState } from '../../../features/role/roleSlice';
+import handlePermission from '../../../utils/permissionService';
 
 const columns = [
     {
@@ -17,20 +17,12 @@ const columns = [
         title: 'Tên chức vụ',
         dataIndex: 'name',
         sorter: (a, b) => a.name.length - b.name.length,
+        width: '20%',
     },
     {
         title: 'Các quyền',
         dataIndex: 'permissions',
         sorter: (a, b) => a.name.length - b.name.length,
-        width: '40%',
-    },
-    {
-        title: 'Ngày tạo',
-        dataIndex: 'createdAt',
-    },
-    {
-        title: 'Ngày cập nhật',
-        dataIndex: 'updatedAt',
     },
     {
         title: 'Action',
@@ -39,10 +31,7 @@ const columns = [
 ];
 
 const Roles = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
     const [open, setOpen] = useState(false);
     const [roleId, setRoleId] = useState(null);
     const [roleName, setRoleName] = useState('');
@@ -68,15 +57,13 @@ const Roles = () => {
             name: allRoleState[i].name,
             permissions: (
                 <div className="d-flex gap-1 flex-wrap">
-                    {allRoleState[i].permissions.map((item, index) => (
-                        <p key={index} className=" bg-success-subtle mb-0 text-center rounded-3 p-2">
-                            {item}
+                    {allRoleState[i]?.permissions?.map((item, index) => (
+                        <p key={index} className=" bg-info mb-0 text-center rounded-3 p-2">
+                            {item.code}
                         </p>
                     ))}
                 </div>
             ),
-            createdAt: moment(allRoleState[i].createdAt).format('DD/MM/YYYY'),
-            updatedAt: moment(allRoleState[i].updatedAt).format('DD/MM/YYYY'),
             action: (
                 <div className="d-flex gap-10 align-items-center">
                     <button
@@ -100,7 +87,7 @@ const Roles = () => {
         const dataRole = {
             id: data._id,
             name: data.name,
-            permissions: data.permissions,
+            permissions: data.permissions.map((item) => item._id),
         };
         navigate('/admin/editRole', { state: dataRole });
     };

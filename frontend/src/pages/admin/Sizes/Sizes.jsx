@@ -7,6 +7,7 @@ import { MdAdd } from 'react-icons/md';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { deleteSize, getSize, resetState } from '../../../features/size/sizeSlice';
+import handlePermission from '../../../utils/permissionService';
 
 const columns = [
     {
@@ -33,10 +34,7 @@ const columns = [
 ];
 
 const Sizes = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
     const [open, setOpen] = useState(false);
     const [sizeId, setSizeId] = useState(null);
     const [sizeName, setSizeName] = useState('');

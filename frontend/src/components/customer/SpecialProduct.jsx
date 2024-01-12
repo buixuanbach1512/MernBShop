@@ -1,12 +1,32 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StarRatings from 'react-star-ratings';
 
 const SpecialProduct = (props) => {
     const { item } = props;
+    const [day, setDay] = useState(0);
+    const [hour, setHour] = useState(0);
+    const [minute, setMinute] = useState(0);
+    const [second, setSecond] = useState(0);
     const navigate = useNavigate();
     const handleClick = (data) => {
         navigate(`/product/${data.slug}/${data._id}`, { state: data });
     };
+    const countDownDate = new Date(item.dateSale).getTime();
+    setInterval(function () {
+        const now = new Date().getTime();
+        const distance = countDownDate - now;
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        setDay(days);
+        setHour(hours);
+        setMinute(minutes);
+        setSecond(seconds);
+    }, 1000);
     return (
         <div key={item._id} className="col-xl-6 col-md-6 mb-3">
             <div className="special-product-card">
@@ -31,22 +51,23 @@ const SpecialProduct = (props) => {
                         </div>
                         <p className="price">
                             <span className="red-p">
-                                {item.price.toLocaleString('vi')}
+                                {item.salePrice.toLocaleString('vi')}
                                 <sup>đ</sup>
                             </span>
-                            &nbsp;
-                            {/* <strike>
-                                        150.000<sup>đ</sup>
-                                    </strike> */}
+                            &nbsp;&nbsp;
+                            <strike className="text-danger">
+                                {item.price.toLocaleString('vi')}
+                                <sup>đ</sup>
+                            </strike>
                         </p>
                         <div className="discount-till d-flex align-items-center gap-10">
                             <p className="mb-0">
-                                <b>5 </b>ngày
+                                <b>{day} </b>ngày
                             </p>
                             <div className="d-flex gap-5 align-items-center">
-                                <span className="badge rounded-circle p-3 bg-danger">1</span>:
-                                <span className="badge rounded-circle p-3 bg-danger">1</span>:
-                                <span className="badge rounded-circle p-3 bg-danger">1</span>
+                                <span className="badge rounded-circle p-3 bg-danger">{hour}</span>:
+                                <span className="badge rounded-circle p-3 bg-danger">{minute}</span>:
+                                <span className="badge rounded-circle p-3 bg-danger">{second}</span>
                             </div>
                         </div>
                         <div className="prod-count my-3">

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { createCoupon, getACoupon, resetState, updateCoupon } from '../../../features/coupon/couponSlice';
+import handlePermission from '../../../utils/permissionService';
 
 const schema = Yup.object().shape({
     name: Yup.string().required('Chưa nhập tên phiếu!'),
@@ -15,10 +16,7 @@ const schema = Yup.object().shape({
 });
 
 const AddCoupon = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();

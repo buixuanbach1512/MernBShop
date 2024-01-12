@@ -1,6 +1,5 @@
 const express = require('express');
 const connectDB = require('./configs/connectDB');
-const User = require('./models/userModel');
 
 // Route
 const authRouter = require('./routes/authRoute');
@@ -13,13 +12,15 @@ const couponRouter = require('./routes/couponRoute');
 const uploadRouter = require('./routes/uploadRoute');
 const contactRouter = require('./routes/contactRoute');
 const roleRouter = require('./routes/roleRoute');
+const blogRouter = require('./routes/blogRoute');
+const conversationRouter = require('./routes/conversationRoute');
+const messageRouter = require('./routes/messageRoute');
+const permissionRouter = require('./routes/permissionRoute');
 
 const bodyParser = require('body-parser');
 const { notFound, errorHandler } = require('./middlewares/errorHandler');
 const cors = require('cors');
 const session = require('express-session');
-const passport = require('passport');
-const OAuth20 = require('passport-google-oauth20').Strategy;
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const dotenv = require('dotenv').config();
@@ -44,6 +45,10 @@ app.use('/api/coupon', couponRouter);
 app.use('/api/upload', uploadRouter);
 app.use('/api/contact', contactRouter);
 app.use('/api/role', roleRouter);
+app.use('/api/blog', blogRouter);
+app.use('/api/conversation', conversationRouter);
+app.use('/api/message', messageRouter);
+app.use('/api/permission', permissionRouter);
 
 app.use(notFound);
 app.use(errorHandler);

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { getCart, removeProdCart, updateCart } from '../../features/auth/authSlice';
+import { toast } from 'react-toastify';
 const Cart = () => {
     const [cartData, setCartData] = useState(null);
     const [totalPrice, setTotalPrice] = useState(0);
@@ -14,14 +15,25 @@ const Cart = () => {
         dispatch(getCart());
     }, [dispatch]);
     useEffect(() => {
-        if (cartData !== null) {
-            if (cartData.quantity !== '' && cartData.quantity <= 10) {
-                dispatch(updateCart(cartData));
-                setTimeout(() => {
-                    dispatch(getCart());
-                }, 200);
+        const updateQuantity = () => {
+            if (cartData !== null) {
+                if (cartData.quantity !== '' && cartData.quantity <= 10) {
+                    dispatch(updateCart(cartData));
+                    setTimeout(() => {
+                        dispatch(getCart());
+                    }, 200);
+                }
+            }
+        };
+        for (let i = 0; i < cartState.length; i++) {
+            const element = cartState[i];
+            if (cartData.quantity > element.stock) {
+                toast.error('Số lượng vượt quá kho hàng');
+            } else {
+                updateQuantity();
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cartData, dispatch]);
     useEffect(() => {
         let sum = 0;
@@ -39,6 +51,7 @@ const Cart = () => {
             dispatch(getCart());
         }, 200);
     };
+    console.log(cartState);
 
     return (
         <>
@@ -69,17 +82,17 @@ const Cart = () => {
                                             <div className="w-25">
                                                 <img
                                                     className="img-fluid"
-                                                    src={item?.prodId.images[0].url}
+                                                    src={item?.prodId?.images[0]?.url}
                                                     alt="imageProd"
                                                 />
                                             </div>
                                             <div className="w-75">
-                                                <p>{item?.prodId.name}</p>
+                                                <p>{item?.prodId?.name}</p>
                                                 <p>Size: {item?.size?.name}</p>
                                                 <div className="d-flex align-items-center gap-3">
                                                     <p>Màu sắc: </p>
                                                     <ul className="colors ps-0">
-                                                        <li style={{ background: item?.color.code }}></li>
+                                                        <li style={{ background: item?.color?.code }}></li>
                                                     </ul>
                                                 </div>
                                             </div>

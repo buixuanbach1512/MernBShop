@@ -12,16 +12,14 @@ import {
     updateCategory,
 } from '../../../features/category/categorySlice';
 import linearCategories from '../../../utils/linearCategories';
+import handlePermission from '../../../utils/permissionService';
 
 const schema = Yup.object().shape({
     name: Yup.string().required('Chưa nhập tên danh mục!'),
 });
 
 const AddCategory = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
     const [categories, setCategories] = useState([]);
     const dispatch = useDispatch();
     const location = useLocation();
@@ -52,6 +50,7 @@ const AddCategory = () => {
     useEffect(() => {
         setCategories(linearCategories(allCategoryState));
     }, [allCategoryState]);
+    console.log(categories);
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -107,7 +106,7 @@ const AddCategory = () => {
                             <option value="">Chọn danh mục</option>
                             {categories.map((item, index) => {
                                 return (
-                                    <option key={index} value={item._id}>
+                                    <option key={index} value={item.id}>
                                         {item.name}
                                     </option>
                                 );

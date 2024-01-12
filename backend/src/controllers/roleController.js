@@ -13,7 +13,7 @@ const createRole = asyncHandler(async (req, res) => {
 
 const getAllRole = asyncHandler(async (req, res) => {
     try {
-        const getAllRole = await Role.find();
+        const getAllRole = await Role.find().populate('permissions');
         res.json(getAllRole);
     } catch (e) {
         throw new Error(e);

@@ -15,11 +15,15 @@ const schema = Yup.object().shape({
 
 const ChangePassword = () => {
     const [show, setShow] = useState(false);
+    const [show2, setShow2] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const authState = useSelector((state) => state.auth);
     const showPassword = () => {
         setShow(!show);
+    };
+    const showPassword2 = () => {
+        setShow2(!show2);
     };
 
     const formik = useFormik({
@@ -75,17 +79,17 @@ const ChangePassword = () => {
                                         </div>
                                     </div>
                                     <div className="input-password">
-                                        {!show ? (
+                                        {!show2 ? (
                                             <span className="icon-password">
-                                                <IoMdEyeOff onClick={showPassword} />
+                                                <IoMdEyeOff onClick={showPassword2} />
                                             </span>
                                         ) : (
                                             <span className="icon-password">
-                                                <IoMdEye onClick={showPassword} />
+                                                <IoMdEye onClick={showPassword2} />
                                             </span>
                                         )}
                                         <input
-                                            type={show ? 'text' : 'password'}
+                                            type={show2 ? 'text' : 'password'}
                                             placeholder="Mật khẩu mới"
                                             className="form-control"
                                             onChange={formik.handleChange('newPassword')}

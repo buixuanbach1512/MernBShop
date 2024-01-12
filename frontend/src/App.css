@@ -29,6 +29,9 @@ body {
     margin-bottom: 30px;
     text-transform: capitalize;
 }
+.bg-main {
+    background-color: var(--color-febd69);
+}
 a {
     text-decoration: none;
     display: inline-block;
@@ -42,6 +45,9 @@ input[type='number'].sign-up::-webkit-inner-spin-button,
 input[type='number'].sign-up::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+.bg-green-yellow {
+    background-color: rgb(140, 181, 78);
 }
 .gap-5 {
     gap: 5px !important;
@@ -69,10 +75,66 @@ input[type='number'].sign-up::-webkit-outer-spin-button {
 .input-err {
     font-size: 1.1rem;
 }
+.w-max {
+    width: max-content;
+}
+.cursor-poiner {
+    cursor: pointer;
+}
+.bg-gray {
+    background-color: rgb(228, 220, 220);
+}
+.w-5 {
+    width: 5%;
+}
+.w-95 {
+    width: 95%;
+}
+.hide {
+    height: 0;
+    font-size: 0;
+    border: 0;
+}
 
-/* Modal */
+/* Loading */
 
-/* End Modal */
+.lds-ring {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+.lds-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border: 8px solid #fff;
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: #fff transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* End Loading */
 
 /* Header */
 
@@ -128,7 +190,7 @@ input[type='number'].sign-up::-webkit-outer-spin-button {
     background-color: #130a0a;
     min-width: 150px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1;
+    z-index: 1000;
     transform: translate3d(0px, 1px, 0px) !important;
 }
 
@@ -288,8 +350,14 @@ input[type='number'].sign-up::-webkit-outer-spin-button {
 } */
 
 .main-banner-content {
-    top: 15%;
-    left: 5%;
+    left: 50%;
+    bottom: 25%;
+    transform: translateX(-50%);
+}
+.main-banner-content .text-banner {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: #004b8d;
 }
 .main-banner-content h4 {
     font-size: 1.4rem;
@@ -452,6 +520,7 @@ input[type='number'].sign-up::-webkit-outer-spin-button {
 }
 .special-product-content h5 {
     font-size: 1.2rem;
+    color: var(--color-bf4800);
 }
 .special-product-content h6 {
     font-size: 1.4rem;
@@ -472,11 +541,29 @@ input[type='number'].sign-up::-webkit-outer-spin-button {
     width: 75%;
     height: auto;
 }
+.wishlist-card .wishlist-detail {
+    padding: 5px 10px;
+}
+.compare-card .title {
+    overflow: hidden;
+    width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
 .wishlist-card .title,
 .col-xl-2 .product-details .product-title,
 .col-xl-3 .product-details .product-title,
 .col-xl-4 .product-details .product-title,
 .col-xl-6 .product-details .product-title {
+    overflow: hidden;
+    width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.col-xl-6 .title,
+col-md-6 .title {
     overflow: hidden;
     width: 100%;
     display: -webkit-box;
@@ -620,7 +707,8 @@ filter-card .form-check-label {
 
 /* Wish List Page */
 
-.wishlist-card .cross {
+.wishlist-card .cross,
+.compare-card .cross {
     top: 5px;
     right: 5px;
     font-size: 2.4rem;
@@ -857,6 +945,13 @@ filter-card .form-check-label {
 .table-prod {
     background-color: white;
 }
+.prodOrder .title {
+    overflow: hidden;
+    width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
 
 /* End Order Page */
 
@@ -962,6 +1057,14 @@ filter-card .form-check-label {
 }
 
 /* End Change Password Page */
+
+/* Chat Page */
+
+.inbox-wrapper .inbox-content {
+    height: 80vh;
+}
+
+/* End Chat Page */
 
 /* Footer */
 
@@ -1079,6 +1182,56 @@ main::-webkit-scrollbar {
     animation-duration: 0.4s;
     z-index: 1000;
 }
+.info-user {
+    position: relative;
+}
+.avatar-user {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+.message-user:hover {
+    background-color: rgb(228, 220, 220);
+}
+.avatar-user-message {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.active-icon {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: greenyellow;
+    bottom: 0;
+    right: 1px;
+}
+.unActive-icon {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: gray;
+    bottom: 0;
+    right: 1px;
+}
+.seller-inbox-wrapper {
+    height: 80vh;
+}
+.message-box {
+    height: 65vh;
+    overflow-y: scroll;
+    padding: 10px;
+}
+.dash-prod-title {
+    overflow: hidden;
+    width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
 /* Add Animation */
 @-webkit-keyframes animate {
     from {
@@ -1288,6 +1441,20 @@ input[type='color'] {
     .btn-lr {
         display: none;
     }
+    .col-12 .wishlist-card {
+        display: flex;
+        gap: 10px;
+        background-color: white;
+    }
+    .col-12 .wishlist-card .wishlist-card-img {
+        width: 25%;
+        height: auto;
+    }
+    .col-12 .wishlist-card .wishlist-detail {
+        width: 75%;
+        height: auto;
+        padding: 10px 20px;
+    }
 }
 
 /* Tablet width >= 768px and width < 1024px */
@@ -1306,6 +1473,9 @@ input[type='color'] {
     }
     .categories p {
         font-size: 1rem;
+    }
+    .col-md-4 .wishlist-card .wishlist-detail {
+        padding: 5px 10px;
     }
 }
 

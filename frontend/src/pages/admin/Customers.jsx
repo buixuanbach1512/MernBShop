@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { TbLock, TbLockOpen } from 'react-icons/tb';
 import { blockUser, getAllUser, resetState, unBlockUser } from '../../features/auth/authSlice';
+import handlePermission from '../../utils/permissionService';
 const columns = [
     {
         title: 'STT',
@@ -12,7 +14,6 @@ const columns = [
         title: 'Tên khách hàng',
         dataIndex: 'name',
         defaultSortOrder: 'descend',
-        sorter: (a, b) => a.name.length - b.name.length,
     },
     {
         title: 'Email',
@@ -28,17 +29,17 @@ const columns = [
         width: '25%',
     },
     {
+        title: 'Trạng thái',
+        dataIndex: 'status',
+    },
+    {
         title: 'Hành động',
         dataIndex: 'action',
     },
 ];
 
 const Customer = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
-    const [blocked, setBlocked] = useState(false);
+    const permissions = handlePermission();
     const [userName, setUserName] = useState('');
     const dispatch = useDispatch();
     useEffect(() => {
@@ -56,15 +57,20 @@ const Customer = () => {
             email: users[i].email,
             mobile: users[i].mobile,
             address: users[i].address,
+            status: users[i].isBlocked ? (
+                <p className="bg-danger mb-0 text-center rounded-3 text-white">Đã khóa</p>
+            ) : (
+                <p className="bg-success mb-0 text-center rounded-3 text-white">Active</p>
+            ),
             action: (
                 <>
-                    {blocked ? (
+                    {users[i].isBlocked ? (
                         <button
                             type="button"
                             className="bg-transparent border-0"
                             onClick={() => handleUnBlock(users[i]._id)}
                         >
-                            Hủy khóa
+                            <TbLockOpen className="text-success icon-action" />
                         </button>
                     ) : (
                         <button
@@ -72,7 +78,7 @@ const Customer = () => {
                             className="bg-transparent border-0"
                             onClick={() => handleBlock(users[i]._id)}
                         >
-                            Khóa tài khoản
+                            <TbLock className="text-danger icon-action" />
                         </button>
                     )}
                 </>
@@ -92,7 +98,6 @@ const Customer = () => {
     }, [authState]);
     const handleBlock = (id) => {
         dispatch(blockUser(id));
-        setBlocked(true);
         setTimeout(() => {
             dispatch(resetState());
             dispatch(getAllUser());
@@ -100,7 +105,6 @@ const Customer = () => {
     };
     const handleUnBlock = (id) => {
         dispatch(unBlockUser(id));
-        setBlocked(false);
         setTimeout(() => {
             dispatch(resetState());
             dispatch(getAllUser());

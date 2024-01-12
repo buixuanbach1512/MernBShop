@@ -12,12 +12,14 @@ const {
     getProduct,
     getProductAllCate,
     deleteRating,
+    compare,
 } = require('../controllers/productController');
 const router = express.Router();
 
 router.get('/get-one', getProduct);
 router.get('/get-product-cate/:id', getProductAllCate);
 router.post('/', authMiddleware, isAdmin, createProduct);
+router.get('/compare-product/:id', compare);
 router.get('/:id', getAProduct);
 router.put('/wishlist', authMiddleware, addToWishlist);
 router.put('/rating', authMiddleware, rating);

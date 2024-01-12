@@ -9,6 +9,7 @@ import { deleteProduct, getAllProduct, resetState } from '../../../features/prod
 import { getBrands } from '../../../features/brand/brandSlice';
 import { getAllCategory } from '../../../features/category/categorySlice';
 import linearCategories from '../../../utils/linearCategories';
+import handlePermission from '../../../utils/permissionService';
 
 const columns = [
     {
@@ -45,16 +46,17 @@ const columns = [
         sorter: (a, b) => a.price.length - b.price.length,
     },
     {
+        title: 'Người tạo',
+        dataIndex: 'postedBy',
+    },
+    {
         title: 'Hành động',
         dataIndex: 'action',
     },
 ];
 
 const Products = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
     const [open, setOpen] = useState(false);
     const [prodId, setProdId] = useState(null);
     const [categories, setCategories] = useState([]);
@@ -94,15 +96,14 @@ const Products = () => {
             brand: productState[i].brand.name,
             category: productState[i].category.name,
             color: (
-                <ul className=" list-group list-group-flush">
-                    {productState[i].color.slice(0, 2).map((item, index) => (
-                        <li key={index} className="list-group-item">
+                <ul className="">
+                    {productState[i].color.map((item, index) => (
+                        <li key={index} className=" list-group-item mt-1">
                             <div
                                 style={{
-                                    width: '30px',
-                                    height: '30px',
+                                    width: '15px',
+                                    height: '15px',
                                     background: `${item.code}`,
-                                    border: '1px solid #777',
                                 }}
                             ></div>
                         </li>
@@ -114,6 +115,7 @@ const Products = () => {
                     {productState[i].price.toLocaleString('vi')} <sup>đ</sup>
                 </p>
             ),
+            postedBy: productState[i]?.postedBy?.name,
             action: (
                 <div className="d-flex gap-10 align-items-center">
                     <button
@@ -146,6 +148,7 @@ const Products = () => {
             size: data.size,
             description: data.description,
             images: data.images,
+            dateSale: data.dateSale ? data.dateSale : '',
         };
         navigate('/admin/editProduct', { state: dataProduct });
     };
@@ -179,11 +182,6 @@ const Products = () => {
         setNameProd('');
         setCateProd('');
         setBrandProd('');
-    };
-
-    const handleNavigate = () => {
-        navigate(`/admin/addWareHouse`);
-        dispatch(resetState());
     };
 
     return permissions.indexOf('products') !== -1 ? (
@@ -247,10 +245,11 @@ const Products = () => {
                     </div>
                 </div>
                 <div className=" d-flex gap-10">
-                    <button className="btn btn-warning d-flex align-items-center gap-2" onClick={handleNavigate}>
-                        <MdAdd /> Nhập hàng
-                    </button>
-                    <Link className="btn btn-success d-flex align-items-center gap-2" to="/admin/addProduct">
+                    <Link
+                        className="btn btn-success d-flex align-items-center gap-2"
+                        to="/admin/addProduct"
+                        onClick={() => dispatch(resetState())}
+                    >
                         <MdAdd /> Thêm mới
                     </Link>
                 </div>

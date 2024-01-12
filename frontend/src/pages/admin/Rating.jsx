@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FiDelete } from 'react-icons/fi';
 import moment from 'moment';
 import { deleteRating, getAllProduct, resetState } from '../../features/product/productSlice';
+import handlePermission from '../../utils/permissionService';
 
 const columns = [
     {
@@ -14,6 +15,7 @@ const columns = [
         title: 'Khách hàng',
         dataIndex: 'name',
         sorter: (a, b) => a.name.length - b.name.length,
+        width: '15%',
     },
     {
         title: 'Nội dung đánh giá',
@@ -35,10 +37,7 @@ const columns = [
 ];
 
 const Rating = () => {
-    const getUserFromSessionStorage = sessionStorage.getItem('user')
-        ? JSON.parse(sessionStorage.getItem('user'))
-        : null;
-    const permissions = getUserFromSessionStorage.permissions;
+    const permissions = handlePermission();
 
     const [open, setOpen] = useState(false);
     const [userId, setUserId] = useState(null);
@@ -59,8 +58,6 @@ const Rating = () => {
     };
 
     const handleDelRate = () => {
-        console.log('user id', userId);
-        console.log('prod id', prodId);
         const data = {
             id: userId,
             prodId: prodId,
@@ -99,7 +96,7 @@ const Rating = () => {
         }
     }
 
-    return permissions.indexOf('contact') !== -1 ? (
+    return permissions.indexOf('rating') !== -1 ? (
         <div className="content-wrapper bg-white p-4">
             <h3 className="mb-4 border-bottom">Đánh giá sản phẩm</h3>
             <div className="mb-4 d-flex justify-content-between align-items-center">
