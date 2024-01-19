@@ -10,7 +10,7 @@ const ProductImages = (props) => {
                     <img className="img-fluid" src={item && item[mainImage].url} alt="main-img" />
                 </div>
             </div>
-            <div className="other-product-image d-flex flex-wrap gap-15">
+            <div className="other-product-image d-flex flex-wrap gap-10">
                 {item &&
                     item.map((i, index) => (
                         <div key={index}>

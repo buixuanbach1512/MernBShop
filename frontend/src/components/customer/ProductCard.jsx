@@ -13,8 +13,8 @@ const ProductCard = (props) => {
     const authState = useSelector((state) => state.auth);
     const dispatch = useDispatch();
     const addToWL = (id) => {
-        if (authState.user !== null && authState.isError === false) {
-            dispatch(addToWishList(id));
+        if (authState.user !== null) {
+            dispatch(addToWishList({ prodId: id }));
         } else {
             toast.warning('Chưa đăng nhập');
         }
@@ -33,7 +33,6 @@ const ProductCard = (props) => {
                     ? `col-xl-${grid} col-md-${grid} col-6 `
                     : 'col-xl-2 col-md-4 col-6'
             }`}
-            style={{ padding: 5 }}
         >
             <div className="product-card position-relative">
                 <div className="wishlist-icon position-absolute d-flex flex-column gap-10">
@@ -55,11 +54,14 @@ const ProductCard = (props) => {
                     </button>
                 </div>
                 <div className="product-details mt-2">
-                    <div className="d-flex justify-content-between">
-                        <h6 className="brand">{item.brand.name}</h6>
-                        {type == 'best-selling' ? <span>(đã bán: {item.sold})</span> : ''}
+                    <div className="d-flex justify-content-between align-items-center my-2">
+                        <h6 className="brand mb-0">{item.brand.name}</h6>
+                        {type == 'best-selling' ? <span className="span-prod">đã bán: {item.sold}</span> : ''}
+                        {type == 'top-view' ? <span className="span-prod">lượt xem: {item.viewer.length}</span> : ''}
                     </div>
-                    <h5 className="product-title">{item.name}</h5>
+                    <h5 className="product-title cursor-poiner" onClick={() => handleClick(item)}>
+                        {item.name}
+                    </h5>
                     <div className="mb-2">
                         <StarRatings
                             rating={item.totalRating}

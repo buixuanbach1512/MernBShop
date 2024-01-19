@@ -133,18 +133,10 @@ const Store = () => {
                                                 onChange={(e) => setPrice(e.target.value)}
                                             >
                                                 <option value="">--- Chọn giá tiền ---</option>
-                                                <option value="50000-100000">
-                                                    50.000<sup>đ</sup> - 100.000<sup>đ</sup>
-                                                </option>
-                                                <option value="100000-200000">
-                                                    100.000<sup>đ</sup> - 200.000<sup>đ</sup>
-                                                </option>
-                                                <option value="200000-500000">
-                                                    200.000<sup>đ</sup> - 500.000<sup>đ</sup>
-                                                </option>
-                                                <option value="500000-1000000">
-                                                    500.000<sup>đ</sup> - 1.000.000<sup>đ</sup>
-                                                </option>
+                                                <option value="50000-100000">50.000 - 100.000</option>
+                                                <option value="100000-200000">100.000 - 200.000</option>
+                                                <option value="200000-500000">200.000 - 500.000</option>
+                                                <option value="500000-1000000">500.000 - 1.000.000</option>
                                             </select>
                                         </div>
                                     </div>

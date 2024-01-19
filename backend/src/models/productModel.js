@@ -75,6 +75,12 @@ var productSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        viewer: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
         dateSale: Date,
         salePrice: Number,
         postedBy: {

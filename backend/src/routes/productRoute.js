@@ -13,6 +13,7 @@ const {
     getProductAllCate,
     deleteRating,
     compare,
+    updateView,
 } = require('../controllers/productController');
 const router = express.Router();
 
@@ -22,6 +23,7 @@ router.post('/', authMiddleware, isAdmin, createProduct);
 router.get('/compare-product/:id', compare);
 router.get('/:id', getAProduct);
 router.put('/wishlist', authMiddleware, addToWishlist);
+router.put('/views', authMiddleware, updateView);
 router.put('/rating', authMiddleware, rating);
 router.put('/delete-rating/:id/:prodId', authMiddleware, deleteRating);
 router.put('/update-quantity/:id', authMiddleware, isAdmin, updateQuantity);

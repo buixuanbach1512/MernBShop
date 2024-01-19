@@ -49,6 +49,7 @@ const Header = () => {
     }, [cartState]);
 
     const handleLogout = () => {
+        setnavMenu(false);
         sessionStorage.clear();
         window.location.reload();
     };
@@ -322,61 +323,97 @@ const Header = () => {
                                     <FaTimes className="nav-close" onClick={() => setnavMenu(false)} />
                                     <div className="py-3">
                                         <ul className="nav-list">
+                                            {authState?.user && (
+                                                <>
+                                                    <li className="nav-item">
+                                                        <NavLink
+                                                            className="nav-link"
+                                                            data-bs-toggle="collapse"
+                                                            to="#collapseExample"
+                                                            role="button"
+                                                            aria-expanded="false"
+                                                            aria-controls="collapseExample"
+                                                        >
+                                                            Chào mừng: {authState.user.name}
+                                                        </NavLink>
+                                                    </li>
+                                                    <div className="collapse" id="collapseExample">
+                                                        <li className="nav-item">
+                                                            <NavLink
+                                                                className="nav-link"
+                                                                to={`/my-profile/${authState.user._id}`}
+                                                                onClick={() => setnavMenu(false)}
+                                                            >
+                                                                Thông tin cá nhân
+                                                            </NavLink>
+                                                        </li>
+                                                        <li className="nav-item">
+                                                            <NavLink
+                                                                className="nav-link"
+                                                                to="/wishlist"
+                                                                onClick={() => setnavMenu(false)}
+                                                            >
+                                                                Danh sách yêu thích
+                                                            </NavLink>
+                                                        </li>
+                                                        <li className="nav-item">
+                                                            <NavLink
+                                                                className="nav-link"
+                                                                to="/order"
+                                                                onClick={() => setnavMenu(false)}
+                                                            >
+                                                                Đơn hàng
+                                                            </NavLink>
+                                                        </li>
+                                                        <li className="nav-item">
+                                                            <NavLink
+                                                                className="nav-link"
+                                                                to={`/my-coupon`}
+                                                                onClick={() => setnavMenu(false)}
+                                                            >
+                                                                Phiếu mua hàng của tôi
+                                                            </NavLink>
+                                                        </li>
+                                                    </div>
+                                                </>
+                                            )}
                                             <li className="nav-item">
-                                                <NavLink className="nav-link" to="/">
+                                                <NavLink className="nav-link" to="/" onClick={() => setnavMenu(false)}>
                                                     Trang chủ
                                                 </NavLink>
                                             </li>
                                             {authState && authState?.user?.type == 'admin' && (
                                                 <li className="nav-item">
-                                                    <NavLink className="dropdown-item text-dark" to={`/admin`}>
+                                                    <NavLink className="nav-link" to={`/admin`}>
                                                         Trang quản trị
                                                     </NavLink>
                                                 </li>
                                             )}
+
+                                            {categoryState?.map((item, index) => (
+                                                <li key={index} className="nav-item">
+                                                    <NavLink
+                                                        className="nav-link"
+                                                        to={`/store/${item.slug}/${item._id}`}
+                                                        onClick={() => setnavMenu(false)}
+                                                    >
+                                                        {item.name}
+                                                    </NavLink>
+                                                </li>
+                                            ))}
+
                                             <li className="nav-item">
-                                                <NavLink className="nav-link" to="/store">
-                                                    Cửa Hàng
-                                                </NavLink>
-                                            </li>
-                                            <li className="nav-item">
-                                                <NavLink className="nav-link" to="/contact">
+                                                <NavLink
+                                                    className="nav-link"
+                                                    to="/contact"
+                                                    onClick={() => setnavMenu(false)}
+                                                >
                                                     Liên Hệ
                                                 </NavLink>
                                             </li>
-                                            <li className="nav-item">
-                                                <NavLink className="nav-link" to="/wishlist">
-                                                    Danh sách yêu thích
-                                                </NavLink>
-                                            </li>
-                                            <li className="nav-item">
-                                                <NavLink className="nav-link" to="/order">
-                                                    Đơn hàng
-                                                </NavLink>
-                                            </li>
+
                                             {authState && authState.user !== null ? (
                                                 <>
-                                                    <li className="nav-item">
-                                                        <NavLink className="nav-link">
-                                                            Chào mừng: {authState.user.name}
-                                                        </NavLink>
-                                                    </li>
-                                                    <li className="nav-item">
-                                                        <NavLink
-                                                            className="nav-link"
-                                                            to={`/my-profile/${authState.user._id}`}
-                                                        >
-                                                            Thông tin cá nhân
-                                                        </NavLink>
-                                                    </li>
-                                                    <li className="nav-item">
-                                                        <NavLink
-                                                            className="nav-link"
-                                                            to={`/my-profile/${authState.user._id}`}
-                                                        >
-                                                            Phiếu mua hàng của tôi
-                                                        </NavLink>
-                                                    </li>
                                                     <li className="nav-item">
                                                         <NavLink className="nav-link" onClick={() => handleLogout()}>
                                                             Đăng xuất
@@ -385,7 +422,9 @@ const Header = () => {
                                                 </>
                                             ) : (
                                                 <li className="nav-item">
-                                                    <NavLink to="/login">Đăng nhập</NavLink>
+                                                    <NavLink to="/login" onClick={() => setnavMenu(false)}>
+                                                        Đăng nhập
+                                                    </NavLink>
                                                 </li>
                                             )}
                                         </ul>

@@ -18,10 +18,7 @@ const columns = [
         title: 'Tiêu đề',
         dataIndex: 'title',
         sorter: (a, b) => a.name.length - b.name.length,
-    },
-    {
-        title: 'Mô tả tiêu đề',
-        dataIndex: 'subTitle',
+        width: '20%',
     },
     {
         title: 'Ảnh',
@@ -66,9 +63,8 @@ const Blogs = () => {
         data1.push({
             key: i + 1,
             title: allBlogState[i].title,
-            subTitle: allBlogState[i].subTitle,
             image: <img src={allBlogState[i].images[0]?.url} alt="" width={100} height={100} />,
-            description: allBlogState[i].description,
+            description: <div className="dash-blog-desc">{allBlogState[i].description}</div>,
             createdAt: moment(allBlogState[i].createdAt).format('DD/MM/YYYY'),
             action: (
                 <div className="d-flex gap-10 align-items-center">

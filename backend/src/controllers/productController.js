@@ -66,7 +66,8 @@ const getAllProduct = asyncHandler(async (req, res) => {
             .populate('category')
             .populate('color')
             .populate('ratings.postedBy')
-            .populate('postedBy');
+            .populate('postedBy')
+            .populate('size');
 
         if (req.query.sort) {
             const sortBy = req.query.sort.split(',').join(' ');
@@ -131,6 +132,29 @@ const updateQuantity = asyncHandler(async (req, res) => {
             { new: true },
         );
         res.json(update);
+    } catch (e) {
+        throw new Error(e);
+    }
+});
+
+const updateView = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    const { prodId } = req.body;
+    try {
+        const product = await Product.findById(prodId);
+        let alreadyView = product.viewer.find((userId) => userId.toString() === _id.toString());
+        if (alreadyView) {
+            res.json(alreadyView);
+        } else {
+            const viewProduct = await Product.findByIdAndUpdate(
+                prodId,
+                {
+                    $push: { viewer: _id },
+                },
+                { new: true },
+            );
+            res.json(viewProduct);
+        }
     } catch (e) {
         throw new Error(e);
     }
@@ -252,7 +276,6 @@ const deleteRating = asyncHandler(async (req, res) => {
         const getAllRatings = await Product.findById(prodId);
         let totalRating = getAllRatings.ratings.length || 1;
         let ratingsum = getAllRatings.ratings.map((item) => item.star).reduce((prev, curr) => prev + curr, 0) || 0;
-        console.log(totalRating);
         let actualRating = Math.round(ratingsum / totalRating);
         let allProduct = await Product.findByIdAndUpdate(
             prodId,
@@ -329,6 +352,7 @@ module.exports = {
     getProduct,
     getAllProduct,
     updateProduct,
+    updateView,
     deleteProduct,
     addToWishlist,
     compare,

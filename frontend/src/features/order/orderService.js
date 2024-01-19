@@ -11,11 +11,13 @@ const createOrder = async (orderData) => {
     }
 };
 
-const getAllOrders = async () => {
+const getAllOrders = async (data) => {
     let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
-    const response = await axios.get(`user/all-order`);
-    return response.data;
+    const response = await axios.get(`user/all-order?${data ? `orderStatus=${data}` : ''}`);
+    if (response.data) {
+        return response.data;
+    }
 };
 
 const userOrder = async () => {
@@ -31,35 +33,54 @@ const getOrderById = async (id) => {
     let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
     const response = await axios.get(`user/order/${id}`);
-    return response.data;
+    if (response.data) {
+        return response.data;
+    }
 };
 
 const updateOrder = async (data) => {
     let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
     const response = await axios.put(`user/order/${data.id}`, { status: data.status });
-    return response.data;
+    if (response.data) {
+        return response.data;
+    }
 };
 
 const deleteOrder = async (id) => {
     let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
     const response = await axios.delete(`user/order/${id}`);
-    return response.data;
+    if (response.data) {
+        return response.data;
+    }
 };
 
 const getCountOrderByMonth = async () => {
     let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
     const response = await axios.get(`user/order-by-month`);
-    return response.data;
+    if (response.data) {
+        return response.data;
+    }
 };
 
 const getCountOrderByYear = async () => {
     let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
     const response = await axios.get(`user/order-by-year`);
-    return response.data;
+    if (response.data) {
+        return response.data;
+    }
+};
+
+const paymentVNPay = async (data) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.post(`vnpay/create_payment_url`, data);
+    if (response.data) {
+        return response.data;
+    }
 };
 
 const orderService = {
@@ -71,5 +92,6 @@ const orderService = {
     deleteOrder,
     getCountOrderByMonth,
     getCountOrderByYear,
+    paymentVNPay,
 };
 export default orderService;

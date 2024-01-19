@@ -10,9 +10,9 @@ const initialState = {
     message: '',
 };
 
-export const getAllOrders = createAsyncThunk('order/get-all-orders', async (thunkAPI) => {
+export const getAllOrders = createAsyncThunk('order/get-all-orders', async (data, thunkAPI) => {
     try {
-        return await orderService.getAllOrders();
+        return await orderService.getAllOrders(data);
     } catch (e) {
         return thunkAPI.rejectWithValue(e);
     }
@@ -61,6 +61,14 @@ export const getCountOrderByMonth = createAsyncThunk('order/get-order-by-month',
 export const getCountOrderByYear = createAsyncThunk('order/get-order-by-year', async (thunkAPI) => {
     try {
         return await orderService.getCountOrderByYear();
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
+export const paymentVNPay = createAsyncThunk('order/payment-vnpay', async (data, thunkAPI) => {
+    try {
+        return await orderService.paymentVNPay(data);
     } catch (e) {
         return thunkAPI.rejectWithValue(e);
     }
@@ -189,6 +197,21 @@ export const orderSlice = createSlice({
                 state.countOrderYear = action.payload;
             })
             .addCase(getCountOrderByYear.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            .addCase(paymentVNPay.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(paymentVNPay.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.isError = false;
+                state.paymentVNPay = action.payload;
+            })
+            .addCase(paymentVNPay.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.isSuccess = false;

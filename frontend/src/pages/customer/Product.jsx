@@ -9,7 +9,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Color from '../../components/customer/ColorList';
 import Size from '../../components/customer/SizeList';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAProduct, getAllProduct, rating, resetState } from '../../features/product/productSlice';
+import { getAProduct, getAllProduct, rating, resetState, updateView } from '../../features/product/productSlice';
 import { toast } from 'react-toastify';
 import { addToCart, getCart } from '../../features/auth/authSlice';
 import * as Yup from 'yup';
@@ -34,7 +34,6 @@ const Product = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const productId = location.pathname.split('/')[3];
-    const authState = useSelector((state) => state.auth.user);
     const prodState = useSelector((state) => state.product.getAProd);
     const allProdState = useSelector((state) => state?.product?.products);
     const getCartState = useSelector((state) => state?.auth?.cart);
@@ -116,11 +115,11 @@ const Product = () => {
     };
     const handleMessageSubmit = () => {
         if (user) {
-            if (authState._id !== prodState?.postedBy) {
+            if (user._id !== prodState?.postedBy) {
                 const data = {
-                    groupTitle: authState._id + prodState?._id,
+                    groupTitle: user._id + prodState?._id,
                     groupName: prodState?.brand?.name,
-                    userId: authState._id,
+                    userId: user._id,
                     sellerId: prodState?.postedBy,
                 };
                 dispatch(createConversation(data));
@@ -134,11 +133,17 @@ const Product = () => {
             toast.warning('Chưa đăng nhập');
         }
     };
+    useEffect(() => {
+        if (user) {
+            dispatch(updateView({ prodId: productId }));
+        }
+    }, [dispatch, productId, user]);
+    console.log(1);
     return (
         <>
             <Meta title={'Product'} />
             <BreadCrumb title={prodState?.name} />
-            <div className="product-wrapper py-5 home-wrapper-2">
+            <div className="product-wrapper home-wrapper-2">
                 <div className="container p-3">
                     <div className="row">
                         <ProductImages item={prodState?.images} />
@@ -231,7 +236,7 @@ const Product = () => {
                                                     <input
                                                         type="number"
                                                         min={1}
-                                                        max={prodState && prodState?.quantity}
+                                                        max={prodState && prodState.quantity}
                                                         className="form-control"
                                                         style={{ width: 70 }}
                                                         onChange={(e) => setQuantity(e.target.value)}
@@ -267,7 +272,7 @@ const Product = () => {
                     </div>
                 </div>
             </div>
-            <section className="description-wrapper py-5 home-wrapper-2">
+            <section className="description-wrapper home-wrapper-2">
                 <div className="container">
                     <div className="row">
                         <div className="col-12">
@@ -369,7 +374,7 @@ const Product = () => {
                     </div>
                 </div>
             </section>
-            <section className="blog-wrapper py-5 home-wrapper-2">
+            <section className="blog-wrapper home-wrapper-2">
                 <div className="container">
                     <div className="row my-3">
                         <div className="col-12">

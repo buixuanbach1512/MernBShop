@@ -5,15 +5,17 @@ import { useEffect } from 'react';
 import { getUserWishList } from '../../features/auth/authSlice';
 import { addToWishList } from '../../features/product/productSlice';
 import { IoMdClose } from 'react-icons/io';
+import { useNavigate } from 'react-router-dom';
 
 const WishList = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const wishListState = useSelector((state) => state.auth?.wishList?.wishlist);
     useEffect(() => {
         dispatch(getUserWishList());
     }, [dispatch]);
     const removeProdWishList = (id) => {
-        dispatch(addToWishList(id));
+        dispatch(addToWishList({ prodId: id }));
         setTimeout(() => {
             dispatch(getUserWishList());
         }, 300);
@@ -37,11 +39,19 @@ const WishList = () => {
                                         onClick={() => removeProdWishList(item._id)}
                                         className="position-absolute cross"
                                     />
-                                    <div className="wishlist-card-img">
+                                    <div
+                                        className="wishlist-card-img cursor-poiner"
+                                        onClick={() => navigate(`/product/${item.slug}/${item._id}`)}
+                                    >
                                         <img src={item.images[0].url} className="img-fluid w-100" alt="product" />
                                     </div>
                                     <div className="wishlist-detail bg-white">
-                                        <h5 className="title">{item.name}</h5>
+                                        <h5
+                                            className="title cursor-poiner"
+                                            onClick={() => navigate(`/product/${item.slug}/${item._id}`)}
+                                        >
+                                            {item.name}
+                                        </h5>
                                         <h6 className="price">
                                             {item.price.toLocaleString('vi')}
                                             <sup>đ</sup>

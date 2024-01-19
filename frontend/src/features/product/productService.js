@@ -45,6 +45,15 @@ const updateProduct = async (data) => {
     }
 };
 
+const updateView = async (data) => {
+    let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
+    axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
+    const response = await axios.put(`product/views`, data);
+    if (response.data) {
+        return response.data;
+    }
+};
+
 const updateQuantity = async (data) => {
     let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
@@ -77,7 +86,7 @@ const getProductByCate = async (data) => {
 const addToWishList = async (id) => {
     let getToken = JSON.parse(sessionStorage.getItem('user'))?.token;
     axios.defaults.headers.common = { Authorization: `Bearer ${getToken}` };
-    const response = await axios.put(`product/wishlist`, { id });
+    const response = await axios.put(`product/wishlist`, id);
     if (response.data) {
         return response.data;
     }
@@ -124,6 +133,7 @@ export const productService = {
     createProduct,
     updateProduct,
     updateQuantity,
+    updateView,
     deleteProduct,
     getProductByCate,
     addToWishList,

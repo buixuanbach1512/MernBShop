@@ -9,7 +9,7 @@ const BlogCard = (props) => {
         navigate(`/single-blog/${data._id}`);
     };
     return (
-        <div className={`${location.pathname === '/blogs' ? `col-xl-4 col-md-4 col-12 ` : 'col-xl-3 col-md-4 col-6'}`}>
+        <div className={`${location.pathname === '/blogs' ? `col-xl-4 col-md-4 col-12 ` : 'col-xl-3 col-md-4 col-12'}`}>
             <div className="blog-card">
                 <div className="card-image">
                     <img src={item.images[0].url} className="img-fluid" alt="blog" />
@@ -20,9 +20,9 @@ const BlogCard = (props) => {
                         {moment(item.createdAt).format('YYYY')}
                     </p>
                     <h5 className="title">{item.title}</h5>
-                    <p className="desc">{item.subTitle}</p>
+                    <p className="desc mb-3">{item.subTitle}</p>
                     <button className="button text-uppercase border-0" onClick={() => handleClick(item)}>
-                        Read More
+                        Xem thêm
                     </button>
                 </div>
             </div>

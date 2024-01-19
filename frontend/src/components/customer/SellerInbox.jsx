@@ -33,7 +33,7 @@ const SellerInbox = ({
                         className="avatar-user"
                     />
                     <div>
-                        <h1 className="fs-4 mb-0">{userData}</h1>
+                        <h1 className="fs-4 mb-0">{userData.name}</h1>
                     </div>
                 </div>
                 <div className=" d-flex gap-10">

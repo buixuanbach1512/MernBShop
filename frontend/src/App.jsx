@@ -56,6 +56,7 @@ import ShopInbox from './pages/admin/ShopInbox';
 import Permissions from './pages/admin/Permissions/Permissions';
 import AddPermission from './pages/admin/Permissions/AddPermission';
 import WarehouseStatistics from './pages/admin/Statistics/WarehouseStatistics';
+import VnPayPayment from './pages/customer/VnPayPayment';
 
 function App() {
     return (
@@ -128,6 +129,14 @@ function App() {
                                 element={
                                     <PrivateRoutes>
                                         <Checkout />
+                                    </PrivateRoutes>
+                                }
+                            />
+                            <Route
+                                path="vnpay-payment"
+                                element={
+                                    <PrivateRoutes>
+                                        <VnPayPayment />
                                     </PrivateRoutes>
                                 }
                             />

@@ -37,10 +37,10 @@ const Profile = () => {
             <div className="profile-wrapper py-5 home-wrapper-2">
                 <div className="container">
                     <div className="row">
-                        <div className="col-5">
+                        <div className=" col-xl-5 col-md-5 col-12">
                             <h3>Thông tin cá nhân</h3>
                             <div className="profile-content bg-white p-3">
-                                <div className=" d-flex justify-content-between align-items-center mt-3">
+                                <div className=" d-flex justify-content-between align-items-center my-3">
                                     <div>
                                         <h6>Họ và tên: {userState.name}</h6>
                                     </div>
@@ -61,8 +61,8 @@ const Profile = () => {
                             </div>
                         </div>
 
-                        <div className="col-7">
-                            <h3 className="mb-3">Chỉnh sửa thông tin cá nhân</h3>
+                        <div className="col-xl-7 col-md-7 col-12">
+                            <h3 className="my-3">Chỉnh sửa thông tin cá nhân</h3>
                             <div>
                                 <form onSubmit={formik.handleSubmit}>
                                     <div className="mb-3">

@@ -555,7 +555,7 @@ export const authSlice = createSlice({
                 state.isSuccess = false;
                 state.message = action.error;
                 if (state.isError === true) {
-                    toast.error('Đã có lỗi xảy ra!!!');
+                    toast.error(action.payload.response.data.message);
                 }
             })
             .addCase(createOrder.pending, (state) => {

@@ -19,12 +19,12 @@ const SingleBlog = () => {
         <>
             <Meta title={'Blog'} />
             <BreadCrumb title="Blog" />
-            <div className="blog-wrapper home-wrapper-2 py-5">
+            <div className="blog-wrapper home-wrapper-2">
                 <div className="container-xxl">
                     <div className="row">
                         <div className="col-xl-8 col-md-8">
                             <div className="blog-content bg-white rounded-3 p-5">
-                                <div className="py-2">
+                                <div className="my-4">
                                     <h2 className="mb-3">{aBlogState?.title}</h2>
                                     <div className="d-flex align-items-center gap-15">
                                         <h5 className="mb-0">Biên tập bởi: {aBlogState?.postedBy?.name}</h5>
@@ -35,6 +35,15 @@ const SingleBlog = () => {
                                         </p>
                                     </div>
                                 </div>
+                                <div>
+                                    <img
+                                        src={aBlogState?.images[0]?.url}
+                                        alt=""
+                                        className="img-fluid"
+                                        style={{ width: '100%' }}
+                                    />
+                                </div>
+                                <br />
                                 <div>{aBlogState && parse(aBlogState?.description)}</div>
                             </div>
                         </div>

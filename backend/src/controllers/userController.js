@@ -263,7 +263,6 @@ const addToCart = asyncHandler(async (req, res) => {
     let { productId, size, color, quantity, stock } = req.body;
     const { _id } = req.user;
     validateMongoDbId(_id);
-
     try {
         if (req.body.tags == 'Sản phẩm đặc biệt') {
             const price = req.body.salePrice;
@@ -328,9 +327,13 @@ const updateQuantityCart = asyncHandler(async (req, res) => {
     validateMongoDbId(_id);
     try {
         const cartItem = await Cart.findOne({ userId: _id, _id: id });
-        cartItem.quantity = quantity;
-        cartItem.save();
-        res.json(cartItem);
+        if (quantity > cartItem.stock) {
+            throw new Error('Không đủ sản phẩm trong kho');
+        } else {
+            cartItem.quantity = quantity;
+            cartItem.save();
+            res.json(cartItem);
+        }
     } catch (e) {
         throw new Error(e);
     }
@@ -377,7 +380,7 @@ const applyCoupon = asyncHandler(async (req, res) => {
 });
 
 const createOrder = asyncHandler(async (req, res) => {
-    const { shippingInfo, orderItems, totalPrice, totalPriceAfterDiscount, payment } = req.body;
+    const { shippingInfo, orderItems, totalPrice, totalPriceAfterDiscount, payment, orderId } = req.body;
     const { _id } = req.user;
     validateMongoDbId(_id);
     try {
@@ -388,6 +391,7 @@ const createOrder = asyncHandler(async (req, res) => {
             totalPrice,
             totalPriceAfterDiscount,
             payment,
+            orderId,
         });
         let userCart = await Cart.find({ userId: _id });
         let update = userCart.map((item) => {
@@ -406,8 +410,11 @@ const createOrder = asyncHandler(async (req, res) => {
 });
 
 const getAllOrder = asyncHandler(async (req, res) => {
+    const queryObj = { ...req.query };
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
     try {
-        const allOrder = await Order.find().populate('user').populate('orderItems.product');
+        const allOrder = await Order.find(JSON.parse(queryStr)).populate('user').populate('orderItems.product');
         res.json(allOrder);
     } catch (e) {
         throw new Error(e);
@@ -474,18 +481,18 @@ const deleteOrder = asyncHandler(async (req, res) => {
 
 const getCountOrderByMonth = asyncHandler(async (req, res) => {
     let month = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
+        'Tháng 1',
+        'Tháng 2',
+        'Tháng 3',
+        'Tháng 4',
+        'Tháng 5',
+        'Tháng 6',
+        'Tháng 7',
+        'Tháng 8',
+        'Tháng 9',
+        'Tháng 10',
+        'Tháng 11',
+        'Tháng 12',
     ];
     let d = new Date();
     let endDate = '';
@@ -501,16 +508,23 @@ const getCountOrderByMonth = asyncHandler(async (req, res) => {
                     $lte: new Date(),
                     $gte: new Date(endDate),
                 },
-                orderStatus: 'Đã giao hàng',
+                orderStatus: 4,
             },
         },
         {
             $group: {
                 _id: {
-                    month: '$month',
+                    year: { $year: '$createdAt' },
+                    month: { $month: '$createdAt' },
                 },
                 count: { $sum: 1 },
                 amount: { $sum: '$totalPriceAfterDiscount' },
+            },
+        },
+        {
+            $sort: {
+                '_id.year': -1,
+                '_id.month': -1,
             },
         },
     ]);
@@ -518,7 +532,20 @@ const getCountOrderByMonth = asyncHandler(async (req, res) => {
 });
 
 const getCountOrderByYear = asyncHandler(async (req, res) => {
-    let month = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+    let month = [
+        'Tháng 1',
+        'Tháng 2',
+        'Tháng 3',
+        'Tháng 4',
+        'Tháng 5',
+        'Tháng 6',
+        'Tháng 7',
+        'Tháng 8',
+        'Tháng 9',
+        'Tháng 10',
+        'Tháng 11',
+        'Tháng 12',
+    ];
     let d = new Date();
     let endDate = '';
     d.setDate(1);
@@ -526,7 +553,6 @@ const getCountOrderByYear = asyncHandler(async (req, res) => {
         d.setMonth(d.getMonth() - 1);
         endDate = month[d.getMonth()] + ' ' + d.getFullYear();
     }
-    console.log(endDate);
     const data = await Order.aggregate([
         {
             $match: {
@@ -534,7 +560,7 @@ const getCountOrderByYear = asyncHandler(async (req, res) => {
                     $lte: new Date(),
                     $gte: new Date(endDate),
                 },
-                orderStatus: 'Đã giao hàng',
+                orderStatus: 4,
             },
         },
         {

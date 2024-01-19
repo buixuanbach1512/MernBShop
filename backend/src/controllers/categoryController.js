@@ -29,6 +29,7 @@ function getCategoryList(allCate, parentId = null) {
             _id: cate._id,
             name: cate.name,
             slug: cate.slug,
+            parentId: cate.parentId ? cate.parentId : '',
             children: getCategoryList(allCate, cate._id),
             createdAt: cate.createdAt,
             updatedAt: cate.updatedAt,

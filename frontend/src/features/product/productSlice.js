@@ -56,6 +56,14 @@ export const updateQuantity = createAsyncThunk('product/update-quantity-product'
     }
 });
 
+export const updateView = createAsyncThunk('product/update-view-product', async (data, thunkAPI) => {
+    try {
+        return await productService.updateView(data);
+    } catch (e) {
+        return thunkAPI.rejectWithValue(e);
+    }
+});
+
 export const deleteProduct = createAsyncThunk('product/delete-product', async (id, thunkAPI) => {
     try {
         return await productService.deleteProduct(id);
@@ -205,6 +213,21 @@ export const productSlice = createSlice({
                 state.updatedQuan = action.payload;
             })
             .addCase(updateQuantity.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            .addCase(updateView.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(updateView.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.updatedView = action.payload;
+            })
+            .addCase(updateView.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.isSuccess = false;

@@ -16,6 +16,7 @@ const blogRouter = require('./routes/blogRoute');
 const conversationRouter = require('./routes/conversationRoute');
 const messageRouter = require('./routes/messageRoute');
 const permissionRouter = require('./routes/permissionRoute');
+const VNPayRouter = require('./routes/VNPayRoute');
 
 const bodyParser = require('body-parser');
 const { notFound, errorHandler } = require('./middlewares/errorHandler');
@@ -49,6 +50,7 @@ app.use('/api/blog', blogRouter);
 app.use('/api/conversation', conversationRouter);
 app.use('/api/message', messageRouter);
 app.use('/api/permission', permissionRouter);
+app.use('/api/vnpay', VNPayRouter);
 
 app.use(notFound);
 app.use(errorHandler);

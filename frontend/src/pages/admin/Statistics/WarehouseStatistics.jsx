@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Table } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { CgExport } from 'react-icons/cg';
 import { useEffect } from 'react';
-import { toast } from 'react-toastify';
 import { getAllProduct } from '../../../features/product/productSlice';
 import handlePermission from '../../../utils/permissionService';
 import { CSVLink } from 'react-csv';
@@ -37,8 +36,6 @@ const WarehouseStatistics = () => {
     const [nameProd, setNameProd] = useState('');
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const productState = useSelector((state) => state.product);
     const allProductState = useSelector((state) => state.product.products);
     useEffect(() => {
         dispatch(getAllProduct());
@@ -56,12 +53,6 @@ const WarehouseStatistics = () => {
     const handleChangeName = (e) => {
         setNameProd(e.target.value);
     };
-    const handleChangeProd = (e) => {
-        const data = {
-            name: e.target.value,
-        };
-        dispatch(getAllProduct(data));
-    };
 
     const handleSearch = () => {
         const data = {
@@ -71,34 +62,12 @@ const WarehouseStatistics = () => {
         setNameProd('');
     };
 
-    useEffect(() => {
-        if (productState.updatedQuan) {
-            toast.success('Nhập hàng thành công');
-            navigate('/admin/products');
-        }
-        if (productState.isError) {
-            toast.error('Đã có lỗi xảy ra');
-        }
-    }, [productState, navigate]);
-
     return permissions.indexOf('warehouse-statistics') !== -1 ? (
         <>
             <div className="content-wrapper bg-white p-4">
                 <h3 className="mb-4 border-bottom">Thống kê kho hàng</h3>
                 <div className="mb-4 d-flex justify-content-between align-items-center">
                     <div className=" d-flex align-items-center gap-15">
-                        <div className=" input-group">
-                            <select className="form-control" name="category" onChange={(e) => handleChangeProd(e)}>
-                                <option value="">Chọn sản phẩm</option>
-                                {allProductState.map((item, index) => {
-                                    return (
-                                        <option key={index} value={item.name}>
-                                            {item.name}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </div>
                         <div className=" input-group">
                             <input
                                 type="text"

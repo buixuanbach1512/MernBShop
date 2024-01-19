@@ -30,8 +30,38 @@ const columns = [
         dataIndex: 'status',
     },
     {
+        title: 'Thanh toán',
+        dataIndex: 'payment',
+    },
+    {
         title: 'Hành động',
         dataIndex: 'action',
+    },
+];
+const stateOpt = [
+    {
+        value: 0,
+        label: 'Chờ duyệt',
+    },
+    {
+        value: 1,
+        label: 'Duyệt đơn hàng',
+    },
+    {
+        value: 2,
+        label: 'Đang vận chuyển',
+    },
+    {
+        value: 3,
+        label: 'Đang giao hàng',
+    },
+    {
+        value: 4,
+        label: 'Đã giao hàng',
+    },
+    {
+        value: 5,
+        label: 'Hủy',
     },
 ];
 const Orders = () => {
@@ -68,13 +98,14 @@ const Orders = () => {
             name: orderState[i].user.name,
             amount: orderState[i].totalPrice,
             date: moment(orderState[i].orderedAt).format('DD/MM/YYYY'),
-            status: orderState[i].orderStatus,
+            status: stateOpt.find((item) => item.value == orderState[i].orderStatus).label,
+            payment: orderState[i].payment,
             action: (
                 <div className="d-flex gap-10 align-items-center">
                     <Link className="text-info" to={`/admin/order-detail/${orderState[i]._id}`}>
                         <IoInformationCircleSharp className="icon-action" />
                     </Link>
-                    {orderState[i].orderStatus == 'Đã giao hàng' || orderState[i].orderStatus == 'Đã hủy' ? (
+                    {orderState[i].orderStatus >= 4 ? (
                         <button
                             className=" fs-5 text-danger bg-transparent border-0"
                             onClick={() => showModal1(orderState[i]._id)}
@@ -96,7 +127,10 @@ const Orders = () => {
 
     const handleChange = (data) => {
         setOrderStatus(data);
-        console.log(data);
+    };
+
+    const handleFilter = (data) => {
+        dispatch(getAllOrders(data));
     };
 
     const handleOrder = () => {
@@ -126,16 +160,14 @@ const Orders = () => {
             <h3 className="mb-4">Đơn hàng</h3>
             <div className="mb-4 d-flex justify-content-between align-items-center">
                 <div className="input-group w-25">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Tên người đặt"
-                        aria-label="Recipient's username"
-                        aria-describedby="button-addon2"
-                    />
-                    <button className="btn btn-secondary" type="button" id="button-addon2">
-                        Tìm kiếm
-                    </button>
+                    <select onChange={(e) => handleFilter(e.target.value)} className=" form-control form-select">
+                        <option value="">-- Chọn trạng thái --</option>
+                        {stateOpt.map((item, index) => (
+                            <option key={index} value={item.value}>
+                                {item.label}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
             <div>
@@ -151,16 +183,21 @@ const Orders = () => {
                     cancelText="Hủy"
                 >
                     <div className="py-3">
-                        <select onChange={(e) => handleChange(e.target.value)} className=" form-control form-select">
+                        <select
+                            onChange={(e) => handleChange(e.target.value)}
+                            className=" form-control form-select"
+                            value={orderStatus}
+                        >
                             <option value="">-- Chọn trạng thái --</option>
-                            <option value="Chờ xét duyệt" disabled>
-                                Chờ xét duyệt
-                            </option>
-                            <option value="Đã duyệt đơn hàng">Đã duyệt đơn hàng</option>
-                            <option value="Đang vận chuyển">Đang vận chuyển</option>
-                            <option value="Đang giao hàng">Đang giao hàng</option>
-                            <option value="Đã giao hàng">Đã giao hàng</option>
-                            <option value="Đã hủy">Hủy</option>
+                            {stateOpt.map((item, index) => (
+                                <option
+                                    key={index}
+                                    value={item.value}
+                                    disabled={orderStatus >= item.value ? true : false}
+                                >
+                                    {item.label}
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </Modal>

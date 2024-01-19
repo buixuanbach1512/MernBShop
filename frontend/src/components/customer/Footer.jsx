@@ -1,31 +1,22 @@
 import { Link } from 'react-router-dom';
 import { BsLinkedin, BsGithub, BsYoutube, BsInstagram } from 'react-icons/bs';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { getAllCategory } from '../../features/category/categorySlice';
 
 const Footer = () => {
+    const dispatch = useDispatch();
+    const categoryState = useSelector((state) => state.category.categories);
+    useEffect(() => {
+        dispatch(getAllCategory());
+    }, [dispatch]);
     return (
         <>
             <footer className="footer-top py-4">
                 <div className="container">
                     <div className="row align-items-center">
-                        <div className="col-5">
-                            <div className="d-flex gap-30 align-items-center">
-                                <img src="images/newsletter.png" alt="newsletter" />
-                                <h4 className="mb-0 text-white">Subscibe để nhận Thông báo</h4>
-                            </div>
-                        </div>
-                        <div className="col-7">
-                            <div className="input-group">
-                                <input
-                                    type="text"
-                                    className="form-control py-1"
-                                    placeholder="Địa chỉ email..."
-                                    aria-label="Địa chỉ email..."
-                                    aria-describedby="basic-addon2"
-                                />
-                                <span className="input-group-text p-2" id="basic-addon2">
-                                    Subcribe
-                                </span>
-                            </div>
+                        <div className="col-12">
+                            <h4 className="text-white text-center">B-SHOP - Miễn phí vận chuyển toàn quốc</h4>
                         </div>
                     </div>
                 </div>
@@ -66,28 +57,27 @@ const Footer = () => {
                         <div className="col-3">
                             <h4 className="text-white mb-4">Thông Tin Shop</h4>
                             <div className="footer-links d-flex flex-column">
-                                <Link className="text-white py-2 mb-1">Chính sách bảo mật</Link>
-                                <Link className="text-white py-2 mb-1">Chính sách hoàn trả</Link>
-                                <Link className="text-white py-2 mb-1">Chính sách vận chuyển</Link>
-                                <Link className="text-white py-2 mb-1">Các điều khoản và điều kiện</Link>
+                                <Link className="text-white py-2 mb-1">Liên hệ</Link>
                                 <Link className="text-white py-2 mb-1">Blogs</Link>
                             </div>
                         </div>
                         <div className="col-3">
                             <h4 className="text-white mb-4">Tài Khoản</h4>
                             <div className="footer-links d-flex flex-column">
-                                <Link className="text-white py-2 mb-1">Về chúng tôi</Link>
-                                <Link className="text-white py-2 mb-1">Câu hỏi thường gặp</Link>
-                                <Link className="text-white py-2 mb-1">Tìm kiếm</Link>
+                                <Link className="text-white py-2 mb-1">Phiếu mua hàng</Link>
+                                <Link className="text-white py-2 mb-1">Danh sách yêu thích</Link>
+                                <Link className="text-white py-2 mb-1">Giỏ hàng</Link>
                             </div>
                         </div>
                         <div className="col-2">
-                            <h4 className="text-white mb-4">Quick Links</h4>
+                            <h4 className="text-white mb-4">Danh mục sản phẩm</h4>
                             <div className="footer-links d-flex flex-column">
-                                <Link className="text-white py-2 mb-1">Giày thể thao</Link>
-                                <Link className="text-white py-2 mb-1">Áo thun</Link>
-                                <Link className="text-white py-2 mb-1">Quần Jean</Link>
-                                <Link className="text-white py-2 mb-1">Vest</Link>\
+                                {categoryState &&
+                                    categoryState.map((item, index) => (
+                                        <Link key={index} className="text-white py-2 mb-1">
+                                            {item.name}
+                                        </Link>
+                                    ))}
                             </div>
                         </div>
                     </div>

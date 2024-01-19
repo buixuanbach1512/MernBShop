@@ -28,15 +28,14 @@ var orderSchema = new mongoose.Schema(
             },
         ],
         orderedAt: { type: Date, default: Date.now() },
-        month: { type: String, default: new Date().getMonth() + 1 },
         totalPrice: { type: Number, required: true },
         totalPriceAfterDiscount: { type: Number, required: true },
         orderStatus: {
-            type: String,
-            default: 'Chờ duyệt',
-            enum: ['Chờ duyệt', 'Đã duyệt đơn hàng', 'Đang vận chuyển', 'Đang giao hàng', 'Đã giao hàng', 'Hủy'],
+            type: Number,
+            default: 0,
         },
         payment: String,
+        orderId: String,
     },
     {
         timestamps: true,

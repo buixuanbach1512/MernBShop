@@ -29,7 +29,7 @@ const MessageList = ({ item, setOpen, setCurrentChat, senderId, setUserData, onl
     return (
         <div
             className={`message-user w-100 d-flex align-items-center gap-10 p-1 my-4 cursor-poiner`}
-            onClick={() => handleClick(item._id) || setCurrentChat(item) || setUserData(item.groupName)}
+            onClick={() => handleClick(item._id) || setCurrentChat(item) || setUserData(user)}
         >
             <div className=" info-user">
                 <img
@@ -40,7 +40,7 @@ const MessageList = ({ item, setOpen, setCurrentChat, senderId, setUserData, onl
                 {online ? <div className="active-icon"></div> : <div className="unActive-icon"></div>}
             </div>
             <div className="">
-                <h1 className="fs-5 mb-0">{item.groupName}</h1>
+                <h1 className="fs-5 mb-0">{user?.name}</h1>
                 <p className="mb-0">
                     {item.lastMessageId !== user?._id ? (
                         item.lastMessage ? (

@@ -10,6 +10,9 @@ import { getProdCategory } from '../../features/category/categorySlice';
 import mainBanner1 from '../../assets/main-banner-1.jpg';
 import mainBanner2 from '../../assets/main-banner-2.jpg';
 import mainBanner3 from '../../assets/main-banner-3.jpg';
+import smallBanner1 from '../../assets/small-banner-1.jpg';
+import smallBanner2 from '../../assets/small-banner-2.jpg';
+import bannerVoucher from '../../assets/banner-voucher.jpg';
 import service from '../../assets/service.png';
 import service2 from '../../assets/service-02.png';
 import service3 from '../../assets/service-03.png';
@@ -23,34 +26,28 @@ import supreme from '../../assets/supreme.png';
 import lv from '../../assets/lv.png';
 import Loading from '../../components/customer/Loading';
 import { getAllBlog } from '../../features/blog/blogSlice';
-import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
     let [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+    const [listProduct, setListProduct] = useState([]);
     const dispatch = useDispatch();
     const productState = useSelector((state) => state.product.products);
     const prodCateState = useSelector((state) => state.category.prodCategories);
     const allBlogState = useSelector((state) => state.blog.blogs);
     useEffect(() => {
-        dispatch(getAllProduct({}));
+        dispatch(getAllProduct());
         dispatch(getProdCategory());
         dispatch(getAllBlog());
         setLoading(true);
     }, [dispatch]);
-    let listProdSell = [];
-    productState.forEach((item) => {
-        listProdSell.push(item);
-    });
-    for (let i = 0; i < listProdSell.length - 1; i++) {
-        for (let j = i + 1; j < listProdSell.length; j++) {
-            if (listProdSell[i].sold < listProdSell[j].sold) {
-                let temp = listProdSell[i];
-                listProdSell[i] = listProdSell[j];
-                listProdSell[j] = temp;
-            }
-        }
-    }
+    useEffect(() => {
+        let newListProduct = [];
+        productState &&
+            productState.forEach((item) => {
+                newListProduct.push(item);
+            });
+        setListProduct(newListProduct);
+    }, [productState]);
     // const handleSubmit = (data) => {
     //     navigate(`/store/${data.slug}/${data._id}`);
     // };
@@ -119,11 +116,33 @@ const Home = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="secondary-banner col-4"></div>
+                        <div className="secondary-banner col-4">
+                            <div className="row py-2">
+                                <div className="col-12">
+                                    <div className="row">
+                                        <div className="col-6">
+                                            <img src={smallBanner1} alt="" className="img-fluid" />
+                                        </div>
+                                        <div className="col-6">
+                                            <img src={smallBanner2} alt="" className="img-fluid" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="col-12 mt-3">
+                                    <img
+                                        src={bannerVoucher}
+                                        alt=""
+                                        className="img-fluid"
+                                        style={{ height: 200, width: '100%' }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
-            <section className="services-wrapper home-wrapper-2 py-5">
+            <section className="services-wrapper home-wrapper-2 ">
                 <div className="container">
                     <div className="row">
                         <div className="col-12">
@@ -170,7 +189,7 @@ const Home = () => {
                     </div>
                 </div>
             </section>
-            <section className="home-wrapper-2 py-5">
+            <section className="home-wrapper-2">
                 <div className="container">
                     <div className="row">
                         <div className="col-12">
@@ -192,19 +211,35 @@ const Home = () => {
                     </div>
                 </div>
             </section>
-            <section className="featured-wrapper py-5 home-wrapper-2">
+            <section className="featured-wrapper  home-wrapper-2">
                 <div className="container">
                     <div className="row">
                         <div className="col-12">
                             <h3 className="section-heading">Top sản phẩm bán chạy</h3>
                         </div>
-                        {listProdSell?.slice(0, 6)?.map((item) => (
-                            <ProductCard key={item._id} item={item} type="best-selling" />
-                        ))}
+                        {listProduct &&
+                            listProduct
+                                .sort((a, b) => b.sold - a.sold)
+                                .slice(0, 6)
+                                .map((item) => <ProductCard key={item._id} item={item} type="best-selling" />)}
                     </div>
                 </div>
             </section>
-            <section className="featured-wrapper py-5 home-wrapper-2">
+            <section className="featured-wrapper  home-wrapper-2">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-12">
+                            <h3 className="section-heading">Top lượt xem</h3>
+                        </div>
+                        {listProduct &&
+                            listProduct
+                                .sort((a, b) => b.viewer.length - a.viewer.length)
+                                .slice(0, 6)
+                                ?.map((item) => <ProductCard key={item._id} item={item} type="top-view" />)}
+                    </div>
+                </div>
+            </section>
+            <section className="featured-wrapper  home-wrapper-2">
                 <div className="container">
                     <div className="row">
                         <div className="col-12">
@@ -213,12 +248,12 @@ const Home = () => {
                         {productState &&
                             productState
                                 ?.filter((item) => item.tags == 'Sản phẩm nổi bật')
-                                ?.slice(0, 12)
+                                ?.slice(0, 6)
                                 ?.map((item) => <ProductCard key={item._id} item={item} />)}
                     </div>
                 </div>
             </section>
-            <section className="special-wrapper py-5 home-wrapper-2">
+            <section className="special-wrapper  home-wrapper-2">
                 <div className="container">
                     <div className="row">
                         <div className="col-12">
@@ -234,7 +269,7 @@ const Home = () => {
                     </div>
                 </div>
             </section>
-            <section className="marquee-wrapper home-wrapper-2 py-5">
+            <section className="marquee-wrapper home-wrapper-2 ">
                 <div className="container">
                     <div className="row">
                         <div className="col-12">
@@ -264,7 +299,7 @@ const Home = () => {
                     </div>
                 </div>
             </section>
-            <section className="blog-wrapper py-5 home-wrapper-2">
+            <section className="blog-wrapper home-wrapper-2">
                 <div className="container">
                     <div className="row">
                         <div className="col-12">

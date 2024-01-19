@@ -5,40 +5,29 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { getCart, removeProdCart, updateCart } from '../../features/auth/authSlice';
-import { toast } from 'react-toastify';
 const Cart = () => {
     const [cartData, setCartData] = useState(null);
     const [totalPrice, setTotalPrice] = useState(0);
     const dispatch = useDispatch();
     const cartState = useSelector((state) => state.auth.cart);
+
     useEffect(() => {
         dispatch(getCart());
     }, [dispatch]);
     useEffect(() => {
-        const updateQuantity = () => {
-            if (cartData !== null) {
-                if (cartData.quantity !== '' && cartData.quantity <= 10) {
-                    dispatch(updateCart(cartData));
-                    setTimeout(() => {
-                        dispatch(getCart());
-                    }, 200);
-                }
-            }
-        };
-        for (let i = 0; i < cartState.length; i++) {
-            const element = cartState[i];
-            if (cartData.quantity > element.stock) {
-                toast.error('Số lượng vượt quá kho hàng');
-            } else {
-                updateQuantity();
+        if (cartData !== null) {
+            if (cartData?.quantity !== '' && cartData?.quantity <= 10) {
+                dispatch(updateCart(cartData));
+                setTimeout(() => {
+                    dispatch(getCart());
+                }, 200);
             }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cartData, dispatch]);
     useEffect(() => {
         let sum = 0;
         for (let i = 0; i < cartState.length; i++) {
-            sum = sum + Number(cartState[i].price * cartState[i].quantity);
+            sum = sum + Number(cartState[i].price * cartState[i]?.quantity);
             setTotalPrice(sum);
         }
         if (cartState.length === 0) {
@@ -57,7 +46,7 @@ const Cart = () => {
         <>
             <Meta title={'Giỏ hàng'} />
             <BreadCrumb title="Giỏ hàng" />
-            <section className="cart-wrapper py-5 home-wrapper-2">
+            <section className="cart-wrapper home-wrapper-2">
                 <div className="container">
                     <div className="row">
                         <div className="col-12">
@@ -89,11 +78,17 @@ const Cart = () => {
                                             <div className="w-75">
                                                 <p>{item?.prodId?.name}</p>
                                                 <p>Size: {item?.size?.name}</p>
-                                                <div className="d-flex align-items-center gap-3">
+                                                <div className="d-flex align-items-center ">
                                                     <p>Màu sắc: </p>
-                                                    <ul className="colors ps-0">
-                                                        <li style={{ background: item?.color?.code }}></li>
-                                                    </ul>
+                                                    &nbsp;
+                                                    <div
+                                                        style={{
+                                                            background: item?.color?.code,
+                                                            width: '15px',
+                                                            height: '15px',
+                                                            borderRadius: '50%',
+                                                        }}
+                                                    ></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -141,8 +136,8 @@ const Cart = () => {
                                         Tiếp tục mua hàng
                                     </Link>
                                 </div>
-                                <div className="d-flex flex-column align-items-end">
-                                    <h4>
+                                <div className="d-flex flex-column align-items-end gap-10">
+                                    <h4 className="mb-0">
                                         Tổng tiền giỏ hàng: {totalPrice.toLocaleString('vi')}
                                         <sup>đ</sup>
                                     </h4>

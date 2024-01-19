@@ -6,9 +6,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { applyCoupon, createOrder, emptyCart, resetState } from '../../features/auth/authSlice';
+import { applyCoupon, createOrder, emptyCart, getCart } from '../../features/auth/authSlice';
 import Paypal from '../../components/customer/Paypal';
 import Confetticp from '../../components/customer/Confetticp';
+import { paymentVNPay } from '../../features/order/orderSlice';
 
 const schema = Yup.object().shape({
     name: Yup.string().required('Chưa nhập tên !!'),
@@ -28,14 +29,21 @@ const Checkout = () => {
     const [couponData, setCouponData] = useState(null);
     const [apply, setApply] = useState(false);
     const [checkedPayPal, setCheckedPayPal] = useState(false);
+    const [checkedVNPay, setCheckedVNPay] = useState(false);
     const cartState = useSelector((state) => state.auth.cart);
     const userState = useSelector((state) => state.auth.user);
     const couponState = useSelector((state) => state.auth.totalPriceAfterDiscount);
+    const VNPayUrl = useSelector((state) => state.order.paymentVNPay);
+    useEffect(() => {
+        dispatch(getCart());
+    }, [dispatch]);
     useEffect(() => {
         let sum = 0;
-        for (let i = 0; i < cartState.length; i++) {
-            sum = sum + Number(cartState[i].price * cartState[i].quantity);
-            setTotalPrice(sum);
+        if (cartState) {
+            for (let i = 0; i < cartState.length; i++) {
+                sum = sum + Number(cartState[i].price * cartState[i].quantity);
+                setTotalPrice(sum);
+            }
         }
     }, [cartState]);
     useEffect(() => {
@@ -52,9 +60,9 @@ const Checkout = () => {
     }, [cartState]);
     const formik = useFormik({
         initialValues: {
-            name: userState.name || '',
-            address: userState.address || '',
-            mobile: userState.mobile || '',
+            name: userState?.name || '',
+            address: userState?.address || '',
+            mobile: userState?.mobile || '',
             other: '',
         },
         validationSchema: schema,
@@ -68,6 +76,9 @@ const Checkout = () => {
     };
     const handleCheckPayPal = () => {
         setCheckedPayPal(!checkedPayPal);
+    };
+    const handleCheckVNPay = () => {
+        setCheckedVNPay(!checkedVNPay);
     };
     const handleChange = (e) => {
         setCouponData(e.target.value);
@@ -91,10 +102,36 @@ const Checkout = () => {
         );
         setTimeout(() => {
             dispatch(emptyCart());
-            dispatch(resetState());
             navigate('/order');
         }, 1000);
     };
+    const handleVNPay = () => {
+        const orderId = Date.now();
+        dispatch(
+            createOrder({
+                shippingInfo,
+                orderItems,
+                totalPrice,
+                totalPriceAfterDiscount: couponState && apply ? Number(couponState) : totalPrice,
+                orderId,
+                payment: 'Thanh toán khi giao hàng',
+            }),
+        );
+        setTimeout(() => {
+            dispatch(emptyCart());
+        }, 200);
+        const data = {
+            amount: couponState && apply ? Number(couponState) : totalPrice,
+            orderId,
+            bankCode: 'VNBANK',
+        };
+        dispatch(paymentVNPay(data));
+    };
+    useEffect(() => {
+        if (VNPayUrl) {
+            window.location.href = VNPayUrl;
+        }
+    }, [VNPayUrl]);
     return (
         <>
             <Meta title={'Check Out'} />
@@ -268,6 +305,25 @@ const Checkout = () => {
                                                     />
                                                 )}
                                             </div>
+                                            <div className="col-12 border-bottom">
+                                                <div className=" d-flex align-items-center gap-5 my-3">
+                                                    <input
+                                                        type="checkbox"
+                                                        id="payment-checkbox3"
+                                                        onClick={handleCheckVNPay}
+                                                    />
+                                                    <label htmlFor="payment-checkbox3">Thanh toán qua VNPay</label>
+                                                </div>
+                                                {checkedVNPay && (
+                                                    <button
+                                                        type="button"
+                                                        className=" button w-100 p-4 rounded-3 border-0 mb-2"
+                                                        onClick={handleVNPay}
+                                                    >
+                                                        Thanh toán qua VNPay
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -276,17 +332,25 @@ const Checkout = () => {
                         <div className="col-5">
                             <div className="border-bottom py-4">
                                 {cartState &&
-                                    cartState?.map((item, index) => (
-                                        <div key={index} className="d-flex mb-4 gap-10 align-items-center">
-                                            <div className="w-75 d-flex gap-10">
-                                                <div className="w-25 position-relative">
+                                    cartState.map((item, index) => (
+                                        <div
+                                            key={index}
+                                            className="d-flex mb-4 gap-30 align-items-center justify-content-between"
+                                        >
+                                            <div className="d-flex gap-10">
+                                                <div className=" position-relative">
                                                     <span
                                                         style={{ top: -5, right: 2 }}
                                                         className="badge bg-secondary text-white rounded-circle position-absolute"
                                                     >
                                                         {item?.quantity}
                                                     </span>
-                                                    <img className="img-fluid" src={item.prodId.images[0].url} alt="" />
+                                                    <img
+                                                        className="img-fluid"
+                                                        width={50}
+                                                        src={item.prodId.images[0].url}
+                                                        alt=""
+                                                    />
                                                 </div>
                                                 <div>
                                                     <h5 className="title">{item.prodId.name}</h5>
@@ -297,7 +361,7 @@ const Checkout = () => {
                                                 </div>
                                             </div>
 
-                                            <div className="flex-grow-1 text-end">
+                                            <div className="">
                                                 <h5>
                                                     {(item.price * item.quantity).toLocaleString('vi')}
                                                     <sup>đ</sup>
